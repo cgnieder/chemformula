@@ -6,7 +6,7 @@
 % --------------------------------------------------------------------------
 % Clemens Niederberger
 % --------------------------------------------------------------------------
-% https://github.org/cgnieder/chemformula/
+% https://github.com/cgnieder/chemformula/
 % contact@mychemistry.eu
 % --------------------------------------------------------------------------
 % If you have any ideas, questions, suggestions or bugs to report, please
@@ -29,7 +29,7 @@
 \RequirePackage{ expl3 , xparse , l3keys2e , tikz , amsmath , xfrac , nicefrac , scrlfile }
 \usetikzlibrary{arrows.meta}
 \def\chemformula@version{4.7}
-\def\chemformula@date{2014/08/04}
+\def\chemformula@date{2014/08/08}
 
 \ProvidesExplPackage
   {chemformula}
@@ -1570,11 +1570,11 @@
 \NewChemBondAlias{tdeloc}{semitriple}
 
 \NewChemBond{coordright}
-  { \draw[chembond,Butt~cap->] (chemformula-bond-start) -- (chemformula-bond-end) ; }
+  { \draw[chembond,Butt~Cap->] (chemformula-bond-start) -- (chemformula-bond-end) ; }
 \NewChemBondAlias{co>}{coordright}
 
 \NewChemBond{coordleft}
-  { \draw[chembond,<-Butt~cap] (chemformula-bond-start) -- (chemformula-bond-end) ; }
+  { \draw[chembond,<-Butt~Cap] (chemformula-bond-start) -- (chemformula-bond-end) ; }
 \NewChemBondAlias{<co}{coordleft}
 
 % --------------------------------------------------------------------------
@@ -2665,7 +2665,7 @@
     bond-length           .dim_set:N = \l__chemformula_bond_dim ,
     bond-offset           .dim_set:N = \l__chemformula_bond_space_dim ,
     bond-style            .code:n    =
-      \tikzset { chembond/.style={Butt~cap-Butt~cap,#1} } ,
+      \tikzset { chembond/.style={Butt~Cap-Butt~Cap,#1} } ,
     bond-penalty          .tl_set:N  = \l__chemformula_bond_penalty_tl ,
     font-family           .code:n    =
       \bool_set_true:N \l__chemformula_fss_bool
@@ -3104,7 +3104,7 @@ VERSION HISTORY
                           - new arrow tip definition allows redeclaration to
                             other existing tips by \pgfkeys{cf/.tip=<tip>}
 2014/08/07 - version 4.8  - fix bug introduced in last update: `butt cap' now
-                            needs to be `Butt cap' with the new `arrows.meta'
+                            needs to be `Butt Cap' with the new `arrows.meta'
                             library
                           - split from `chemmacros' bundle as independent
                             package
