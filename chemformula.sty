@@ -28,8 +28,8 @@
 % --------------------------------------------------------------------------
 \RequirePackage{ expl3 , xparse , l3keys2e , tikz , amsmath , xfrac , nicefrac , scrlfile }
 \usetikzlibrary{arrows.meta}
-\def\chemformula@version{4.8}
-\def\chemformula@date{2014/08/08}
+\def\chemformula@version{4.9}
+\def\chemformula@date{2014/10/07}
 
 \ProvidesExplPackage
   {chemformula}
@@ -278,6 +278,8 @@
 \skip_set:Nn \l__chemformula_math_space_skip { .1667em plus .0333em minus .0117em }
 \skip_new:N  \l__chemformula_plus_space_skip
 \skip_set:Nn \l__chemformula_plus_space_skip { .3em plus .1em minus .1em }
+\skip_new:N  \l__chemformula_minus_space_skip
+\skip_set:Nn \l__chemformula_minus_space_skip { .3em plus .1em minus .1em }
 
 
 % integers:
@@ -305,6 +307,12 @@
 \tl_set:Nn    \l__chemformula_arrow_offset_tl { .75em }
 \tl_new:N     \l__chemformula_plus_penalty_tl
 \tl_set:Nn    \l__chemformula_plus_penalty_tl { 700 }
+\tl_new:N     \l__chemformula_plus_output_tl
+\tl_set:Nn    \l__chemformula_plus_output_tl { + }
+\tl_new:N     \l__chemformula_minus_penalty_tl
+\tl_set:Nn    \l__chemformula_minus_penalty_tl { 700 }
+\tl_new:N     \l__chemformula_minus_output_tl
+\tl_set:Nn    \l__chemformula_minus_output_tl { $-$ }
 \tl_new:N     \l__chemformula_bond_penalty_tl
 \tl_set:Nn    \l__chemformula_bond_penalty_tl { 10000 }
 \tl_new:N     \l__chemformula_name_tmp_tl
@@ -2349,7 +2357,7 @@
         \tl_put_right:Nn \l__chemformula_input_tl
           {
             \chemformula_skip_nobreak:N \l__chemformula_plus_space_skip
-            +
+            \tl_use:N \l__chemformula_plus_output_tl
             \chemformula_skip_nobreak_penalty:Nn
               \l__chemformula_plus_space_skip
               { \l__chemformula_plus_penalty_tl }
@@ -2359,11 +2367,11 @@
       {
         \tl_put_right:Nn \l__chemformula_input_tl
           {
-            \chemformula_skip_nobreak:N \l__chemformula_plus_space_skip
-            \c_math_toggle_token - \c_math_toggle_token
+            \chemformula_skip_nobreak:N \l__chemformula_minus_space_skip
+            \tl_use:N \l__chemformula_minus_output_tl
             \chemformula_skip_nobreak_penalty:Nn
-              \l__chemformula_plus_space_skip
-              { \l__chemformula_plus_penalty_tl }
+              \l__chemformula_minus_space_skip
+              { \l__chemformula_minus_penalty_tl }
           }
       }
     \bool_set_false:N \l__chemformula_is_plus_bool
@@ -2651,6 +2659,10 @@
     adduct-space          .dim_set:N  = \l__chemformula_adduct_space_dim ,
     plus-space            .skip_set:N = \l__chemformula_plus_space_skip ,
     plus-penalty          .tl_set:N   = \l__chemformula_plus_penalty_tl ,
+    plus-output-symbol    .tl_set:N   = \l__chemformula_plus_output_tl ,
+    minus-space           .skip_set:N = \l__chemformula_minus_space_skip ,
+    minus-penalty         .tl_set:N   = \l__chemformula_minus_penalty_tl ,
+    minus-output-symbol   .tl_set:N   = \l__chemformula_minus_output_tl ,
     math-space            .skip_set:N = \l__chemformula_math_space_skip ,
     name-format           .tl_set:N   = \l__chemformula_name_format_tl ,
     name-width            .code:n     =
@@ -3108,6 +3120,8 @@ VERSION HISTORY
                             library
                           - split from `chemmacros' bundle as independent
                             package
+2014/10/07 - version 4.9  - new options: `minus-space', `minus-penalty',
+                            `plus-output-symbol' and `minus-output-symbol'
 
 % --------------------------------------------------------------------------
 % TODO

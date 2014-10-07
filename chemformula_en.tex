@@ -266,6 +266,15 @@ then \chemmacros\ will not be loaded.  The \chemmacros\ package, however,
     bundle but is dirtributed as a package of it's own.
 \end{itemize}
 
+\subsection{Version 4.9}
+\begin{itemize}
+  \item New options \option{minus-space} and \option{minus-penalty} equivalent
+    to the existing \option{plus-space} and \option{plus-penalty}
+  \item New options \option{plus-output-symbol} and
+    \option{minus-output-symbol} for customizing the plus and minus signs in
+    the output.
+\end{itemize}
+
 \section{Licence and Requirements}
 \license
 
@@ -895,14 +904,23 @@ following ones:
 \end{commands}
 \footnotetext{Is this the correct English term? Please correct me if it isn't.}
 
-The space left and right of the plus and the minus sign can be set with this
-option:
+The space left and right of the plus and the minus sign and the signs
+themselves can be set with the following options:
 \begin{options}
   \keyval{plus-space}{skip}\Default{.3em plus .1em minus .1em}
     A rubber length.
+  \keyval{minus-space}{skip}\Default{.3em plus .1em minus .1em}
+    \sinceversion{4.9}A rubber length.
   \keyval{plus-penalty}{num}\Default{700}
-    \sinceversion{4.0a}The penalty that is inserted after the plus and the
-    minus sign for (dis-)allowing line breaks.
+    \sinceversion{4.0a}The penalty that is inserted after the plus sign for
+    (dis-)allowing line breaks.
+  \keyval{minus-penalty}{num}\Default{700}
+    \sinceversion{4.9}The penalty that is inserted after the minus sign for
+    (dis-)allowing line breaks.
+  \keyval{plus-output-symbol}{code}\Default{+}
+    \sinceversion{4.9}The \meta{code} that is used for the plus sign.
+  \keyval{minus-output-symbol}{code}\Default{\$-\$}
+    \sinceversion{4.9}The \meta{code} that is used for the minus sign.
 \end{options}
 \begin{example}[side-by-side]
   \ch{A + B}\par
@@ -943,7 +961,7 @@ be input with \verbcode+~+.
 \begin{commands}
   \command{ch}[\Marg{ "\meta{escaped text}" }]
     One of two possibilities to \emph{escape} \chemformula's parsing.
-  \command{ch}[\Marg{ '\meta{escaped text}' }]
+  \command{ch}[\Marg{ \textquotesingle\meta{escaped text}\textquotesingle{} }]
     The second of two possibilities to \emph{escape} \chemformula's parsing.
 \end{commands}
 \begin{example}
