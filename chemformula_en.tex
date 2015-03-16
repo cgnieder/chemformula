@@ -16,7 +16,7 @@
 % If you have any ideas, questions, suggestions or bugs to report, please
 % feel free to contact me.
 % --------------------------------------------------------------------------
-% Copyright 2011-2013 Clemens Niederberger
+% Copyright 2011-2015 Clemens Niederberger
 %
 % This work may be distributed and/or modified under the
 % conditions of the LaTeX Project Public License, either version 1.3
@@ -44,14 +44,17 @@
     \par
   } ,
   add-cmds = {
+    bond,
     ce, ch, charrow, chcpd, chemformula@bondlength, chemsetup, chlewis,
       chname,
     DeclareChemArrow, DeclareChemBond, DeclareChemBondAlias,
+      DeclareChemCompoundProperty,
     mch,
-    NewChemArrow, NewChemBond, NewChemBondAlias,
+    NewChemArrow, NewChemBond, NewChemBondAlias, NewChemCompoundProperty,
     ox, OX,
     pch,
-    redox, RenewChemArrow, RenewChemBond,
+    redox, RemoveChemCompoundProperty, RenewChemArrow, RenewChemBond,
+      RenewChemCompoundProperty,
     setchemformula, ShowChemArrow, ShowChemBond
   } ,
   add-silent-cmds = {
@@ -183,10 +186,10 @@
 
 \newname\hensel{Martin Hensel}
 
-\BeforeBeginEnvironment{example}{\vspace{\baselineskip}}
-\AfterEndEnvironment{example}{\vspace{\baselineskip}}
-\BeforeBeginEnvironment{sourcecode}{\vspace{\baselineskip}}
-\AfterEndEnvironment{sourcecode}{\vspace{\baselineskip}}
+% \BeforeBeginEnvironment{example}{\vspace{\baselineskip}}
+% \AfterEndEnvironment{example}{\vspace{\baselineskip}}
+% \BeforeBeginEnvironment{sourcecode}{\vspace{\baselineskip}}
+% \AfterEndEnvironment{sourcecode}{\vspace{\baselineskip}}
 
 \begin{document}
 
@@ -273,6 +276,14 @@ then \chemmacros\ will not be loaded.  The \chemmacros\ package, however,
   \item New options \option{plus-output-symbol} and
     \option{minus-output-symbol} for customizing the plus and minus signs in
     the output.
+\end{itemize}
+
+\subsection{Version 4.10}
+\begin{itemize}
+  \item new macros \cs{NewChemCompoundProperty},
+    \cs{RenewChemCompoundProperty}, \\
+    \cs{DeclareChemCompoundProperty} and \cs{RemoveChemCompoundProperty}.  See
+    section~\ref{sec:extend-comp-prop} for a description.
 \end{itemize}
 
 \section{Licence and Requirements}
@@ -881,6 +892,36 @@ You can change the distance between bond and atom, too:
   \command{chcpd}[\oarg{options}\marg{compound}]
     Typeset single compounds.
 \end{commands}
+
+\subsection{Extend Compound Properties}\label{sec:extend-comp-prop}
+
+It\sinceversion{4.10} is possible to extend the range of special input symbols
+within compounds.  In the default setting those are \verbcode|*.-=+'| and
+arabic numerals.  Others can be added or the existing ones be changed with one
+of the following commmands:
+\begin{commands}
+  \command{NewChemCompoundProperty}[\marg{token}\marg{replacement}]
+    \meta{token} will be replaced by \meta{replacement} within compounds.  The
+    property is only added if \meta{token} is not yet part the compounds'
+    property list.
+  \command{RenewChemCompoundProperty}[\marg{token}\marg{replacement}]
+    \meta{token} will be replaced by \meta{replacement} within compounds.  The
+    property is only added if \meta{token} is already part the compounds'
+    property list.
+  \command{DeclareChemCompoundProperty}[\marg{token}\marg{replacement}]
+    \meta{token} will be replaced by \meta{replacement} within compounds.  The
+    property silently overwrites any previously set \meta{replacement} for
+    \meta{token} if \meta{token} is already part the compounds' property
+    list.
+  \command{RemoveChemCompoundProperty}[\marg{token}]
+    Removes \meta{token} from the compounds' property list.
+\end{commands}
+
+For example you can use
+\begin{sourcecode}
+  \NewChemCompoundProperty{\}{\slash}
+\end{sourcecode}
+to allow line breaks after slashes in compounds.
 
 \section{Special Input Types}
 There are some \enquote{special type} input groups.
@@ -1499,11 +1540,11 @@ The next example shows the effect of some of the options:
     globally via the setup command or locally as option to \cs{ch}.
 \end{options}
 
-With this option enabled several changes come into effect: \code{'} prodoces a
-prime, a \code{x} in a superscript produces $\times$, and both a \code{.} and
-a \code{*} produce a little filled circle. In the Kröger-Vink notation a prime
-denotes a negative relative charge, the circle a positive relative charge, and
-the cross denotes a neutral relative charge.
+With this option enabled several changes come into effect: \verbcode|'|
+produces a prime, a \code{x} in a superscript produces $\times$, and both a
+\code{.} and a \code{*} produce a little filled circle. In the Kröger-Vink
+notation a prime denotes a negative relative charge, the circle a positive
+relative charge, and the cross denotes a neutral relative charge.
 
 \begin{example}[side-by-side,add-sourcecode-options={literate=}]
   \setchemformula{kroeger-vink=true}
