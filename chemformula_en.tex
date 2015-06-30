@@ -1,5 +1,5 @@
-% arara: pdflatex
-% arara: biber
+% !arara: pdflatex
+% !arara: biber
 % arara: pdflatex
 % arara: pdflatex
 % --------------------------------------------------------------------------
@@ -942,7 +942,9 @@ divided into two groups, \enquote{addition symbols} and \enquote{symbols}.
     around it:\\
     \cs{ch}\Marg{M - H} \ch{M - H}
 \end{commands}
-Addition symbols are
+Addition symbols are surrounded with space which can be customized according
+to options explained in a bit.  There is also some penalty prohibiting a line
+break after them which also can be customized with an option.
 
 You can define/redefine your own addition symbols:
 \begin{commands}
