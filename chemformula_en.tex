@@ -1,6 +1,6 @@
 % arara: pdflatex
-% !arara: biber
-% !arara: pdflatex
+% arara: biber
+% arara: pdflatex
 % arara: pdflatex
 % --------------------------------------------------------------------------
 % the CHEMFORMULA package
@@ -35,7 +35,7 @@
 \usepackage[greek=newtx]{chemmacros}
 \setcnltx{
   package  = {chemformula},
-  url      = https://github.com/cgnieder/chemformula/ ,
+  url      = http://www.mychemistry.eu/forums/forum/chemformula/ ,
   authors  = Clemens Niederberger ,
   email    = contact@mychemistry.eu ,
   abstract = {%
@@ -47,27 +47,29 @@
     bond,
     ce, ch, charrow, chcpd, chemformula@bondlength, chemsetup, chlewis,
       chname,
-    DeclareChemArrow, DeclareChemBond, DeclareChemBondAlias,
-      DeclareChemCompoundProperty,
+    DeclareChemAdditionSymbol, DeclareChemArrow, DeclareChemBond,
+      DeclareChemBondAlias, DeclareChemCompoundProperty, DeclareChemSymbol,
     mch,
-    NewChemArrow, NewChemBond, NewChemBondAlias, NewChemCompoundProperty,
+    NewChemAdditionSymbol, NewChemArrow, NewChemBond, NewChemBondAlias,
+      NewChemCompoundProperty, NewChemSymbol,
     ox, OX,
     pch,
-    redox, RemoveChemCompoundProperty, RenewChemArrow, RenewChemBond,
-      RenewChemCompoundProperty,
+    redox, RemoveChemCompoundProperty, RenewChemAdditionSymbol,
+      RenewChemArrow, RenewChemBond, RenewChemCompoundProperty,
+      RenewChemSymbol,
     setchemformula, ShowChemArrow, ShowChemBond
   } ,
   add-silent-cmds = {
     addplot,
     chemfig,
     DeclareInstance, draw,
-    sample, setatomsep,
+    sample, setatomsep, sfrac,
     usetikzlibrary
   }
 }
 
 \usepackage{chemfig,booktabs,cancel,varioref}
-\usepackage[version=3]{mhchem}
+\usepackage[version=4]{mhchem}
 
 \expandafter\def\csname libertine@figurestyle\endcsname{LF}
 \usepackage[libertine]{newtxmath}
@@ -206,85 +208,85 @@ a highly customizable alternative led to \chemformula{} after all.
 compounds, stoichiometric factors and arrows are input.  In the same time
 \chemformula{} offers \emph{many} possibilities to customize the output.
 
-\section{News}
-\subsection{Version 4.0}
-Since version 4.0\sinceversion{4.0}, the \chemformula{} package can be used
-independently from \chemmacros.  This means that if you say
-\begin{sourcecode}
-  \usepackage{chemformula}
-\end{sourcecode}
-then \chemmacros\ will not be loaded.  The \chemmacros\ package, however,
-\emph{will} load \chemformula.
+% \section{News}
+% \subsection{Version 4.0}
+% Since version 4.0\sinceversion{4.0}, the \chemformula{} package can be used
+% independently from \chemmacros.  This means that if you say
+% \begin{sourcecode}
+%   \usepackage{chemformula}
+% \end{sourcecode}
+% then \chemmacros\ will not be loaded.  The \chemmacros\ package, however,
+% \emph{will} load \chemformula.
 
-\subsection{Version 4.2}
-\begin{itemize}
-  \item New option \option{arrow-style}.
-  \item New command \cs{chlewis} that allows to add Lewis electrons to an
-    atom, see section~\ref{sec:lewis-formulae}.
-\end{itemize}
+% \subsection{Version 4.2}
+% \begin{itemize}
+%   \item New option \option{arrow-style}.
+%   \item New command \cs{chlewis} that allows to add Lewis electrons to an
+%     atom, see section~\ref{sec:lewis-formulae}.
+% \end{itemize}
 
-\subsection{Version 4.3}
-\begin{itemize}
-  \item New option \option{stoich-print}.
-  \item New command \cs{chstoich}.
-  \item The commands \cs*{DeclareChem\meta{...}} now don't give an error any
-    more if the command already exists.  This is more consistent with \LaTeX's
-    \cs*{DeclareRobustCommand}.  For all those commands a version
-    \cs*{NewChem\meta{...}} is introduced that \emph{does} give an error if
-    the new command is already defined.
-\end{itemize}
+% \subsection{Version 4.3}
+% \begin{itemize}
+%   \item New option \option{stoich-print}.
+%   \item New command \cs{chstoich}.
+%   \item The commands \cs*{DeclareChem\meta{...}} now don't give an error any
+%     more if the command already exists.  This is more consistent with \LaTeX's
+%     \cs*{DeclareRobustCommand}.  For all those commands a version
+%     \cs*{NewChem\meta{...}} is introduced that \emph{does} give an error if
+%     the new command is already defined.
+% \end{itemize}
 
-\subsection{Version 4.4}
-\begin{itemize}
-  \item A single dash \code{-} in \cs{ch} is now treated as a minus sign.
-  This is consistent with the behaviour of a \code{+}.
-\end{itemize}
+% \subsection{Version 4.4}
+% \begin{itemize}
+%   \item A single dash \code{-} in \cs{ch} is now treated as a minus sign.
+%   This is consistent with the behaviour of a \code{+}.
+% \end{itemize}
 
-\subsection{Version 4.5}
-\begin{itemize}
-  \item New arrow types \arrowtype{>=<}, \arrowtype{>=<<}, \arrowtype{>>=<}
-    and \arrowtype{<==>}.
-  \item Internal changes to \cs{ch} allow usage of optional arguments of
-    \cs*{\textbackslash} and \cs*{label} in \chemmacros' \env*{reactions}
-    environment.
-\end{itemize}
+% \subsection{Version 4.5}
+% \begin{itemize}
+%   \item New arrow types \arrowtype{>=<}, \arrowtype{>=<<}, \arrowtype{>>=<}
+%     and \arrowtype{<==>}.
+%   \item Internal changes to \cs{ch} allow usage of optional arguments of
+%     \cs*{\textbackslash} and \cs*{label} in \chemmacros' \env*{reactions}
+%     environment.
+% \end{itemize}
 
-\subsection{Version 4.6}
-\begin{itemize}
-  \item New options \option{circled} and \option{circletype}.  this allows to
-    set the behaviour as described on \chemmacros' manual for a specific usage
-    of \cs{ch}.
-\end{itemize}
+% \subsection{Version 4.6}
+% \begin{itemize}
+%   \item New options \option{circled} and \option{circletype}.  this allows to
+%     set the behaviour as described on \chemmacros' manual for a specific usage
+%     of \cs{ch}.
+% \end{itemize}
 
-\subsection{Version 4.7}
-\begin{itemize}
-  \item Dependency change: \chemformula{} now requires the \TikZ{} library
-    \code{arrows.meta} instead of the library \code{arrows}.  This requires
-    \TikZ{} version~3.0.0.
-\end{itemize}
+% \subsection{Version 4.7}
+% \begin{itemize}
+%   \item Dependency change: \chemformula{} now requires the \TikZ{} library
+%     \code{arrows.meta} instead of the library \code{arrows}.  This requires
+%     \TikZ{} version~3.0.0.
+% \end{itemize}
 
-\subsection{Version 4.8}
-\begin{itemize}
-  \item The \chemformula{} package now is no longer part of the \chemmacros{}
-    bundle but is dirtributed as a package of it's own.
-\end{itemize}
+% \subsection{Version 4.8}
+% \begin{itemize}
+%   \item The \chemformula{} package now is no longer part of the \chemmacros{}
+%     bundle but is dirtributed as a package of it's own.
+% \end{itemize}
 
-\subsection{Version 4.9}
-\begin{itemize}
-  \item New options \option{minus-space} and \option{minus-penalty} equivalent
-    to the existing \option{plus-space} and \option{plus-penalty}
-  \item New options \option{plus-output-symbol} and
-    \option{minus-output-symbol} for customizing the plus and minus signs in
-    the output.
-\end{itemize}
+% \subsection{Version 4.9}
+% \begin{itemize}
+%   \item New options \option{minus-space} and \option{minus-penalty} equivalent
+%     to the existing \option{plus-space} and \option{plus-penalty}
+%   \item New options \option{plus-output-symbol} and
+%     \option{minus-output-symbol} for customizing the plus and minus signs in
+%     the output.
+% \end{itemize}
 
-\subsection{Version 4.10}
-\begin{itemize}
-  \item new macros \cs{NewChemCompoundProperty},
-    \cs{RenewChemCompoundProperty}, \\
-    \cs{DeclareChemCompoundProperty} and \cs{RemoveChemCompoundProperty}.  See
-    section~\ref{sec:extend-comp-prop} for a description.
-\end{itemize}
+% \subsection{Version 4.10}
+% \begin{itemize}
+%   \item new macros \cs{NewChemCompoundProperty},
+%     \cs{RenewChemCompoundProperty}, \\
+%     \cs{DeclareChemCompoundProperty} and \cs{RemoveChemCompoundProperty}.  See
+%     section~\ref{sec:extend-comp-prop} for a description.
+% \end{itemize}
 
 \section{Licence and Requirements}
 \license
@@ -454,12 +456,12 @@ There are a few possibilities to customize the output.
   \ch[decimal-marker={,}]{3.5} \ch[decimal-marker={$\cdot$}]{3,5} 
 \end{example}
 
-The option \keyis{frac-style}{xfrac} uses the \verbcode+\sfrac+ command of the
+The option \keyis{frac-style}{xfrac} uses the \cs*{sfrac} command of the
 \pkg{xfrac} package.  The output strongly depends on the font you use.
 \begin{example}
   \ch[frac-style=xfrac]{3/2} \ch[frac-style=xfrac]{1_1/2}
 \end{example}
-\chemformula{} defines the instance \verbcode=formula-text-frac= which you can
+\chemformula{} defines the instance \code{chemformula-text-frac} which you can
 redefine to your needs.  See the \pkg{xfrac} documentation for further
 information.  The default definition is this:
 \begin{sourcecode}
@@ -483,8 +485,8 @@ This document uses the font Linux Libertine~O and the following definition:
    }
 \end{sourcecode}
 
-The option \keyis{frac-style}{nicefrac} uses the \verbcode+\nicefrac+ command
-of the \pkg{nicefrac} package.
+The option \keyis{frac-style}{nicefrac} uses the \cs*{nicefrac} command of the
+\pkg{nicefrac} package.
 \begin{example}
   \ch[frac-style=nicefrac]{3/2} \ch[frac-style=nicefrac]{1_1/2}
 \end{example}
@@ -927,8 +929,10 @@ to allow line breaks after slashes in compounds.
 There are some \enquote{special type} input groups.
 
 \subsection{Single Token Groups}
-The first kind are groups which consist of only one token, namely of the
-following ones:
+The first kind are groups which consist of only one token.  They are again
+divided into two groups, \enquote{addition symbols} and \enquote{symbols}.
+
+\subsubsection{Addition Symbols}
 \begin{commands}
   \command{ch}[\Marg{ + } \ch{ + }]
     Creates the plus sign between compounds with space around it:\\
@@ -937,7 +941,54 @@ following ones:
     \sinceversion{4.3a}Creates the minus sign between compounds with space
     around it:\\
     \cs{ch}\Marg{M - H} \ch{M - H}
-  \command{ch}[\Marg{ v } \ch{ v }]
+\end{commands}
+Addition symbols are
+
+You can define/redefine your own addition symbols:
+\begin{commands}
+  \command{NewChemAdditionSymbol}[\marg{name}\marg{input}\marg{output}]
+    Defines\sinceversion{4.11} the addition symbol \meta{name} with input
+    symbol \meta{input} and output \meta{output}.
+  \command{RenewChemAdditionSymbol}[\marg{name}\marg{input}\marg{output}]
+    Redefines\sinceversion{4.11} the addition symbol \meta{name} with input
+    symbol \meta{input} and output \meta{output}.
+  \command{DeclareChemAdditionSymbol}[\marg{name}\marg{input}\marg{output}]
+    (Re-)Defines\sinceversion{4.11} the addition symbol \meta{name} with input
+    symbol \meta{input} and output \meta{output} without checking if the
+    symbol exists or not.
+\end{commands}
+
+The space left and right of the plus and the minus sign and the signs
+themselves can be set with the following options:
+\begin{options}
+  \keyval{plus-space}{skip}\Default{.3em plus .1em minus .1em}
+    A rubber length.
+  \keyval{plus-penalty}{num}\Default{700}
+    \sinceversion{4.0a}The penalty that is inserted after the plus sign for
+    (dis-)allowing line breaks.
+  \keyval{plus-output-symbol}{code}\Default{+}
+    \sinceversion{4.9}The \meta{code} that is used for the plus sign.
+  \keyval{minus-space}{skip}\Default{.3em plus .1em minus .1em}
+    \sinceversion{4.9}A rubber length.
+  \keyval{minus-penalty}{num}\Default{700}
+    \sinceversion{4.9}The penalty that is inserted after the minus sign for
+    (dis-)allowing line breaks.
+  \keyval{minus-output-symbol}{code}\Default{\$-\$}
+    \sinceversion{4.9}The \meta{code} that is used for the minus sign.
+\end{options}
+The corresponding three options are defined when \cs{NewChemAdditionSymbol}
+or one of the variants is used, \code{\meta{name}-space} and
+\code{\meta{name}-penalty} both with the same defaults as above, and
+\code{\meta{name}-output-symbol}.
+
+\begin{example}[side-by-side]
+  \ch{A + B}\par
+  \ch[plus-space=4pt]{A + B}
+\end{example}
+
+\subsubsection{Symbols}
+\begin{commands}
+    \command{ch}[\Marg{ v } \ch{ v }]
     Sign for precipitate: \cs{ch}\Marg{BaSO4 v} \ch{BaSO4 v}
   \command{ch}[\Marg{ \textasciicircum\ } \ch{ ^ }]
     Sign for escaping gas\footnotemark: \cs{ch}\Marg{H2 \textasciicircum}
@@ -945,28 +996,19 @@ following ones:
 \end{commands}
 \footnotetext{Is this the correct English term? Please correct me if it isn't.}
 
-The space left and right of the plus and the minus sign and the signs
-themselves can be set with the following options:
-\begin{options}
-  \keyval{plus-space}{skip}\Default{.3em plus .1em minus .1em}
-    A rubber length.
-  \keyval{minus-space}{skip}\Default{.3em plus .1em minus .1em}
-    \sinceversion{4.9}A rubber length.
-  \keyval{plus-penalty}{num}\Default{700}
-    \sinceversion{4.0a}The penalty that is inserted after the plus sign for
-    (dis-)allowing line breaks.
-  \keyval{minus-penalty}{num}\Default{700}
-    \sinceversion{4.9}The penalty that is inserted after the minus sign for
-    (dis-)allowing line breaks.
-  \keyval{plus-output-symbol}{code}\Default{+}
-    \sinceversion{4.9}The \meta{code} that is used for the plus sign.
-  \keyval{minus-output-symbol}{code}\Default{\$-\$}
-    \sinceversion{4.9}The \meta{code} that is used for the minus sign.
-\end{options}
-\begin{example}[side-by-side]
-  \ch{A + B}\par
-  \ch[plus-space=4pt]{A + B}
-\end{example}
+You can define/redefine your own symbols:
+\begin{commands}
+  \command{NewChemSymbol}[\marg{input}\marg{output}]
+    Defines\sinceversion{4.11} the addition symbol with input \meta{input} and
+    output \meta{output}.
+  \command{RenewChemSymbol}[\marg{input}\marg{output}]
+    Redefines\sinceversion{4.11} the addition symbol with input \meta{input}
+    and output \meta{output}.
+  \command{DeclareChemSymbol}[\marg{input}\marg{output}]
+    (Re-)Defines\sinceversion{4.11} the addition symbol with input
+    \meta{input} and output \meta{output} without checking if the symbol
+    exists or not.
+\end{commands}
 
 \subsection{Option Input}
 Sometimes you might want to apply an option only to a part of a, say,
@@ -1005,7 +1047,7 @@ be input with \verbcode+~+.
   \command{ch}[\Marg{ \textquotesingle\meta{escaped text}\textquotesingle{} }]
     The second of two possibilities to \emph{escape} \chemformula's parsing.
 \end{commands}
-\begin{example}
+\begin{example}[add-sourcecode-options={literate=}]
   \ch{"\ox{2,Ca}" O} \par
   \ch{"\ldots\," Na + "\ldots\," Cl2 -> "\ldots\," NaCl} \par
   \ch{'A~->~B'}
