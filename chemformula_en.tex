@@ -1,5 +1,5 @@
-% !arara: pdflatex
-% !arara: biber
+% arara: pdflatex
+% arara: biber
 % arara: pdflatex
 % arara: pdflatex
 % --------------------------------------------------------------------------
@@ -65,7 +65,9 @@
     DeclareInstance, draw,
     sample, setatomsep, sfrac,
     usetikzlibrary
-  }
+  } ,
+  index-setup = { othercode=\footnotesize, level=\section , noclearpage } ,
+  makeindex-setup = {  columns=3, columnsep=1em }
 }
 
 \usepackage{chemfig,booktabs,cancel,varioref}
@@ -104,7 +106,7 @@
 
 \usepackage{filecontents}
 
-\defbibheading{bibliography}{\addsec{References}}
+\defbibheading{bibliography}{\section{References}}
 \addbibresource{\jobname.bib}
 \begin{filecontents*}{\jobname.bib}
 @book{iupac:greenbook,
@@ -188,139 +190,54 @@
 
 \newname\hensel{Martin Hensel}
 
-% \BeforeBeginEnvironment{example}{\vspace{\baselineskip}}
-% \AfterEndEnvironment{example}{\vspace{\baselineskip}}
-% \BeforeBeginEnvironment{sourcecode}{\vspace{\baselineskip}}
-% \AfterEndEnvironment{sourcecode}{\vspace{\baselineskip}}
-
 \begin{document}
 
 \section{Introduction}
 Probably every chemist using \LaTeXe\ is aware of the great \pkg{mhchem}
 package by \hensel.  There have always been some difficulties intertwining it
-with the \chemmacros{} package, though.  Also, some other minor points in
+with the \chemmacros\ package, though.  Also, some other minor points in
 \pkg{mhchem} always bothered me, but they hardly seemed enough for a new
 package.  They weren't even enough for a feature request to the \pkg{mhchem}
 author.  The challenge and the fun of creating a new package and the wish for
-a highly customizable alternative led to \chemformula{} after all.
+a highly customizable alternative led to \chemformula\ after all.
 
-\chemformula{} works very similar to \pkg{mhchem} but is more strict as to how
+\chemformula\ works very similar to \pkg{mhchem} but is more strict as to how
 compounds, stoichiometric factors and arrows are input.  In the same time
-\chemformula{} offers \emph{many} possibilities to customize the output.
-
-% \section{News}
-% \subsection{Version 4.0}
-% Since version 4.0\sinceversion{4.0}, the \chemformula{} package can be used
-% independently from \chemmacros.  This means that if you say
-% \begin{sourcecode}
-%   \usepackage{chemformula}
-% \end{sourcecode}
-% then \chemmacros\ will not be loaded.  The \chemmacros\ package, however,
-% \emph{will} load \chemformula.
-
-% \subsection{Version 4.2}
-% \begin{itemize}
-%   \item New option \option{arrow-style}.
-%   \item New command \cs{chlewis} that allows to add Lewis electrons to an
-%     atom, see section~\ref{sec:lewis-formulae}.
-% \end{itemize}
-
-% \subsection{Version 4.3}
-% \begin{itemize}
-%   \item New option \option{stoich-print}.
-%   \item New command \cs{chstoich}.
-%   \item The commands \cs*{DeclareChem\meta{...}} now don't give an error any
-%     more if the command already exists.  This is more consistent with \LaTeX's
-%     \cs*{DeclareRobustCommand}.  For all those commands a version
-%     \cs*{NewChem\meta{...}} is introduced that \emph{does} give an error if
-%     the new command is already defined.
-% \end{itemize}
-
-% \subsection{Version 4.4}
-% \begin{itemize}
-%   \item A single dash \code{-} in \cs{ch} is now treated as a minus sign.
-%   This is consistent with the behaviour of a \code{+}.
-% \end{itemize}
-
-% \subsection{Version 4.5}
-% \begin{itemize}
-%   \item New arrow types \arrowtype{>=<}, \arrowtype{>=<<}, \arrowtype{>>=<}
-%     and \arrowtype{<==>}.
-%   \item Internal changes to \cs{ch} allow usage of optional arguments of
-%     \cs*{\textbackslash} and \cs*{label} in \chemmacros' \env*{reactions}
-%     environment.
-% \end{itemize}
-
-% \subsection{Version 4.6}
-% \begin{itemize}
-%   \item New options \option{circled} and \option{circletype}.  this allows to
-%     set the behaviour as described on \chemmacros' manual for a specific usage
-%     of \cs{ch}.
-% \end{itemize}
-
-% \subsection{Version 4.7}
-% \begin{itemize}
-%   \item Dependency change: \chemformula{} now requires the \TikZ{} library
-%     \code{arrows.meta} instead of the library \code{arrows}.  This requires
-%     \TikZ{} version~3.0.0.
-% \end{itemize}
-
-% \subsection{Version 4.8}
-% \begin{itemize}
-%   \item The \chemformula{} package now is no longer part of the \chemmacros{}
-%     bundle but is dirtributed as a package of it's own.
-% \end{itemize}
-
-% \subsection{Version 4.9}
-% \begin{itemize}
-%   \item New options \option{minus-space} and \option{minus-penalty} equivalent
-%     to the existing \option{plus-space} and \option{plus-penalty}
-%   \item New options \option{plus-output-symbol} and
-%     \option{minus-output-symbol} for customizing the plus and minus signs in
-%     the output.
-% \end{itemize}
-
-% \subsection{Version 4.10}
-% \begin{itemize}
-%   \item new macros \cs{NewChemCompoundProperty},
-%     \cs{RenewChemCompoundProperty}, \\
-%     \cs{DeclareChemCompoundProperty} and \cs{RemoveChemCompoundProperty}.  See
-%     section~\ref{sec:extend-comp-prop} for a description.
-% \end{itemize}
+\chemformula\ offers \emph{many} possibilities to customize the output.
 
 \section{Licence and Requirements}
 \license
 
-The \chemformula{} package needs and thus loads the packages
+The \chemformula\ package needs and thus loads the packages
 \bnd{l3kernel}~\cite{bnd:l3kernel}, \pkg{xparse}, \pkg{l3keys2e} and
 \pkg{xfrac} (all three are part of the \bnd{l3packages}
 bundle~\cite{bnd:l3packages}),
 \pkg{tikz}\footnote{\CTANurl[graphics]{pgf}}~\cite{pkg:pgf},
-\pkg{amsmath}~\cite{pkg:amsmath}, \pkg{nicefrac}~\cite{pkg:nicefrac} and
+\pkg{amstext}~\cite{pkg:amstext}, \pkg{nicefrac}~\cite{pkg:nicefrac} and
 \pkg{scrlfile} (from the \KOMAScript\footnote{\CTANurl{koma-script}}
 bundle~\cite{bnd:koma-script}).
 
 \section{Setup}
 All of \chemformula's options belong to \chemmacros' module
-\module{chemformula}.  This means if you load it via \chemmacros{} or in
-addition to \chemmacros{} they can be setup with
+\module{chemformula}.  This means if you load it via \chemmacros\ or in
+addition to \chemmacros\ they can be setup with
 \begin{commands}
   \command{chemsetup}[\Oarg{chemformula}\marg{options}]
-    Set up options for \chemformula{} exclusively, or
+    Set up options for \chemformula\ exclusively, or
   \command{chemsetup}[\Marg{chemformula/\meta{option1},chemformula/\meta{option2}}]
-    Set up options for \chemformula{} together with others of \chemmacros'
+    Set up options for \chemformula\ together with others of \chemmacros'
     options.
 \end{commands}
-However, if you're using \chemformula{} as a standalone package the command
-\cs{chemsetup} is not available.  This is why \chemformula{} also has its own
+However, if you're using \chemformula\ as a standalone package the command
+\cs{chemsetup} is not available.  This is why \chemformula\ also has its own
 setup command:
 \begin{commands}
   \command{setchemformula}[\marg{options}]
-    Set up \chemformula{} when using it independently from \chemmacros.
+    Set up \chemformula\ when using it independently from \chemmacros.
 \end{commands}
 
 \section{The Basic Principle}
-\chemformula{} offers one main command.
+\chemformula\ offers one main command.
 \begin{commands}
   \command{ch}[\oarg{options}\marg{input}]
     \chemformula's main command.
@@ -354,7 +271,7 @@ A blank in the input \emph{never} is a blank in the output.  This role of the
 blank strictly holds and disregarding it can have unexpected results and even
 lead to errors.
 
-Another notable difference: \chemformula{} tries to avoid math mode whenever
+Another notable difference: \chemformula\ tries to avoid math mode whenever
 possible:
 \begin{example}[side-by-side]
   \ch{A + B ->[a] C} \par
@@ -378,7 +295,7 @@ types are described in the following sections.
 % TODO: Module überdenken, Beschreibung anpassen
 There are some options to customize the output of the \cs{ch} command.  They
 can either be applied locally using the optional argument or can be set
-globally using the setup command.  All options of \chemformula{} belong to the
+globally using the setup command.  All options of \chemformula\ belong to the
 module \module{chemformula} and can be set in different ways:
 \begin{commands}
   \command{chemsetup}[\Oarg{chemformula}\marg{options}]
@@ -461,7 +378,7 @@ The option \keyis{frac-style}{xfrac} uses the \cs*{sfrac} command of the
 \begin{example}
   \ch[frac-style=xfrac]{3/2} \ch[frac-style=xfrac]{1_1/2}
 \end{example}
-\chemformula{} defines the instance \code{chemformula-text-frac} which you can
+\chemformula\ defines the instance \code{chemformula-text-frac} which you can
 redefine to your needs.  See the \pkg{xfrac} documentation for further
 information.  The default definition is this:
 \begin{sourcecode}
@@ -499,7 +416,7 @@ stoichiometric factor and the group following after it.
 \end{example}
 
 \section{Compounds}\label{ssec:compounds}
-\chemformula{} determines compounds as the type that ``doesn't fit in anywhere
+\chemformula\ determines compounds as the type that ``doesn't fit in anywhere
 else.''  This point will become more clear when you know what the other types
 are.
 \begin{example}[side-by-side]
@@ -508,7 +425,7 @@ are.
 \end{example}
 
 \subsection{Adducts}
-\chemformula{} has two identifiers which will create adducts.
+\chemformula\ has two identifiers which will create adducts.
 \begin{commands}
   \command{ch}[\Marg{A.B}] \ch{A.B}
   \command{ch}[\Marg{A*B}] \ch{A*B}
@@ -616,16 +533,16 @@ superscript alignment.  The \chemmacros\ option \code{circled} is obeyed by
   \ch{H+ + OH- <=> H2O}
 \end{example}
 
-\chemformula{} knows the options \option{circled} and \option{circletype} also
+\chemformula\ knows the options \option{circled} and \option{circletype} also
 on its own:
 
-There are coupled with \chemmacros{} options, \ie, setting \chemmacros'
+There are coupled with \chemmacros\ options, \ie, setting \chemmacros'
 options will also set \chemformula's equivalents.  The other way around the
 options act independently: setting \chemformula's options will \emph{not} set
 \chemmacros' options.
 \begin{options}
   \keychoice{circled}{formal,\default{all},none}\Default{formal}
-    \chemformula{} uses two different kinds of charges which indicate the usage
+    \chemformula\ uses two different kinds of charges which indicate the usage
     of real ($+/-$) and formal (\fplus/\fminus) charges.  The choice
     \code{formal} distinguishes between them, choice \code{none} displays them
     all without circle, choice \code{all} circles all.
@@ -826,9 +743,9 @@ be set with the option \option{charge-hshift}.
   \ch{SO4^2-} \ch{NH4+} \ch{Na+}
 \end{example}
 
-Despite \ac{iupac}'s recommendation \chemformula{} does not make fully staggered
+Despite \ac{iupac}'s recommendation \chemformula\ does not make fully staggered
 arrangements in the default setting as I find it hard to read in some cases
-and ugly in others.  Since this is a subjective decision \chemformula{} not only
+and ugly in others.  Since this is a subjective decision \chemformula\ not only
 let's you define the absolute amount of the shift but also provides a
 possibility for full staggered arrangements.  For this you have to use
 \keyis{charge-hshift}{full}.
@@ -932,7 +849,7 @@ There are some \enquote{special type} input groups.
 The first kind are groups which consist of only one token.  They are again
 divided into two groups, \enquote{addition symbols} and \enquote{symbols}.
 
-\subsubsection{Addition Symbols}
+\subsubsection{Addition Symbols}\label{sec:addition-symbols}
 \begin{commands}
   \command{ch}[\Marg{ + } \ch{ + }]
     Creates the plus sign between compounds with space around it:\\
@@ -988,7 +905,7 @@ or one of the variants is used, \code{\meta{name}-space} and
   \ch[plus-space=4pt]{A + B}
 \end{example}
 
-\subsubsection{Symbols}
+\subsubsection{Symbols}\label{sec:symbols}
 \begin{commands}
     \command{ch}[\Marg{ v } \ch{ v }]
     Sign for precipitate: \cs{ch}\Marg{BaSO4 v} \ch{BaSO4 v}
@@ -1036,7 +953,7 @@ the spacing. That's why there is an alternative:
 \end{example}
 
 \section{Escaped Input}
-In some cases it may be desirable to prevent \chemformula{} from parsing the
+In some cases it may be desirable to prevent \chemformula\ from parsing the
 input.  This can be done in two ways.
 
 \subsection{Text}\label{ssec:text}
@@ -1046,7 +963,7 @@ be input with \verbcode+~+.
 \begin{commands}
   \command{ch}[\Marg{ "\meta{escaped text}" }]
     One of two possibilities to \emph{escape} \chemformula's parsing.
-  \command{ch}[\Marg{ \textquotesingle\meta{escaped text}\textquotesingle{} }]
+  \command{ch}[\Marg{ \textquotesingle\meta{escaped text}\textquotesingle\ }]
     The second of two possibilities to \emph{escape} \chemformula's parsing.
 \end{commands}
 \begin{example}[add-sourcecode-options={literate=}]
@@ -1159,7 +1076,7 @@ leave blanks.
 \end{example}
 % TODO: correct info about []
 
-If you leave the blanks \chemformula{} treats the groups inside the square
+If you leave the blanks \chemformula\ treats the groups inside the square
 brackets as seperated input types.  The arrow reads its arguments
 \emph{afterwards}.  As you can see the arrows \enquote{grow} with the length
 of the labels.  What stays constant is the part that protrudes the labels.  As
@@ -1221,7 +1138,7 @@ arrow:
 \end{example}
 
 If you want to have different arrow tips\sinceversion{4.7} there is an easy
-way to use existing arrow tips (as defined by \TikZ).  \chemformula{} uses
+way to use existing arrow tips (as defined by \TikZ).  \chemformula\ uses
 three different arrow tips: \code{cf}, \code{left cf} and \code{right cf}.  If
 you want them to match those of \pkg{chemfig}~\cite{pkg:chemfig} for example
 you could do:
@@ -1232,7 +1149,7 @@ you could do:
   }
 \end{sourcecode}
 \pkg{chemfig} has no equivalent of \code{right cf}.  This mechanism relies on
-\TikZ{} version~3.0.0 and the new \code{arrows.meta} library.
+\TikZ\ version~3.0.0 and the new \code{arrows.meta} library.
 
 \subsection{Modify Arrow Types}\label{sec:arrows_modify}
 The arrows are defined with the commands
@@ -1307,7 +1224,7 @@ completeness' sake the arrow tips and the \TikZ-style are also listed:
 \end{example}
 
 \subsection{Standalone Arrows}
-\chemformula{} offers\sinceversion{4.0} a command that \emph{only accepts} the
+\chemformula\ offers\sinceversion{4.0} a command that \emph{only accepts} the
 \enquote{arrow} input type:
 \begin{commands}
   \command{charrow}[\marg{type}\oarg{above}\oarg{below}]
@@ -1317,13 +1234,13 @@ This command is internally used for the arrows, too, when \cs{ch} is parsed.
 
 \section{Names}
 \subsection{Syntax}
-\chemformula{} has a built-in syntax to write text under a compound.  In a way
+\chemformula\ has a built-in syntax to write text under a compound.  In a way
 it works very similar to the arrows.
 \begin{commands}
   \command{ch}[\Marg{ !(\meta{text})( \meta{formula} ) }]
     Writes \meta{text} below \meta{formula}.
 \end{commands}
-If an exclamation mark is followed by a pair of parentheses \chemformula{} will
+If an exclamation mark is followed by a pair of parentheses \chemformula\ will
 parse it this way:
 \begin{example}
   \ch{!(ethanol)( CH2CH2OH )}
@@ -1346,7 +1263,7 @@ creating a name you only have to make sure it isn't followed by parentheses.
 \end{example}
 
 \subsection{Customization}
-\chemformula{} provides two options to customize the output of the names:
+\chemformula\ provides two options to customize the output of the names:
 \begin{options}
  \keyval{name-format}{commands}\Default{\cs*{scriptsize}\cs*{centering}}
    The format of the name.  This can be arbitrary input.
@@ -1362,7 +1279,7 @@ creating a name you only have to make sure it isn't followed by parentheses.
 \end{example}
 
 \subsection{Standalone Names}
-\chemformula{} offers a command\sinceversion{4.0} that allows the usage of the
+\chemformula\ offers a command\sinceversion{4.0} that allows the usage of the
 \enquote{name} syntax in normal text.  This is the command that a bang is
 replaced with in \chemformula's formulas, actually.  Both arguments are
 mandatory.
@@ -1373,7 +1290,7 @@ mandatory.
 \end{commands}
 
 \section{Format and Font}\label{sec:format}
-In the standard setting \chemformula{} doesn't make any default changes to the
+In the standard setting \chemformula\ doesn't make any default changes to the
 font of the formula output.  Let's take a look at a nonsense input which shows
 all features:
 \begin{example}[pre-output={\biolinumLF\libertineLF\chemsetup{chemformula/format=}}]
@@ -1466,10 +1383,10 @@ optional arguments of \verbcode+\\+ inside \cs{ch}.
   \end{align*}
 \end{example}
 
-\section{Usage with \TikZ{} or \pkg*{pgfplots} and externalization}
-Since \chemformula{} uses\sinceversion{4.1} \TikZ{} to draw reaction arrows
+\section{Usage with \TikZ\ or \pkg*{pgfplots} and externalization}
+Since \chemformula\ uses\sinceversion{4.1} \TikZ\ to draw reaction arrows
 and bonds they would be externalized, too, if you use that facility with
-\TikZ{} or \needpackage{pgfplots}~\cite{pkg:pgfplots}.  This may not be
+\TikZ\ or \needpackage{pgfplots}~\cite{pkg:pgfplots}.  This may not be
 desirable since they are very small pictures maybe containing of a single
 line.  This is why \chemformula's default behaviour is to disable
 externalization for it's bonds and arrows.  This can be turned on and off
@@ -1494,9 +1411,9 @@ If you should be using a formula that contains bonds or arrows inside of a
 \end{sourcecode}
 
 \section{Lewis Formulae}\label{sec:lewis-formulae}
-\chemformula{} offers\sinceversion{4.2} a command to typeset Lewis formulae.
+\chemformula\ offers\sinceversion{4.2} a command to typeset Lewis formulae.
 This does not mean Lewis structures!  Those can be achieved using the
-\pkg{chemfig} package~\cite{pkg:chemfig}.  \chemformula{} provides the
+\pkg{chemfig} package~\cite{pkg:chemfig}.  \chemformula\ provides the
 possibility to draw electrons as dots and pairs of dots or a line around an
 atom.
 
@@ -1577,7 +1494,7 @@ The next example shows the effect of some of the options:
 
 \section{Kröger-Vink Notation}\label{sec:kroger-vink-notation}
 
-\chemformula{} also supports the Kröger-Vink notation\sinceversion{4.5}.
+\chemformula\ also supports the Kröger-Vink notation\sinceversion{4.5}.
 \begin{options}
   \keybool{kroeger-vink}\Default{false}
     Enable the Kröger-Vink notation. As most options this can be enabled
@@ -1621,87 +1538,181 @@ There are a number of options for customizations:
     Symbol for neutral particles.
 \end{options}
 
-\end{document}
 
-\section{Further Examples}
-This section presents some examples of a possible usage.
 
-\begin{example}
-  \begin{reaction}[Synthese von Alkanen]
-    !(Synthesegas)( $n$ CO + $(2n+1)$ H2 )
-    ->[\SI{200}{\celsius}][\[CoNi\]]
-    C_{$n$}H_{$2n+2$} + $n$ H2O
-  \end{reaction}
-\end{example}
+% \section{Further Examples}
+% This section presents some examples of a possible usage.
 
-\begin{example}
-  \begin{reactions*}
-    "a)" && CH4    + Cl2 &-> CH3Cl  + HCl && "{\small Chlormethan/Methylchlorid}" \\
-    "b)" && CH3Cl  + Cl2 &-> CH2Cl2 + HCl && "{\small Dichlormethan/Methylenchlorid}" \\
-    "c)" && CH2Cl2 + Cl2 &-> CHCl3  + HCl && "{\small Trichlormethan/Chloroform}" \\
-    "d)" && CHCl3  + Cl2 &-> CCl4   + HCl && "{\small Tetrachlormethan/Tetrachlorkohlenstoff}"
-  \end{reactions*}
-\end{example}
+% \begin{example}
+%   \begin{reaction}[Synthese von Alkanen]
+%     !(Synthesegas)( $n$ CO + $(2n+1)$ H2 )
+%     ->[\SI{200}{\celsius}][\[CoNi\]]
+%     C_{$n$}H_{$2n+2$} + $n$ H2O
+%   \end{reaction}
+% \end{example}
 
-\begin{example}
-  \chemsetup[ox]{parse=false}
-  \ch{
-    "\ox{\delm,C}" -{} "\ox{\delp,M}" \qquad
-    ( <-> "\ox{\delp,C}" -{} "\ox{\delm,Br}" )
-  } \\
-  \ch[adduct-space=0pt]{X. + .Y <=> X-Y + Bindungsenergie} \\
-  \ch[name-format=\normalsize]{
-    !(\State{H}{f}\qquad)() !(\textcolor{red}{??})( CH4\gas{} ) +
-    !(\num{0})( 2 O2\gas{} )
-    ->
-    !(\num{-94.3})( CO2\gas{} ) +
-    !(\num{-57.9})( H2O\lqd{} ) +
-    !(\num{-192.1})( "\State{H}" )
-  }
-\end{example}
+% \begin{example}
+%   \begin{reactions*}
+%     "a)" && CH4    + Cl2 &-> CH3Cl  + HCl && "{\small Chlormethan/Methylchlorid}" \\
+%     "b)" && CH3Cl  + Cl2 &-> CH2Cl2 + HCl && "{\small Dichlormethan/Methylenchlorid}" \\
+%     "c)" && CH2Cl2 + Cl2 &-> CHCl3  + HCl && "{\small Trichlormethan/Chloroform}" \\
+%     "d)" && CHCl3  + Cl2 &-> CCl4   + HCl && "{\small Tetrachlormethan/Tetrachlorkohlenstoff}"
+%   \end{reactions*}
+% \end{example}
 
-\begin{example}
-  \newcommand\cstack[1]{%
-    \clap{%
-      \begin{tabular}{c}
-        #1
-      \end{tabular}
-    }%
-  }
-  \begin{reactions*}
-    CH3MgBr + "\ox*{1,Cu}" X &
-      -> "\glqq" CH3 "\ox*{1,Cu}\grqq" + MgBrX "\qquad X~$=$~Br,I,CN" \\
-    2 MeLi + CuI &
-      -> !(\cstack{Dimethylcuprat\\(Gilmann-Cuprat)})( Me2CuLi ) + Li
-  \end{reactions*}
-\end{example}
+% \begin{example}
+%   \chemsetup[ox]{parse=false}
+%   \ch{
+%     "\ox{\delm,C}" -{} "\ox{\delp,M}" \qquad
+%     ( <-> "\ox{\delp,C}" -{} "\ox{\delm,Br}" )
+%   } \\
+%   \ch[adduct-space=0pt]{X. + .Y <=> X-Y + Bindungsenergie} \\
+%   \ch[name-format=\normalsize]{
+%     !(\State{H}{f}\qquad)() !(\textcolor{red}{??})( CH4\gas{} ) +
+%     !(\num{0})( 2 O2\gas{} )
+%     ->
+%     !(\num{-94.3})( CO2\gas{} ) +
+%     !(\num{-57.9})( H2O\lqd{} ) +
+%     !(\num{-192.1})( "\State{H}" )
+%   }
+% \end{example}
 
-\begin{example}
-  % needs `chemfig'
-  \begin{reactions*}
-    H3C-CH3 + Cl2 &
-      ->[$\Delta$][$h\nu$] H3CCH2Cl + HCl & &
-      "\Enthalpy{-27.1}" \\
-    H3C-CH3 + "\Lewis{0.,Cl}" &
-      -> H3CCH2 "\Lewis{0.,\vphantom{H}}" + HCl & &
-      "\Enthalpy{-5.0}" \\
-    H3C-CH2 "\Lewis{0.,\vphantom{H}}" + Cl2 &
-      -> H3CCH2Cl + "\Lewis{0.,Cl}" & &
-      "\Enthalpy{-23.0}"
-  \end{reactions*}
-\end{example}
+% \begin{example}
+%   \newcommand\cstack[1]{%
+%     \clap{%
+%       \begin{tabular}{c}
+%         #1
+%       \end{tabular}
+%     }%
+%   }
+%   \begin{reactions*}
+%     CH3MgBr + "\ox*{1,Cu}" X &
+%       -> "\glqq" CH3 "\ox*{1,Cu}\grqq" + MgBrX "\qquad X~$=$~Br,I,CN" \\
+%     2 MeLi + CuI &
+%       -> !(\cstack{Dimethylcuprat\\(Gilmann-Cuprat)})( Me2CuLi ) + Li
+%   \end{reactions*}
+% \end{example}
 
-The following example shows how the cancelling of compounds could be
-done\footnote{Inspired by a question on TeX.SE:
-  \url{http://tex.stackexchange.com/q/30118/5049}}.
-\begin{example}
-  % needs `cancel'
-  \begin{align*}
-    \ch{\cancel{HCOOH\aq} + H2O\lqd{}  &<=> H3O^+\aq{} + \cancel{HCOO^-\aq}} \\
-    \ch{\cancel{HCOO^-\aq} + H2O\lqd{} &<=> \cancel{HCOOH\aq} + OH^-\aq}\\[-1ex]
-    \cline{1-2}
-    \ch{H2O\lqd{} + H2O\lqd{} &<=> H3O^+\aq{} + OH^-\aq}    
-  \end{align*}
-\end{example}
+% \begin{example}
+%   % needs `chemfig'
+%   \begin{reactions*}
+%     H3C-CH3 + Cl2 &
+%       ->[$\Delta$][$h\nu$] H3CCH2Cl + HCl & &
+%       "\Enthalpy{-27.1}" \\
+%     H3C-CH3 + "\Lewis{0.,Cl}" &
+%       -> H3CCH2 "\Lewis{0.,\vphantom{H}}" + HCl & &
+%       "\Enthalpy{-5.0}" \\
+%     H3C-CH2 "\Lewis{0.,\vphantom{H}}" + Cl2 &
+%       -> H3CCH2Cl + "\Lewis{0.,Cl}" & &
+%       "\Enthalpy{-23.0}"
+%   \end{reactions*}
+% \end{example}
+
+% The following example shows how the cancelling of compounds could be
+% done\footnote{Inspired by a question on TeX.SE:
+%   \url{http://tex.stackexchange.com/q/30118/5049}}.
+% \begin{example}
+%   % needs `cancel'
+%   \begin{align*}
+%     \ch{\cancel{HCOOH\aq} + H2O\lqd{}  &<=> H3O^+\aq{} + \cancel{HCOO^-\aq}} \\
+%     \ch{\cancel{HCOO^-\aq} + H2O\lqd{} &<=> \cancel{HCOOH\aq} + OH^-\aq}\\[-1ex]
+%     \cline{1-2}
+%     \ch{H2O\lqd{} + H2O\lqd{} &<=> H3O^+\aq{} + OH^-\aq}    
+%   \end{align*}
+% \end{example}
+
+\appendix
+\section{History Since Version~4.0}
+\subsection{Version 4.0}
+Since version 4.0\sinceversion{4.0}, the \chemformula\ package can be used
+independently from \chemmacros.  This means that if you say
+\begin{sourcecode}
+  \usepackage{chemformula}
+\end{sourcecode}
+then \chemmacros\ will not be loaded.  The \chemmacros\ package, however,
+\emph{will} load \chemformula.
+
+\subsection{Version 4.2}
+\begin{itemize}
+  \item New option \option{arrow-style}.
+  \item New command \cs{chlewis} that allows to add Lewis electrons to an
+    atom, see section~\ref{sec:lewis-formulae}.
+\end{itemize}
+
+\subsection{Version 4.3}
+\begin{itemize}
+  \item New option \option{stoich-print}.
+  \item New command \cs{chstoich}.
+  \item The commands \cs*{DeclareChem\meta{...}} now don't give an error any
+    more if the command already exists.  This is more consistent with \LaTeX's
+    \cs*{DeclareRobustCommand}.  For all those commands a version
+    \cs*{NewChem\meta{...}} is introduced that \emph{does} give an error if
+    the new command is already defined.
+\end{itemize}
+
+\subsection{Version 4.4}
+\begin{itemize}
+  \item A single dash \code{-} in \cs{ch} is now treated as a minus sign.
+  This is consistent with the behaviour of a \code{+}.
+\end{itemize}
+
+\subsection{Version 4.5}
+\begin{itemize}
+  \item New arrow types \arrowtype{>=<}, \arrowtype{>=<<}, \arrowtype{>>=<}
+    and \arrowtype{<==>}.
+  \item Internal changes to \cs{ch} allow usage of optional arguments of
+    \cs*{\textbackslash} and \cs*{label} in \chemmacros' \env*{reactions}
+    environment.
+\end{itemize}
+
+\subsection{Version 4.6}
+\begin{itemize}
+  \item New options \option{circled} and \option{circletype}.  this allows to
+    set the behaviour as described on \chemmacros' manual for a specific usage
+    of \cs{ch}.
+\end{itemize}
+
+\subsection{Version 4.7}
+\begin{itemize}
+  \item Dependency change: \chemformula\ now requires the \TikZ\ library
+    \code{arrows.meta} instead of the library \code{arrows}.  This requires
+    \TikZ\ version~3.0.0.
+\end{itemize}
+
+\subsection{Version 4.8}
+\begin{itemize}
+  \item The \chemformula\ package now is no longer part of the \chemmacros\
+    bundle but is distributed as a package of it's own.
+\end{itemize}
+
+\subsection{Version 4.9}
+\begin{itemize}
+  \item New options \option{minus-space} and \option{minus-penalty} equivalent
+    to the existing \option{plus-space} and \option{plus-penalty}
+  \item New options \option{plus-output-symbol} and
+    \option{minus-output-symbol} for customizing the plus and minus signs in
+    the output.
+\end{itemize}
+
+\subsection{Version 4.10}
+\begin{itemize}
+  \item new macros \cs{NewChemCompoundProperty},
+    \cs{RenewChemCompoundProperty}, \\
+    \cs{DeclareChemCompoundProperty} and \cs{RemoveChemCompoundProperty}.  See
+    section~\ref{sec:extend-comp-prop} for a description.
+\end{itemize}
+
+\subsection{Version 4.11}
+\begin{itemize}
+  \item New macro set \cs{NewChemAdditionSymbol}, see
+    section~\ref{sec:addition-symbols}  and new macro set \cs{NewChemSymbol},
+    see section~\ref{sec:symbols}.
+\end{itemize}
+
+\subsection{Version 4.12}
+\begin{itemize}
+  \item Change package requirement: \chemformula\ now not loads complete
+    \pkg{amsmath} but only \pkg{amstext}.
+\end{itemize}
 
 \end{document}

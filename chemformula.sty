@@ -26,10 +26,10 @@
 %
 % The Current Maintainer of this work is Clemens Niederberger.
 % --------------------------------------------------------------------------
-\RequirePackage{ expl3 , xparse , l3keys2e , tikz , amsmath , xfrac , nicefrac , scrlfile }
+\RequirePackage{ expl3 , xparse , l3keys2e , tikz , amstext , xfrac , nicefrac, scrlfile }
 \usetikzlibrary{arrows.meta}
-\def\chemformula@version{4.11}
-\def\chemformula@date{2015/06/30}
+\def\chemformula@version{4.12}
+\def\chemformula@date{2015/08/12}
 
 \ProvidesExplPackage
   {chemformula}
@@ -132,24 +132,24 @@
 
 % --------------------------------------------------------------------------
 % package options:
-\bool_new:N \l__chemformula_strict_bool
-\keys_define:nn { chemmacros / chemformula }
-  {
-    strict .bool_set:N = \l__chemformula_strict_bool ,
-    strict .default:n  = true
-  }
+% \bool_new:N \l__chemformula_strict_bool
+% \keys_define:nn { chemmacros / chemformula }
+%   {
+%     strict .bool_set:N = \l__chemformula_strict_bool ,
+%     strict .default:n  = true
+%   }
 
-\ProcessKeysOptions{ chemmacros / chemformula }
+% \ProcessKeysOptions{ chemmacros / chemformula }
 
-\AtBeginDocument
-  {
-    \@ifpackageloaded{ chemmacros }
-      {
-        \bool_if:NT \l_chemmacros_strict_bool
-          { \bool_set_true:N \l__chemformula_strict_bool }
-      }
-      {}
-  }
+% \AtBeginDocument
+%   {
+%     \@ifpackageloaded{ chemmacros }
+%       {
+%         \bool_if:NT \l_chemmacros_strict_bool
+%           { \bool_set_true:N \l__chemformula_strict_bool }
+%       }
+%       {}
+%   }
 
 % --------------------------------------------------------------------------
 % VARIABLES
@@ -173,9 +173,9 @@
 % this one is officially used to detect wether we're in \ch or not:
 \bool_new:N      \l_chemformula_inside_ch_bool
 % those are private:
-\bool_new:N      \l__chemformula_formal_charges_bool
-\bool_new:N      \l__chemformula_formal_chem_bool
-\bool_set_true:N \l__chemformula_formal_chem_bool
+\bool_new:N      \l_chemformula_formal_charges_bool
+\bool_new:N      \l_chemformula_formal_chem_bool
+\bool_set_true:N \l_chemformula_formal_chem_bool
 \bool_new:N      \l__chemformula_options_bool
 \bool_new:N      \l__chemformula_is_option_bool
 \bool_new:N      \l__chemformula_stoich_bool
@@ -412,7 +412,7 @@
 % prevent externalisation of tikz parts of the formulae:
 \AtBeginDocument { \providecommand \tikzexternaldisable {} }
 
-\keys_define:nn { chemmacros / chemformula }
+\keys_define:nn { chemformula }
   {
     tikz-external-disable .bool_set:N  =
       \l__chemformula_tikzexternaldisable_bool
@@ -474,53 +474,6 @@
       }
   }
 
-\AtBeginDocument{
-  \@ifpackageloaded { chemmacros }
-    {
-      \bool_if:nT
-        { \l__chemmacros_circled_bool && !\l__chemmacros_circled_formal_bool }
-        { \bool_set_true:N \l__chemformula_formal_charges_bool }
-      \bool_if:NF \l__chemmacros_circled_chem_bool
-        { \bool_set_false:N \l__chemformula_formal_chem_bool }
-      \keys_define:nn { chemmacros / option }
-        {
-          circletype         .choice: ,
-          circletype / math  .code:n  =
-            {
-              \bool_set_false:N \l__chemmacros_circled_chem_bool
-              \bool_set_false:N \l__chemformula_formal_chem_bool
-            } ,
-          circletype / chem  .code:n  =
-            {
-              \bool_set_true:N \l__chemmacros_circled_chem_bool
-              \bool_set_true:N \l__chemformula_formal_chem_bool
-            } ,
-          circletype         .default:n = chem ,
-          circled            .choice: ,
-          circled / none     .code:n =
-            {
-              \bool_set_false:N \l__chemmacros_circled_bool
-              \bool_set_false:N \l__chemmacros_circled_formal_bool
-              \bool_set_false:N \l__chemformula_formal_charges_bool
-            } ,
-          circled / formal   .code:n =
-            {
-              \bool_set_true:N \l__chemmacros_circled_bool
-              \bool_set_true:N \l__chemmacros_circled_formal_bool
-              \bool_set_false:N \l__chemformula_formal_charges_bool
-            } ,
-          circled / all      .code:n =
-            {
-              \bool_set_true:N \l__chemmacros_circled_bool
-              \bool_set_false:N \l__chemmacros_circled_formal_bool
-              \bool_set_true:N \l__chemformula_formal_charges_bool
-            } ,
-          circled            .default:n  = all
-        }
-    }
-    { }
-}
-
 \cs_new_protected:Npn \chemformula_plain_plus:
   {
     \bool_if:NTF \l__chemformula_charge_style_math_bool
@@ -530,9 +483,9 @@
 
 \cs_new_protected:Npn \chemformula_plus:
   {
-    \bool_if:NTF \l__chemformula_formal_charges_bool
+    \bool_if:NTF \l_chemformula_formal_charges_bool
       {
-        \bool_if:NTF \l__chemformula_formal_chem_bool
+        \bool_if:NTF \l_chemformula_formal_chem_bool
           { \chemformula_fplus: }
           {
             \mode_if_math:TF
@@ -552,9 +505,9 @@
 
 \cs_new_protected:Npn \chemformula_minus:
   {
-     \bool_if:NTF \l__chemformula_formal_charges_bool
+     \bool_if:NTF \l_chemformula_formal_charges_bool
       {
-        \bool_if:NTF \l__chemformula_formal_chem_bool
+        \bool_if:NTF \l_chemformula_formal_chem_bool
           { \chemformula_fminus: }
           {
             \mode_if_math:TF
@@ -601,7 +554,7 @@
     \skip_horizontal:N \l__chemformula_radical_space_dim
   }
 
-\keys_define:nn { chemmacros / chemformula }
+\keys_define:nn {chemformula}
   {
     % TikZ style:
     radical-style  .tl_set:N  = \l__chemformula_radical_style_tl ,
@@ -662,7 +615,7 @@
       { ' }
   }
 
-\keys_define:nn { chemmacros / chemformula }
+\keys_define:nn {chemformula}
   {
     kroeger-vink       .bool_set:N =
       \l__chemformula_kroegervink_bool ,
@@ -1032,7 +985,7 @@
 
 % --------------------------------------------------------------------------
 % arrow customization
-\keys_define:nn { chemmacros / chemformula }
+\keys_define:nn {chemformula}
   {
     arrow-offset     .tl_set:N  = \l__chemformula_arrow_offset_tl ,
     arrow-min-length .dim_set:N = \l__chemformula_arrow_minimum_length_dim ,
@@ -1060,7 +1013,7 @@
       \tl_if_blank:VF \g__chemformula_options_tl
         {
           \keys_set:nV
-            { chemmacros / chemformula }
+            {chemformula}
             \g__chemformula_options_tl
         }
       \seq_map_function:NN
@@ -1196,7 +1149,7 @@
 \cs_new_protected:Npn \chemformula_chcpd:nn #1#2
   {
     \group_begin:
-      \keys_set:nn { chemmacros / chemformula } {#1}
+      \keys_set:nn {chemformula} {#1}
       \__chemformula_save_catcodes:
       \__chemformula_sanitize:Nn
         \l__chemformula_chemformula_tmpa_tl
@@ -1550,51 +1503,38 @@
 
 \NewChemBond{double}
   {
-    \draw (chemformula-bond-start) ++ (0pt,.0858em) coordinate (double-start-up) ;
-    \draw (chemformula-bond-end) ++ (0pt,.0858em) coordinate (double-end-up) ;
-    \draw (chemformula-bond-start) ++ (0pt,-.0858em) coordinate (double-start-down) ;
-    \draw (chemformula-bond-end) ++ (0pt,-.0858em) coordinate (double-end-down) ;
-    \draw[chembond]
-      (double-start-down) -- (double-end-down)
-      (double-start-up) -- (double-end-up) ;
+    \foreach \i in {-.0858em,.0858em}{
+      \draw[chembond]
+        ([yshift=\i]chemformula-bond-start) -- ([yshift=\i]chemformula-bond-end) ;
+    }
   }
 \NewChemBondAlias{db}{double}
 
 \NewChemBond{semidouble}
   {
-    \draw (chemformula-bond-start) ++ (0pt,.0858em) coordinate (double-start-up) ;
-    \draw (chemformula-bond-end) ++ (0pt,.0858em) coordinate (double-end-up) ;
-    \draw (chemformula-bond-start) ++ (0pt,-.0858em) coordinate (double-start-down) ;
-    \draw (chemformula-bond-end) ++ (0pt,-.0858em) coordinate (double-end-down) ;
-    \draw[chembond] (double-start-down) -- (double-end-down) ;
-    \draw[chembond,densely~dotted] (double-start-up) -- (double-end-up) ;
+    \foreach \i/\style in {-.0858em/,.0858em/densely~dotted}{
+      \draw[chembond,\style]
+        ([yshift=\i]chemformula-bond-start) -- ([yshift=\i]chemformula-bond-end) ;
+    }
   }
 
 \NewChemBondAlias{deloc}{semidouble}
 
 \NewChemBond{triple}
   {
-    \draw (chemformula-bond-start) ++ (0pt,.1287em) coordinate (triple-start-up) ;
-    \draw (chemformula-bond-end) ++ (0pt,.1287em) coordinate (triple-end-up) ;
-    \draw (chemformula-bond-start) ++ (0pt,-.1287em) coordinate (triple-start-down) ;
-    \draw (chemformula-bond-end) ++ (0pt,-.1287em) coordinate (triple-end-down) ;
-    \draw[chembond]
-      (triple-start-down) -- (triple-end-down)
-      (chemformula-bond-start) -- (chemformula-bond-end)
-      (triple-start-up) -- (triple-end-up) ;
+    \foreach \i in {-.1287em,0em,.1287em}{
+      \draw[chembond]
+        ([yshift=\i]chemformula-bond-start) -- ([yshift=\i]chemformula-bond-end) ;
+    }
   }
 \NewChemBondAlias{tp}{triple}
 
 \NewChemBond{semitriple}
   {
-    \draw (chemformula-bond-start) ++ (0pt,.1287em) coordinate (triple-start-up) ;
-    \draw (chemformula-bond-end) ++ (0pt,.1287em) coordinate (triple-end-up) ;
-    \draw (chemformula-bond-start) ++ (0pt,-.1287em) coordinate (triple-start-down) ;
-    \draw (chemformula-bond-end) ++ (0pt,-.1287em) coordinate (triple-end-down) ;
-    \draw[chembond]
-      (triple-start-down) -- (triple-end-down)
-      (chemformula-bond-start) -- (chemformula-bond-end) ;
-    \draw[chembond,densely~dotted] (triple-start-up) -- (triple-end-up) ;
+    \foreach \i/\style in {-.1287em/,0em/,.1287em/densely~dotted}{
+      \draw[chembond,\style]
+        ([yshift=\i]chemformula-bond-start) -- ([yshift=\i]chemformula-bond-end) ;
+    }
   }
 \NewChemBondAlias{tdeloc}{semitriple}
 
@@ -2158,7 +2098,7 @@
               {
                 \group_begin:
                   \keys_set:nV
-                    { chemmacros / chemformula }
+                    {chemformula}
                     \l__chemformula_internal_options_tl
               }
           }
@@ -2370,7 +2310,7 @@
 
 % --------------------------------------------------------------------------
 % input "and" sign
-\prop_new:N \l__chemmacros_addition_symbol_prop
+\prop_new:N \l__chemformula_addition_symbol_prop
 \skip_new:N \l__chemformula_additions_symbol_space_skip
 \tl_new:N \l__chemformula_additions_symbol_penalty_tl
 
@@ -2384,9 +2324,9 @@
 % #1: name
 % #2: input symbol
 % #3: output symbol
-\cs_new_protected:Npn \chemmacros_new_addition_symbol:nnn #1#2#3
+\cs_new_protected:Npn \chemformula_new_addition_symbol:nnn #1#2#3
   {
-    \prop_put:Nnn \l__chemmacros_addition_symbol_prop {#1} {#2}
+    \prop_put:Nnn \l__chemformula_addition_symbol_prop {#1} {#2}
     \skip_zero_new:c {l__chemformula_#1_space_skip}
     \skip_set:cV     {l__chemformula_#1_space_skip}
       \l__chemformula_additions_symbol_space_skip
@@ -2395,7 +2335,7 @@
       \l__chemformula_additions_symbol_penalty_tl
     \tl_clear_new:c  {l__chemformula_#1_output_tl}
     \tl_set:cn       {l__chemformula_#1_output_tl} {#3}
-    \keys_define:nn {chemmacros/chemformula}
+    \keys_define:nn {chemformula}
       {
         #1-space         .skip_set:c = {l__chemformula_#1_space_skip} ,
         #1-penalty       .tl_set:c   = {l__chemformula_#1_penalty_tl} ,
@@ -2416,7 +2356,7 @@
 % #1: name
 \cs_new_protected:Npn \chemformula_input_addition:n #1
   {
-    \prop_map_inline:Nn \l__chemmacros_addition_symbol_prop
+    \prop_map_inline:Nn \l__chemformula_addition_symbol_prop
       {
         \str_if_eq:nnT {#1} {##2}
           {
@@ -2438,7 +2378,7 @@
 \prg_new_protected_conditional:Npnn \chemformula_is_addition_symbol_input:n #1 {T,F,TF}
   {
     \bool_set_false:N \l__chemformula_tmpa_bool
-    \prop_map_inline:Nn \l__chemmacros_addition_symbol_prop
+    \prop_map_inline:Nn \l__chemformula_addition_symbol_prop
       {
         \str_if_eq:nnT {#1} {##2}
           {
@@ -2453,7 +2393,7 @@
 
 \prg_new_conditional:Npnn \chemformula_is_addition_symbol_name:n #1 {T,F,TF}
   {
-    \prop_if_in:NnTF \l__chemmacros_addition_symbol_prop {#1}
+    \prop_if_in:NnTF \l__chemformula_addition_symbol_prop {#1}
       { \prg_return_true: }
       { \prg_return_false: }
   }
@@ -2464,7 +2404,7 @@
       { \msg_error:nnnn {chemformula} {new-addition-symbol} {#1} {#2} }
     \chemformula_is_addition_symbol_input:nT {#2}
       { \msg_error:nnnn {chemformula} {new-addition-symbol} {#1} {#2} }
-    \chemmacros_new_addition_symbol:nnn {#1} {#2} {#3}
+    \chemformula_new_addition_symbol:nnn {#1} {#2} {#3}
   }
 
 \NewDocumentCommand \RenewChemAdditionSymbol {mmm}
@@ -2473,11 +2413,11 @@
       { \msg_error:nnnn {chemformula} {renew-addition-symbol} {#1} {#2} }
     \chemformula_is_addition_symbol_input:nF {#2}
       { \msg_error:nnnn {chemformula} {renew-addition-symbol} {#1} {#2} }
-    \chemmacros_new_addition_symbol:nnn {#1} {#2} {#3}
+    \chemformula_new_addition_symbol:nnn {#1} {#2} {#3}
   }
 
 \NewDocumentCommand \DeclareChemAdditionSymbol {mmm}
-  { \chemmacros_new_addition_symbol:nnn {#1} {#2} {#3} }
+  { \chemformula_new_addition_symbol:nnn {#1} {#2} {#3} }
 
 % default addition symbols:
 \NewChemAdditionSymbol {plus}  {+} {+}
@@ -2485,11 +2425,11 @@
 
 % --------------------------------------------------------------------------
 % input escaping gas and precipitate
-\prop_new:N \l__chemmacros_symbols_prop
+\prop_new:N \l__chemformula_symbols_prop
 
 \cs_new_protected:Npn \chemformula_input_symbol:n #1
   {
-    \prop_map_inline:Nn \l__chemmacros_symbols_prop
+    \prop_map_inline:Nn \l__chemformula_symbols_prop
       {
         \str_if_eq:nnT {#1} {##1}
           {
@@ -2501,8 +2441,8 @@
   }
 \cs_generate_variant:Nn \str_if_eq:nnT {V}
 
-\cs_new_protected:Npn \chemmacros_new_symbol:nn #1#2
-  { \prop_put:Nnn \l__chemmacros_symbols_prop {#1} {#2} }
+\cs_new_protected:Npn \chemformula_new_symbol:nn #1#2
+  { \prop_put:Nnn \l__chemformula_symbols_prop {#1} {#2} }
   
 \cs_new_protected:Npn \__chemformula_detect_symbols:n #1
   {
@@ -2513,7 +2453,7 @@
 
 \prg_new_conditional:Npnn \chemformula_is_symbol:n #1 {T,F,TF}
   {
-    \prop_if_in:NnTF \l__chemmacros_symbols_prop {#1}
+    \prop_if_in:NnTF \l__chemformula_symbols_prop {#1}
       { \prg_return_true: }
       { \prg_return_false: }
   }
@@ -2522,18 +2462,18 @@
   {
     \chemformula_is_symbol:nTF {#1}
       { \msg_error:nnn {chemformula} {new-symbol} {#1} }
-      { \chemmacros_new_symbol:nn {#1} {#2} }
+      { \chemformula_new_symbol:nn {#1} {#2} }
   }
 
 \NewDocumentCommand \RenewChemSymbol {mm}
   {
     \chemformula_is_symbol:nTF {#1}
-      { \chemmacros_new_symbol:nn {#1} {#2} }
+      { \chemformula_new_symbol:nn {#1} {#2} }
       { \msg_error:nnn {chemformula} {renew-symbol} {#1} }
   }
 
 \NewDocumentCommand \DeclareChemSymbol {mm}
-  { \chemmacros_new_symbol:nn {#1} {#2} }
+  { \chemformula_new_symbol:nn {#1} {#2} }
   
 \NewChemSymbol {v} {$\downarrow$}
 \NewChemSymbol {^} {$\uparrow$}
@@ -2720,21 +2660,21 @@
 
 % --------------------------------------------------------------------------
 % customization of output other than arrows
-\keys_define:nn { chemmacros / chemformula }
+\keys_define:nn {chemformula}
   {
     circled            .choice: ,
     circled / none     .code:n =
-      { \bool_set_false:N \l__chemformula_formal_charges_bool } ,
+      { \bool_set_false:N \l_chemformula_formal_charges_bool } ,
     circled / formal   .code:n =
-      { \bool_set_false:N \l__chemformula_formal_charges_bool } ,
+      { \bool_set_false:N \l_chemformula_formal_charges_bool } ,
     circled / all      .code:n =
-      { \bool_set_true:N \l__chemformula_formal_charges_bool  } ,
+      { \bool_set_true:N \l_chemformula_formal_charges_bool  } ,
     circled            .default:n  = all ,
     circletype         .choice: ,
     circletype / math  .code:n  =
-      { \bool_set_false:N \l__chemformula_formal_chem_bool } ,
+      { \bool_set_false:N \l_chemformula_formal_chem_bool } ,
     circletype / chem  .code:n  =
-      { \bool_set_true:N \l__chemformula_formal_chem_bool } ,
+      { \bool_set_true:N \l_chemformula_formal_chem_bool } ,
     circletype         .default:n = chem ,
     charge-hshift         .code:n    =
       \tl_if_eq:nnTF {#1} { full }
@@ -2824,7 +2764,7 @@
 % --------------------------------------------------------------------------
 % \chlewis[opions]{el spec}{atom}
 
-\keys_define:nn { chemmacros / chemformula }
+\keys_define:nn {chemformula}
   {
     lewis-default     .tl_set:N  = \l__chemformula_elspec_default_type_tl ,
     lewis-distance    .dim_set:N = \l__chemformula_elspec_pair_distance_dim ,
@@ -2839,9 +2779,9 @@
 \cs_new_protected:Npn \chemformula_lewis:nnn #1#2#3
   {
     \group_begin:
-      \keys_set:nn { chemmacros / chemformula } {#1}
+      \keys_set:nn {chemformula} {#1}
       \int_gincr:N \g__chemformula_lewis_int
-      \chemformula_get_lewis_sequence:n {#2}
+      \chemformula_get_lewis_sequence:Nn \l__chemformula_tmpa_seq {#2}
       \chemformula_tikz:nn { baseline }
         {
           \chemformula_node:nxn { anchor=base , inner~sep=0pt }
@@ -2857,16 +2797,16 @@
     \group_end:
   }
 
-\cs_new_protected:Npn \chemformula_get_lewis_sequence:n #1
+\cs_new_protected:Npn \chemformula_get_lewis_sequence:Nn #1#2
   {
-    \tl_set:Nn \l__chemformula_tmpa_tl { #1  }
+    \tl_set:Nn \l__chemformula_tmpa_tl {#2}
     \tl_replace_all:Nnn \l__chemformula_tmpa_tl { : } { \scan_stop: : , }
     \tl_replace_all:NVn \l__chemformula_tmpa_tl \c_chemformula_colon_tl
       { \scan_stop: : , }
     \tl_replace_all:Nnn \l__chemformula_tmpa_tl { . } { \scan_stop: . , }
     \tl_replace_all:Nnn \l__chemformula_tmpa_tl { | } { \scan_stop: | , }
     \tl_replace_all:Nnn \l__chemformula_tmpa_tl { o } { \scan_stop: o , }
-    \seq_set_split:NnV \l__chemformula_tmpa_seq { , } \l__chemformula_tmpa_tl
+    \seq_set_split:NnV #1 { , } \l__chemformula_tmpa_tl
   }
 \cs_generate_variant:Nn \tl_replace_all:Nnn { NV }
 
@@ -3061,7 +3001,7 @@
 % --------------------------------------------------------------------------
 
 \NewDocumentCommand \setchemformula { m }
-  { \keys_set:nn { chemmacros / chemformula } {#1} }
+  { \keys_set:nn {chemformula} {#1} }
 
 \setchemformula{
   bond-style  = {} ,
@@ -3249,6 +3189,10 @@ VERSION HISTORY
                              improvement
                            - \NewChemAdditionSymbol
                            - \NewChemSymbol
+2015/08/12 - version 4.12  - remove chemmacros' `circletype' and `circled'
+                             options. They really belong to chemmacros
+                           - change requirement amsmath -> amstext
+                           - shorten definition of double and triple bonds
 
 % --------------------------------------------------------------------------
 % TODO
