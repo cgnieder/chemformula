@@ -28,8 +28,8 @@
 % --------------------------------------------------------------------------
 \RequirePackage{ expl3 , xparse , l3keys2e , tikz , amstext , xfrac , nicefrac, scrlfile }
 \usetikzlibrary{arrows.meta}
-\def\chemformula@version{4.12}
-\def\chemformula@date{2015/08/12}
+\def\chemformula@version{4.12a}
+\def\chemformula@date{2015/08/19}
 
 \ProvidesExplPackage
   {chemformula}
@@ -74,6 +74,20 @@
     exist.
   }
 
+\msg_new:nnn {chemformula} {new-compound-property}
+  {
+    You've~ tried~ to~ define~ the~ compound~ property~ `#1'~ with~
+    \token_to_str:N \NewChemCompoundProperty \c_space_tl but~ a~ property~
+    `#1'~ already~ exists.~ Choose~ another~ symbol.
+  }
+
+\msg_new:nnn {chemformula} {renew-compound-property}
+  {
+    You've~ tried~ to~ redefine~ the~ compound~ property~ `#1'~ with~
+    \token_to_str:N \RenewChemCompoundProperty \c_space_tl but~ a~ property~
+    `#1'~ doesn't~ seem~ to~ exist.
+  }
+  
 \msg_new:nnn {chemformula} {new-addition-symbol}
   {
     You've~ tried~ to~ define~ the~ addition~ symbol~ `#1'~ (input~ symbol:~
@@ -118,8 +132,41 @@
       }
   }
 
+% #1: deprecated macro
+% #2: replacement macro
+% #3: code
 \NewDocumentCommand \DeprecatedFormulaCommand { mmm }
   { \chemformula_define_deprecated:NNn #1 #2 {#3} }
+
+\cs_new_protected:Npn \chemformula_new_macroset:nnn #1#2#3
+  {
+    \exp_args:Nc \NewDocumentCommand {NewChem#1} {#2}
+      {
+        \cs_if_free:NTF ##1
+          { #3 }
+          { \msg_error:nnn {chemformula} {new-#1} {##1} }
+      }
+    \exp_args:Nc \NewDocumentCommand {RenewChem#1} {#2}
+      {
+        \cs_if_free:NTF ##1
+          { \msg_error:nnn {chemformula} {renew-#1} {##1} }
+          { #3 }
+      }
+    \exp_args:Nc \NewDocumentCommand {DeclareChem#1} {#2} {#3}
+    \exp_args:Nc \NewDocumentCommand {ProvideChem#1} {#2}
+      { \cs_if_free:NT ##1 { #3 } }
+    \msg_new:nnn {chemformula} {new-#1}
+      {
+        You've~ tried~ to~ define~ a~ #1~ with~ \token_to_str:N
+        \NewChem #1 ,~ but~ the~ command~ sequence~ \token_to_str:N ##1
+        \c_space_tl already~ exists.~ Please~ choose~ another~ name.
+      }
+    \msg_new:nnn {chemformula} {renew-#1}
+      {
+        You've~ tried~ to~ renew~ the~ #1~ \token_to_str:N ##1 ,~ but~
+        it~ doesn't~ exist.
+      }
+  }
 
 % --------------------------------------------------------------------------
 % variants of kernel functions:
@@ -129,27 +176,6 @@
 \cs_generate_variant:Nn \prop_get:Nn       { NV }
 \cs_generate_variant:Nn \tl_set_rescan:Nnn { NnV }
 \cs_generate_variant:Nn \dim_set:Nn        { NV }
-
-% --------------------------------------------------------------------------
-% package options:
-% \bool_new:N \l__chemformula_strict_bool
-% \keys_define:nn { chemmacros / chemformula }
-%   {
-%     strict .bool_set:N = \l__chemformula_strict_bool ,
-%     strict .default:n  = true
-%   }
-
-% \ProcessKeysOptions{ chemmacros / chemformula }
-
-% \AtBeginDocument
-%   {
-%     \@ifpackageloaded{ chemmacros }
-%       {
-%         \bool_if:NT \l_chemmacros_strict_bool
-%           { \bool_set_true:N \l__chemformula_strict_bool }
-%       }
-%       {}
-%   }
 
 % --------------------------------------------------------------------------
 % VARIABLES
@@ -481,18 +507,21 @@
       { \mode_if_math:TF { \text { + } } { + } }
   }
 
+\cs_new_protected:Npn \chemformula_formal_plus:
+  {
+    \bool_if:NTF \l_chemformula_formal_chem_bool
+      { \chemformula_fplus: }
+      {
+        \mode_if_math:TF
+          { \oplus }
+          { \c_math_toggle_token \oplus \c_math_toggle_token }
+      }
+  }
+
 \cs_new_protected:Npn \chemformula_plus:
   {
     \bool_if:NTF \l_chemformula_formal_charges_bool
-      {
-        \bool_if:NTF \l_chemformula_formal_chem_bool
-          { \chemformula_fplus: }
-          {
-            \mode_if_math:TF
-              { \oplus }
-              { \c_math_toggle_token \oplus \c_math_toggle_token }
-          }
-      }
+      { \chemformula_formal_plus: }
       { \chemformula_plain_plus: }
   }
 
@@ -503,18 +532,21 @@
       { \mode_if_math:TF { \text { \textendash } } { \textendash } }
   }
 
+\cs_new_protected:Npn \chemformula_formal_minus:
+  {
+    \bool_if:NTF \l_chemformula_formal_chem_bool
+      { \chemformula_fminus: }
+      {
+        \mode_if_math:TF
+          { \ominus }
+          { \c_math_toggle_token \ominus \c_math_toggle_token }
+      }
+  }
+  
 \cs_new_protected:Npn \chemformula_minus:
   {
      \bool_if:NTF \l_chemformula_formal_charges_bool
-      {
-        \bool_if:NTF \l_chemformula_formal_chem_bool
-          { \chemformula_fminus: }
-          {
-            \mode_if_math:TF
-              { \ominus }
-              { \c_math_toggle_token \ominus \c_math_toggle_token }
-          }
-      }
+      { \chemformula_formal_minus: }
       { \chemformula_plain_minus: }
   }
 
@@ -890,6 +922,16 @@
       { \msg_error:nnn {chemformula} { renew-arrow } {#1} }
   }
 
+\NewDocumentCommand \ProvideChemArrow { mm }
+  {
+    \prop_if_in:NnF \l__chemformula_arrows_code_prop {#1}
+      {
+        % store type in the sequence and code in the property list
+        \seq_put_right:Nn \l__chemformula_arrows_type_seq {#1}
+        \prop_put:Nnn \l__chemformula_arrows_code_prop {#1} {#2}
+      }
+  }
+  
 \NewDocumentCommand \ShowChemArrow { m }
   {
     \prop_get:NnN \l__chemformula_arrows_code_prop {#1} \l__chemformula_tmpa_tl
@@ -1248,14 +1290,22 @@
 % parsing input
 % compounds:
 \cs_new_protected:Npn \chemformula_new_compound_property:nn #1#2
-  { \prop_put_if_new:Nnn \l__chemformula_cmpd_prop {#1} {#2} }
-
-\cs_new_protected:Npn \chemformula_renew_compound_property:nn #1#2
   {
-    \prop_if_in:NnT \l__chemformula_cmpd_prop {#1}
+    \prop_if_in:NnTF \l__chemformula_cmpd_prop {#1}
+      { \msg_error:nnn {chemformula} {new-compound-property} {#1} }
       { \prop_put:Nnn \l__chemformula_cmpd_prop {#1} {#2} }
   }
+  
+\cs_new_protected:Npn \chemformula_renew_compound_property:nn #1#2
+  {
+    \prop_if_in:NnTF \l__chemformula_cmpd_prop {#1}
+      { \prop_put:Nnn \l__chemformula_cmpd_prop {#1} {#2} }
+      { \msg_error:nnn {chemformula} {renew-compound-property} {#1} }
+  }
 
+\cs_new_protected:Npn \chemformula_provide_compound_property:nn #1#2
+  { \prop_put_if_new:Nnn \l__chemformula_cmpd_prop {#1} {#2} }
+  
 \cs_new_protected:Npn \chemformula_declare_compound_property:nn #1#2
   { \prop_put:Nnn \l__chemformula_cmpd_prop {#1} {#2} }
 
@@ -1268,6 +1318,9 @@
 \NewDocumentCommand \RenewChemCompoundProperty { mm }
   { \chemformula_renew_compound_property:nn {#1} {#2} }
 
+\NewDocumentCommand \ProvideChemCompoundProperty { mm }
+  { \chemformula_provide_compound_property:nn {#1} {#2} }
+  
 \NewDocumentCommand \DeclareChemCompoundProperty { mm }
   { \chemformula_declare_compound_property:nn {#1} {#2} }
 
@@ -1401,7 +1454,7 @@
           \draw (chemformula-bond-start) ++(\l__chemformula_bond_dim ,0pt)
             coordinate (chemformula-bond-end) ;
           \tl_if_blank:nTF {#1}
-            { \__chemformula_bond_draw:n { single } }
+            { \__chemformula_bond_draw:n {single} }
             { \__chemformula_bond_draw:n {#1} }
         }
     \group_end:
@@ -1429,6 +1482,12 @@
   {
     \cs_if_exist:cTF { chemformula_bond_type_#1: }
       { \msg_error:nnn {chemformula} {new-bond} {#1} }
+      { \chemformula_declare_bond:nn {#1} {#2} }
+  }
+
+\cs_new_protected:Npn \chemformula_provide_bond:nn #1#2
+  {
+    \cs_if_exist:cF { chemformula_bond_type_#1: }
       { \chemformula_declare_bond:nn {#1} {#2} }
   }
 
@@ -1473,6 +1532,9 @@
 \NewDocumentCommand \NewChemBond { mm }
   { \chemformula_new_bond:nn {#1} {#2} }
 
+\NewDocumentCommand \ProvideChemBond { mm }
+  { \chemformula_provide_bond:nn {#1} {#2} }
+  
 \NewDocumentCommand \DeclareChemBond { mm }
   { \chemformula_declare_bond:nn {#1} {#2} }
 
@@ -2407,6 +2469,15 @@
     \chemformula_new_addition_symbol:nnn {#1} {#2} {#3}
   }
 
+\NewDocumentCommand \ProvideChemAdditionSymbol {mmm}
+  {
+    \chemformula_is_addition_symbol_name:nF {#1}
+      {
+        \chemformula_is_addition_symbol_input:nF {#2}
+          { \chemformula_new_addition_symbol:nnn {#1} {#2} {#3} }
+      }
+  }
+  
 \NewDocumentCommand \RenewChemAdditionSymbol {mmm}
   {
     \chemformula_is_addition_symbol_name:nF {#1}
@@ -2465,6 +2536,12 @@
       { \chemformula_new_symbol:nn {#1} {#2} }
   }
 
+\NewDocumentCommand \ProvideChemSymbol {mm}
+  {
+    \chemformula_is_symbol:nF {#1}
+      { \chemformula_new_symbol:nn {#1} {#2} }
+  }
+  
 \NewDocumentCommand \RenewChemSymbol {mm}
   {
     \chemformula_is_symbol:nTF {#1}
@@ -3193,6 +3270,10 @@ VERSION HISTORY
                              options. They really belong to chemmacros
                            - change requirement amsmath -> amstext
                            - shorten definition of double and triple bonds
+2015/08/29 - version 4.12a - \chemformula_formal_plus: ,
+                             \chemformula_formal_minus:
+                             \ProvideChem... equivalents to all \NewChem...
+                             macros 
 
 % --------------------------------------------------------------------------
 % TODO

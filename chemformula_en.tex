@@ -93,10 +93,8 @@
   accsupp   = IUPAC
 }
 
-\chemsetup{
-  option/synchronize ,
-  chemformula/format = \libertineLF
-}
+\chemsetup{ option/synchronize }
+\setchemformula{ format = \libertineLF }
 
 \sisetup{
   detect-mode=false,
@@ -633,6 +631,9 @@ The predefined bond types are shown in table~\vref{tab:bond_types}.
   \command{RenewChemBond}[\marg{name}\marg{code}]
     Redefine the existing bond type \meta{name}.  Issue an error if a bond
     \meta{name} doesn't exist.
+  \command{ProvideChemBond}[\marg{name}\marg{code}]
+    \sinceversion{4.12a}Define the new bond type \meta{name} only if it
+    doesn't exist yet.
   \command{NewChemBondAlias}[\marg{new name}\marg{old name}]
     \sinceversion{4.3}Declare the bond type \meta{new name} to be an alias of
     \meta{old name}.  Issue an error if a bond \meta{new name} already
@@ -822,11 +823,15 @@ of the following commmands:
   \command{NewChemCompoundProperty}[\marg{token}\marg{replacement}]
     \meta{token} will be replaced by \meta{replacement} within compounds.  The
     property is only added if \meta{token} is not yet part the compounds'
-    property list.
+    property list. Otherwise an error is issued.
+  \command{ProvideChemCompoundProperty}[\marg{token}\marg{replacement}]
+    \meta{token}\sinceversion{4.12a} will be replaced by \meta{replacement}
+    within compounds.  The property is only added if \meta{token} is not yet
+    part the compounds' property list.
   \command{RenewChemCompoundProperty}[\marg{token}\marg{replacement}]
     \meta{token} will be replaced by \meta{replacement} within compounds.  The
     property is only added if \meta{token} is already part the compounds'
-    property list.
+    property list. Otherwise an error is issued.
   \command{DeclareChemCompoundProperty}[\marg{token}\marg{replacement}]
     \meta{token} will be replaced by \meta{replacement} within compounds.  The
     property silently overwrites any previously set \meta{replacement} for
@@ -868,6 +873,10 @@ You can define/redefine your own addition symbols:
   \command{NewChemAdditionSymbol}[\marg{name}\marg{input}\marg{output}]
     Defines\sinceversion{4.11} the addition symbol \meta{name} with input
     symbol \meta{input} and output \meta{output}.
+  \command{ProvideChemAdditionSymbol}[\marg{name}\marg{input}\marg{output}]
+    Defines\sinceversion{4.12a} the addition symbol \meta{name} with input
+    symbol \meta{input} and output \meta{output} only no addition symbol with
+    then name \meta{name} doesn't exist.
   \command{RenewChemAdditionSymbol}[\marg{name}\marg{input}\marg{output}]
     Redefines\sinceversion{4.11} the addition symbol \meta{name} with input
     symbol \meta{input} and output \meta{output}.
@@ -920,6 +929,9 @@ You can define/redefine your own symbols:
   \command{NewChemSymbol}[\marg{input}\marg{output}]
     Defines\sinceversion{4.11} the addition symbol with input \meta{input} and
     output \meta{output}.
+  \command{ProvideChemSymbol}[\marg{input}\marg{output}]
+    Defines\sinceversion{4.12a} the addition symbol with input \meta{input} and
+    output \meta{output} only if no symbol with input \meta{input} exists.
   \command{RenewChemSymbol}[\marg{input}\marg{output}]
     Redefines\sinceversion{4.11} the addition symbol with input \meta{input}
     and output \meta{output}.
@@ -1157,6 +1169,9 @@ The arrows are defined with the commands
   \command{NewChemArrow}[\marg{type}\marg{\TikZ}]
     Define the new arrow type \meta{type}.  Issue an error if an arrow type
     \meta{type} already exists.
+  \command{ProvideChemArrow}[\marg{type}\marg{\TikZ}]
+    Define\sinceversion{4.12a} the new arrow type \meta{type} only if it
+    doesn't exist, yet.
   \command{DeclareChemArrow}[\marg{type}\marg{\TikZ}]
     Define the new arrow type \meta{type} or overwrite it if it already
     exists.
@@ -1293,7 +1308,7 @@ mandatory.
 In the standard setting \chemformula\ doesn't make any default changes to the
 font of the formula output.  Let's take a look at a nonsense input which shows
 all features:
-\begin{example}[pre-output={\biolinumLF\libertineLF\chemsetup{chemformula/format=}}]
+\begin{example}[pre-output={\biolinumLF\libertineLF\setchemformula{format=}}]
   \newcommand*\sample{%
     \ch{H2C-C+C-CH=CH+ + CrO4^2-
         <=>[x][y]
@@ -1308,7 +1323,7 @@ all features:
 }
 
 Now we're going to change different aspects of the font a look what happens:
-\begin{example}[pre-output={\biolinumLF\libertineLF\chemsetup{chemformula/format=}}]
+\begin{example}[pre-output={\biolinumLF\libertineLF\setchemformula{format=}}]
   \sffamily Hallo \sample \\
   \ttfamily Hallo \sample \normalfont \\
   \bfseries Hallo \sample \normalfont \\
@@ -1321,7 +1336,7 @@ If you want to change the default format you need to use this option:
   \keyval{format}{anything}\Default
     Adds arbitrary code before the output of \cs{ch}.
 \end{options}
-\begin{example}[pre-output={\biolinumLF\libertineLF\chemsetup{chemformula/format=}}]
+\begin{example}[pre-output={\biolinumLF\libertineLF\setchemformula{format=}}]
   \definecolor{newblue}{rgb}{.1,.1,.5}
   \chemsetup[chemformula]{format=\color{newblue}\sffamily}
   \sffamily Hallo \sample \\
@@ -1340,7 +1355,7 @@ the output.
   \keyval{font-shape}{shape}\Default
     Changes the fontshape of the output with \cs*{fontshape}\marg{shape}.
 \end{options}
-\begin{example}[pre-output={\biolinumLF\libertineLF\chemsetup{chemformula/format=}}]
+\begin{example}[pre-output={\biolinumLF\libertineLF\setchemformula{format=}}]
   \chemsetup[chemformula]{font-series=bx}
   Hallo \sample \par
   \sffamily Hallo \sample \normalfont \par
