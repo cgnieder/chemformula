@@ -26,16 +26,23 @@
 %
 % The Current Maintainer of this work is Clemens Niederberger.
 % --------------------------------------------------------------------------
-\RequirePackage{ expl3 , xparse , l3keys2e , tikz , amstext , xfrac , nicefrac, scrlfile }
+\RequirePackage{expl3,xparse,l3keys2e,tikz,amstext,xfrac,nicefrac,scrlfile}
 \usetikzlibrary{arrows.meta}
-\def\chemformula@version{4.12a}
-\def\chemformula@date{2015/08/19}
+
+\ExplSyntaxOn
+\tl_const:Nn \c_chemformula_date_tl {2015/09/08}
+\tl_const:Nn \c_chemformula_version_number_tl {4.12}
+\tl_const:Nn \c_chemformula_version_suffix_tl {b}
+\tl_const:Nx \c_chemformula_version_tl
+  { \c_chemformula_version_number_tl \c_chemformula_version_suffix_tl }
+\tl_const:Nn \c_chemformula_info_tl
+  {typeset chemical compounds and reactions}
 
 \ProvidesExplPackage
   {chemformula}
-  {\chemformula@date}
-  {\chemformula@version}
-  {typeset chemical compounds and reactions}
+  {\c_chemformula_date_tl}
+  {\c_chemformula_version_tl}
+  {\c_chemformula_info_tl \c_space_tl (CN)}
 
 % --------------------------------------------------------------------------
 % warning and error messages:
@@ -1046,7 +1053,9 @@
 \cs_new_protected:Npn \__chemformula_ch_main:n #1
   {
     \group_begin:
-      \seq_set_split:Nnn \l__chemformula_input_seq { ~ } {#1}
+      \tl_set:Nn \l__chemmacros_tmpa_tl {#1}
+      \tl_trim_spaces:N \l__chemmacros_tmpa_tl
+      \seq_set_split:NnV \l__chemformula_input_seq { ~ } \l__chemmacros_tmpa_tl
       \cs_set_eq:NN \xspace \scan_stop:
       % the next two aren't necessary any more but shouldn't do harm, too:
       \cs_set_nopar:Npn \[ { [ }
@@ -3274,6 +3283,8 @@ VERSION HISTORY
                              \chemformula_formal_minus:
                              \ProvideChem... equivalents to all \NewChem...
                              macros 
+2015/09/08 - version 4.12b - trim spaces of \ch input -- due to a change in
+                             l3kernel
 
 % --------------------------------------------------------------------------
 % TODO
