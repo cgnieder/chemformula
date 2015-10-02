@@ -1,4 +1,4 @@
-% arara: pdflatex
+% !arara: pdflatex
 % arara: biber
 % arara: pdflatex
 % arara: pdflatex
@@ -32,9 +32,12 @@
 % --------------------------------------------------------------------------
 \documentclass[load-preamble+]{cnltx-doc}
 \usepackage[utf8]{inputenc}
+\usepackage{chemformula}
 \usepackage[greek=newtx]{chemmacros}
+\usechemmodule{redox,reactions,units}
 \setcnltx{
   package  = {chemformula},
+  info     = {typeset chemical compounds and reactions} ,
   url      = http://www.mychemistry.eu/forums/forum/chemformula/ ,
   authors  = Clemens Niederberger ,
   email    = contact@mychemistry.eu ,
@@ -93,7 +96,7 @@
   accsupp   = IUPAC
 }
 
-\chemsetup{ option/synchronize }
+% \chemsetup{ option/synchronize }
 \setchemformula{ format = \libertineLF }
 
 \sisetup{
@@ -340,7 +343,7 @@ parentheses is typeset as is.
 You can find many examples like the following for stoichiometric factors in
 parentheses in the \acs{iupac} Green Book~\cite{iupac:greenbook}:
 \begin{reaction*}
- (1/5) K "\ox*{7,Mn}" O4 + (8/5) HCl == (1/5) "\ox*{2,Mn}" Cl2 + (1/2) Cl2 + (1/5) KCl + (4/5) H2O
+ (1/5) K "\ox{7,Mn}" O4 + (8/5) HCl == (1/5) "\ox{2,Mn}" Cl2 + (1/2) Cl2 + (1/5) KCl + (4/5) H2O
 \end{reaction*}
 
 There are a few possibilities to customize the output.
@@ -468,9 +471,14 @@ because the numbers are treated as subscripts \emph{before} the command
 expands.
 \begin{sourcecode}
   \ch{A\hspace{2mm}B} will raise an error because \hspace sees something like
-  this: \hspace{$_2$mm}. Actually not at all like it but equally bad\ldots
+  this: \hspace{$_2$mm}. Actually not at all like this but equally bad\ldots
 \end{sourcecode}
 See section~\ref{ssec:text} for a way around this.
+
+Please also note that formulas are placed inside a group!
+\begin{example}[side-by-side]
+  \ch{A2\color{red}B3 C4}
+\end{example}
 
 \subsection{Charges and Other Superscripts}
 \paragraph{Basics}
@@ -527,14 +535,19 @@ you \emph{shouldn't} use them as they might mess with the subscript and
 superscript alignment.  The \chemmacros\ option \code{circled} is obeyed by
 \cs{ch}.
 \begin{example}
-  \chemsetup[option]{circled=all}
+  \chemsetup[charges]{circled=all}
   \ch{H+ + OH- <=> H2O}
 \end{example}
 
 \chemformula\ knows the options \option{circled} and \option{circletype} also
-on its own:
+on its own.
 
-There are coupled with \chemmacros\ options, \ie, setting \chemmacros'
+\begin{example}
+  \setchemformula{circled=all}
+  \ch{H+ + OH- <=> H2O}
+\end{example}
+
+These options are coupled with \chemmacros\ options, \ie, setting \chemmacros'
 options will also set \chemformula's equivalents.  The other way around the
 options act independently: setting \chemformula's options will \emph{not} set
 \chemmacros' options.
@@ -676,7 +689,7 @@ this:
         (chemformula-bond-start) -- (chemformula-bond-end) ;
     }
   \makeatother
-  \chemsetup[chemformula]{bond-length=2ex}
+  \setchemformula{bond-length=2ex}
   \ch{C\bond{dashed}C}
 \end{example}
 
@@ -738,9 +751,9 @@ recommendations~\cite[][p.\,51]{iupac:greenbook}.  The amount of the shift can
 be set with the option \option{charge-hshift}.
 \begin{example}
   \ch{SO4^2-} \ch{NH4+} \ch{Na+} \par
-  \chemsetup[chemformula]{charge-hshift=.5ex}
+  \setchemformula{charge-hshift=.5ex}
   \ch{SO4^2-} \ch{NH4+} \ch{Na+} \par
-  \chemsetup[chemformula]{charge-hshift=.5pt}
+  \setchemformula{charge-hshift=.5pt}
   \ch{SO4^2-} \ch{NH4+} \ch{Na+}
 \end{example}
 
@@ -761,7 +774,7 @@ If you don't want the charges to be typeset in text mode you can switch to
 math mode:
 \begin{example}
   \ch{M^x+} \ch{SO4^2-} \par
-  \chemsetup[chemformula]{charge-style = math}
+  \setchemformula{charge-style = math}
   \ch{M^x+} \ch{SO4^2-}
 \end{example}
 
@@ -769,9 +782,9 @@ The option \option{subscript-vshift} can be used to adjust the vertical shift
 of the subscripts:
 \begin{example}
   \ch{H2SO4} \ch{Na3PO4} \par
-  \chemsetup[chemformula]{subscript-vshift=.5ex}
+  \setchemformula{subscript-vshift=.5ex}
   \ch{H2SO4} \ch{Na3PO4} \par
-  \chemsetup[chemformula]{subscript-vshift=-.2ex}
+  \setchemformula{subscript-vshift=-.2ex}
   \ch{H2SO4} \ch{Na3PO4}
 \end{example}
 
@@ -779,7 +792,7 @@ You can choose the mode subscripts are typeset in the same way as it is
 possible for the charges:
 \begin{example}
   \ch{A_nB_m} \ch{H2SO4} \par
-  \chemsetup[chemformula]{subscript-style = math}
+  \setchemformula{subscript-style = math}
   \ch{A_nB_m} \ch{H2SO4}
 \end{example}
 
@@ -787,13 +800,13 @@ The option \option{adduct-space} sets the space left and right to the adduct
 symbol $\cdot$.
 \begin{example}
   \ch{Na3PO3*H2O} \par
-  \chemsetup[chemformula]{adduct-space=.2em}
+  \setchemformula{adduct-space=.2em}
   \ch{Na3PO3*H2O}
 \end{example}
 
 Changing the length of the bonds:
 \begin{example}
-  \chemsetup[chemformula]{bond-length=4mm}%
+  \setchemformula{bond-length=4mm}%
   single: \ch{CH3-CH3} \par
   double: \ch{CH2=CH2} \par
   triple: \ch{CH+CH}
@@ -1013,7 +1026,7 @@ The space that is inserted after a math group can be edited:
 \end{options}
 \begin{example}
   \ch{$2n$ Na + $n$ Cl2 -> $2n$ NaCl} \par
-  \chemsetup[chemformula]{math-space=.25em}
+  \setchemformula{math-space=.25em}
   \ch{$2n$ Na + $n$ Cl2 -> $2n$ NaCl} \par
   \ch{$A->B$}
 \end{example}
@@ -1084,20 +1097,13 @@ leave blanks.
   \ch{A ->[H2O] B} \par
   \ch{A ->[ H2O ] B} \par
   \ch{A ->[ "\ox{2,Ca}" F2 ] B} \par
-  \ch{A ->[$\Delta$,~ \[H+ \]] B}
+  \ch{A ->[ $\Delta$,~ [ H+ ]] B}
 \end{example}
-% TODO: correct info about []
 
 If you leave the blanks \chemformula\ treats the groups inside the square
 brackets as seperated input types.  The arrow reads its arguments
 \emph{afterwards}.  As you can see the arrows \enquote{grow} with the length
-of the labels.  What stays constant is the part that protrudes the labels.  As
-you also can see in the last example square brackets inside the arrow
-arguments can be produced using \cs*{[} and \cs*{]}.  They keep their usual
-meaning outside \cs{ch}.  These commands were necessary since the usual
-grouping (\ie, hiding the brackets inside curly brackets) didn't work due to
-the way \cs{ch} read its argument.  This is no longer true but meanwhile
-\cs*{[} and \cs*{]} are kept for backwards compatibility.
+of the labels.  What stays constant is the part that protrudes the labels.
 \begin{example}
   \ch{A ->[a] B} \par
   \ch{A ->[ab] B} \par
@@ -1106,7 +1112,6 @@ the way \cs{ch} read its argument.  This is no longer true but meanwhile
   % needs the `chemfig' package:
   \setatomsep{15pt}
   \ch{A ->[ "\chemfig{-[:30]-[:-30]OH}" ] B} \par
-  \ch{A ->[[]] B} vs. \ch{A ->[\[\]] B}
 \end{example}
 
 \subsection{Customization}
@@ -1117,7 +1122,7 @@ These are the options which enable you to customize the arrows:
     means an empty arrow's length is two times \code{arrow-offset}.
   \keyval{arrow-min-length}{dim}\Default{0pt}
     \sinceversion{3.6b}The minimal length an error must have unless two times
-    \key{arrow-offset} plus the width of the label is larger.
+    \option{arrow-offset} plus the width of the label is larger.
   \keyval{arrow-yshift}{dim}\Default{0pt}
     Shifts an arrow up (positive value) or down (negative value).
   \keyval{arrow-ratio}{<factor>}\Default{.6}
@@ -1333,12 +1338,16 @@ As you can see most features adapt to the surrounding font.
 
 If you want to change the default format you need to use this option:
 \begin{options}
-  \keyval{format}{anything}\Default
-    Adds arbitrary code before the output of \cs{ch}.
+  \keyval{format}{code}\Default
+    Adds \meta{code} before the output of \cs{ch}.
+  \keyval{atom-format}{code}\Default
+    This\sinceversion{4.13} adds \meta{code} before each formula. This
+    allows to specify a format for the chemical formulas only and have a
+    different format for the rest of the chemical equation.
 \end{options}
 \begin{example}[pre-output={\biolinumLF\libertineLF\setchemformula{format=}}]
   \definecolor{newblue}{rgb}{.1,.1,.5}
-  \chemsetup[chemformula]{format=\color{newblue}\sffamily}
+  \setchemformula{format=\color{newblue}\sffamily}
   \sffamily Hallo \sample \\
   \ttfamily Hallo \sample \normalfont \\
   \bfseries Hallo \sample \normalfont \\
@@ -1356,10 +1365,10 @@ the output.
     Changes the fontshape of the output with \cs*{fontshape}\marg{shape}.
 \end{options}
 \begin{example}[pre-output={\biolinumLF\libertineLF\setchemformula{format=}}]
-  \chemsetup[chemformula]{font-series=bx}
+  \setchemformula{font-series=bx}
   Hallo \sample \par
   \sffamily Hallo \sample \normalfont \par
-  \chemsetup[chemformula]{font-family=lmss,font-series=m} Hallo \sample
+  \setchemformula{font-family=lmss,font-series=m} Hallo \sample
     \normalfont \par
   \itshape Hallo \sample
 \end{example}
@@ -1561,7 +1570,7 @@ There are a number of options for customizations:
 % \begin{example}
 %   \begin{reaction}[Synthese von Alkanen]
 %     !(Synthesegas)( $n$ CO + $(2n+1)$ H2 )
-%     ->[\SI{200}{\celsius}][\[CoNi\]]
+%     ->[\SI{200}{\celsius}][[CoNi]]
 %     C_{$n$}H_{$2n+2$} + $n$ H2O
 %   \end{reaction}
 % \end{example}
