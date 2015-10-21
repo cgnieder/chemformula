@@ -386,6 +386,13 @@
   }
 \cs_generate_variant:Nn \chemformula_skip_nobreak:N {c}
 
+\cs_new_protected:Npn \chemformula_skip_nobreak:n #1
+  {
+    \chemformula_nobreak:
+    \skip_horizontal:n {#1}
+    \chemformula_nobreak:
+  }
+
 \cs_new_protected:Npn \chemformula_skip_nobreak_penalty:Nn #1#2
   {
     \chemformula_nobreak:
@@ -550,7 +557,7 @@
               circle (\l__chemformula_radical_radius_dim) ;
           }
       }
-    \skip_horizontal:N \l__chemformula_radical_space_dim
+    \chemformula_skip_nobreak:N \l__chemformula_radical_space_dim
   }
 
 \keys_define:nn {chemformula}
@@ -567,9 +574,9 @@
 
 \cs_new_protected:Npn \chemformula_adduct:
   {
-    \skip_horizontal:N \l__chemformula_adduct_space_dim
+    \chemformula_skip_nobreak:N \l__chemformula_adduct_space_dim
     \textperiodcentered
-    \skip_horizontal:N \l__chemformula_adduct_space_dim
+    \chemformula_skip_nobreak:N \l__chemformula_adduct_space_dim
   }
 \cs_new_eq:NN \chemformula_star_adduct: \chemformula_adduct:
 
@@ -604,7 +611,7 @@
               circle (\l__chemformula_kroegervink_positive_radius_dim) ;
           }
       }
-    \skip_horizontal:N \l__chemformula_kroegervink_positive_space_dim
+    \chemformula_skip_nobreak:N \l__chemformula_kroegervink_positive_space_dim
   }
 
 \cs_new_protected:Npn \chemformula_prime:
@@ -1669,6 +1676,7 @@
 
 \cs_new_protected:Npn \__chemformula_subscript_write:n #1
   {
+    \chemformula_nobreak:
     \group_begin:
       \tl_set_eq:NN \chemformula_subscript:n \use:n
       \tl_set_eq:NN \chemformula_superscript:n \use:n
@@ -1791,6 +1799,7 @@
 
 \cs_new_protected:Npn \__chemformula_superscript_write:n #1
   {
+    \chemformula_nobreak:
     \group_begin:
       \tl_set_eq:NN \chemformula_subscript:n \use:n
       \tl_set_eq:NN \chemformula_superscript:n \use:n
@@ -1852,8 +1861,8 @@
             \dim_compare:nT
               { \l__chemformula_subscript_dim < \l__chemformula_superscript_dim }
               {
-                \skip_horizontal:n { -\l__chemformula_subscript_dim }
-                \skip_horizontal:N \l__chemformula_superscript_dim
+                \chemformula_skip_nobreak:n { -\l__chemformula_subscript_dim }
+                \chemformula_skip_nobreak:N \l__chemformula_superscript_dim
               }
           }
       }
@@ -1864,8 +1873,8 @@
             \tl_if_blank:VF \l__chemformula_subscript_tl
               {
                 \bool_if:NTF \l__chemformula_charge_full_shift_bool
-                  { \skip_horizontal:n { -\l__chemformula_subscript_dim } }
-                  { \skip_horizontal:N \l__chemformula_charge_shift_dim }
+                  { \chemformula_skip_nobreak:n { -\l__chemformula_subscript_dim } }
+                  { \chemformula_skip_nobreak:N \l__chemformula_charge_shift_dim }
               }
           }
       }
@@ -1877,15 +1886,15 @@
         \tl_if_blank:VF \l__chemformula_subscript_tl
           {
             \bool_if:NTF \l__chemformula_is_isotope_bool
-              { \skip_horizontal:N \l__chemformula_subscript_dim }
+              { \chemformula_skip_nobreak:N \l__chemformula_subscript_dim }
               {
-                \skip_horizontal:N \l__chemformula_superscript_dim
-                    \bool_if:NTF \l__chemformula_charge_full_shift_bool
-                      { \skip_horizontal:N \l__chemformula_subscript_dim }
-                      {
-                        \skip_horizontal:n
-                          { -\l__chemformula_charge_shift_dim }
-                      }
+                \chemformula_skip_nobreak:N \l__chemformula_superscript_dim
+                \bool_if:NTF \l__chemformula_charge_full_shift_bool
+                  { \chemformula_skip_nobreak:N \l__chemformula_subscript_dim }
+                  {
+                    \chemformula_skip_nobreak:n
+                      { -\l__chemformula_charge_shift_dim }
+                  }
               }
           }
       }
@@ -1916,7 +1925,7 @@
               }
           }
         \dim_compare:nT { \l__chemformula_tmpa_dim > 0pt }
-          { \skip_horizontal:N \l__chemformula_tmpa_dim }
+          { \chemformula_skip_nobreak:N \l__chemformula_tmpa_dim }
       }
     \group_end:
     % clean up
