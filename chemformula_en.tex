@@ -33,8 +33,7 @@
 \documentclass[load-preamble+]{cnltx-doc}
 \usepackage[utf8]{inputenc}
 \usepackage{chemformula}
-\usepackage[greek=newtx]{chemmacros}
-\usechemmodule{redox,reactions,units}
+\usepackage{chemmacros}
 \setcnltx{
   package  = {chemformula},
   info     = {typeset chemical compounds and reactions} ,
@@ -80,6 +79,13 @@
 \usepackage[libertine]{newtxmath}
 \expandafter\def\csname libertine@figurestyle\endcsname{OsF}
 
+\chemsetup{
+  greek = newtx ,
+  modules = {redox,reactions,units} ,
+  formula = chemformula ,
+  chemformula/format = \libertineLF
+}
+
 \usepackage[biblatex]{embrac}
 \ChangeEmph{[}[,.02em]{]}[.055em,-.08em]
 \ChangeEmph{(}[-.01em,.04em]{)}[.04em,-.05em]
@@ -97,7 +103,7 @@
 }
 
 % \chemsetup{ option/synchronize }
-\setchemformula{ format = \libertineLF }
+% \setchemformula{ format = \libertineLF }
 
 \sisetup{
   detect-mode=false,
@@ -720,6 +726,9 @@ These options allow you to customize the ouptut of the compounds:
     \chemformula's mechanism this is effectively an alias.
   \keyval{adduct-space}{dim}\Default{.1333em}
     Space to the left and the right of the adduct point.
+  \keyval{adduct-penalty}{num}\Default{300}
+    The\sinceversion{4.14} penalty inserted after the adduct point for
+    (dis-)allowing line breaks.
   \keyval{bond-length}{dim}\Default{.5833em}
     The length of the bonds.
   \keyval{bond-offset}{dim}\Default{.07em}
@@ -1720,7 +1729,7 @@ then \chemmacros\ will not be loaded.  The \chemmacros\ package, however,
 
 \subsection{Version 4.10}
 \begin{itemize}
-  \item new macros \cs{NewChemCompoundProperty},
+  \item New macros \cs{NewChemCompoundProperty},
     \cs{RenewChemCompoundProperty}, \\
     \cs{DeclareChemCompoundProperty} and \cs{RemoveChemCompoundProperty}.  See
     section~\ref{sec:extend-comp-prop} for a description.
@@ -1737,6 +1746,19 @@ then \chemmacros\ will not be loaded.  The \chemmacros\ package, however,
 \begin{itemize}
   \item Change package requirement: \chemformula\ now not loads complete
     \pkg{amsmath} but only \pkg{amstext}.
+\end{itemize}
+
+\subsection{Version 4.13}
+\begin{itemize}
+  \item Check for blank input parts and don't process them.g
+  \item Drop support for \cs*{[} and \cs*{]} as replacement for \code{[} and
+    \code{]} insode arrow captions.
+  \item New option \option{atom-format}.
+\end{itemize}
+
+\subsection{Version 4.14}
+\begin{itemize}
+  \item New option \option{adduct-penalty}.
 \end{itemize}
 
 \end{document}

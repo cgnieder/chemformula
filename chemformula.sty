@@ -31,7 +31,7 @@
 
 \ExplSyntaxOn
 \tl_const:Nn \c_chemformula_date_tl {2015/10/01}
-\tl_const:Nn \c_chemformula_version_number_tl {4.13}
+\tl_const:Nn \c_chemformula_version_number_tl {4.14}
 \tl_const:Nn \c_chemformula_version_suffix_tl {}
 \tl_const:Nx \c_chemformula_version_tl
   { \c_chemformula_version_number_tl \c_chemformula_version_suffix_tl }
@@ -329,6 +329,8 @@
 \tl_new:N     \l__chemformula_kroegervink_positive_style_tl
 \tl_new:N     \l__chemformula_kroegervink_neutral_tl
 \tl_set:Nn    \l__chemformula_kroegervink_neutral_tl { $\times$ }
+\tl_new:N     \l__chemformula_adduct_penalty_tl
+\tl_set:Nn    \l__chemformula_adduct_penalty_tl { 300 }
 
 % property lists:
 \prop_new:N \l__chemformula_arrows_code_prop
@@ -399,7 +401,7 @@
     \skip_horizontal:N #1
     \tex_penalty:D #2 \scan_stop:
   }
-\cs_generate_variant:Nn \chemformula_skip_nobreak_penalty:Nn {c}
+\cs_generate_variant:Nn \chemformula_skip_nobreak_penalty:Nn {c,NV}
 
 \cs_new_protected:Npn \chemformula_dim_to_width:Nn #1#2
   {
@@ -576,7 +578,9 @@
   {
     \chemformula_skip_nobreak:N \l__chemformula_adduct_space_dim
     \textperiodcentered
-    \chemformula_skip_nobreak:N \l__chemformula_adduct_space_dim
+    \chemformula_skip_nobreak_penalty:NV
+      \l__chemformula_adduct_space_dim
+      \l__chemformula_adduct_penalty_tl
   }
 \cs_new_eq:NN \chemformula_star_adduct: \chemformula_adduct:
 
@@ -861,9 +865,9 @@
           ;
         \tl_use:N \l__chemformula_tmpc_tl
       }
-    \chemformula_skip_nobreak_penalty:Nn
+    \chemformula_skip_nobreak_penalty:NV
       \c_zero_skip
-      { \l__chemformula_arrow_penalty_tl }
+      \l__chemformula_arrow_penalty_tl
   }
 \cs_generate_variant:Nn \__chemformula_arrow_draw:n { V }
 
@@ -1438,9 +1442,9 @@
             { \__chemformula_bond_draw:n {#1} }
         }
     \group_end:
-    \chemformula_skip_nobreak_penalty:Nn
+    \chemformula_skip_nobreak_penalty:NV
       \l__chemformula_bond_space_dim
-      { \l__chemformula_bond_penalty_tl }
+      \l__chemformula_bond_penalty_tl
   }
 
 \cs_new_protected:Npn \__chemformula_bond_draw:n #1
@@ -2819,6 +2823,7 @@
     stoich-print          .code:n     =
       \cs_set_eq:NN \chemformula_print_stoich:n #1 ,
     adduct-space          .dim_set:N  = \l__chemformula_adduct_space_dim ,
+    adduct-penalty        .tl_set:N   = \l__chemformula_adduct_penalty_tl ,
     math-space            .skip_set:N = \l__chemformula_math_space_skip ,
     name-format           .tl_set:N   = \l__chemformula_name_format_tl ,
     name-width            .code:n     =
@@ -3302,6 +3307,9 @@ VERSION HISTORY
                            - check for blank input
                            - drop support for \[ and \]
                            - new option `atom-format'
+2015/10/21 - version 4.14  - fix issue
+                             https://github.com/cgnieder/chemformula/issues/2
+                           - new option `adduct-penalty'
 
 % --------------------------------------------------------------------------
 % TODO
