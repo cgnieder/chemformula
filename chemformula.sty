@@ -147,7 +147,7 @@
 \cs_generate_variant:Nn \tl_set:Nn          { cV }
 \cs_generate_variant:Nn \tl_replace_all:Nnn { NV }
 \cs_generate_variant:Nn \tl_set_rescan:Nnn  { NnV }
-\cs_generate_variant:Nn \prop_get:Nn        { NV }
+\cs_generate_variant:Nn \prop_item:Nn       { NV }
 \cs_generate_variant:Nn \dim_set:Nn         { NV }
 \cs_generate_variant:Nn \skip_set:Nn        { cV }
 \cs_generate_variant:Nn \str_if_eq:nnT      { V }
@@ -1450,7 +1450,7 @@
 \cs_new_protected:Npn \__chemformula_bond_draw:n #1
   {
     \__chemformula_reset:Nn \l__chemformula_tmpa_tl {#1}
-    \prop_get:NV \l__chemformula_bonds_prop
+    \prop_item:NV \l__chemformula_bonds_prop
       \l__chemformula_tmpa_tl
   }
 
