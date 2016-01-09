@@ -12,7 +12,7 @@
 % If you have any ideas, questions, suggestions or bugs to report, please
 % feel free to contact me.
 % --------------------------------------------------------------------------
-% Copyright 2011-2015 Clemens Niederberger
+% Copyright 2011-2016 Clemens Niederberger
 %
 % This work may be distributed and/or modified under the
 % conditions of the LaTeX Project Public License, either version 1.3
@@ -30,8 +30,8 @@
 \usetikzlibrary{arrows.meta}
 
 \ExplSyntaxOn
-\tl_const:Nn \c_chemformula_date_tl {2015/10/01}
-\tl_const:Nn \c_chemformula_version_number_tl {4.14}
+\tl_const:Nn \c_chemformula_date_tl {2016/01/07}
+\tl_const:Nn \c_chemformula_version_number_tl {4.14a}
 \tl_const:Nn \c_chemformula_version_suffix_tl {}
 \tl_const:Nx \c_chemformula_version_tl
   { \c_chemformula_version_number_tl \c_chemformula_version_suffix_tl }
@@ -2200,23 +2200,21 @@
   }
 \cs_generate_variant:Nn \__chemformula_input_cmpd:Nn { NV }
 
-\bool_new:N \l__chemformula_cmpd_group_open_bool
+\bool_new:N \g__chemformula_cmpd_group_open_bool
 \cs_new_protected:Npn \chemformula_group_begin:
   {
-    \bool_if:NF \l__chemformula_cmpd_group_open_bool
+    \bool_if:NF \g__chemformula_cmpd_group_open_bool
       {
-%         \message{opening~group}
-        \group_begin:
-        \bool_gset_true:N \l__chemformula_cmpd_group_open_bool
+        % \group_begin:
+        \bool_gset_true:N \g__chemformula_cmpd_group_open_bool
       }
   }
 \cs_new_protected:Npn \chemformula_group_end:
   {
-    \bool_if:NT \l__chemformula_cmpd_group_open_bool
+    \bool_if:NT \g__chemformula_cmpd_group_open_bool
       {
-%         \message{closing~group}
-        \group_end:
-        \bool_gset_false:N \l__chemformula_cmpd_group_open_bool
+        % \group_end:
+        \bool_gset_false:N \g__chemformula_cmpd_group_open_bool
       }
   }
 
@@ -2706,10 +2704,11 @@
       { _ } { \sb }
     \tl_replace_all:Nnn \l__chemformula_tmpa_tl
       { chemformulaplaceholder } { \_ }
-    \tl_put_left:Nn \l__chemformula_tmpa_tl
-      { \chemformula_group_begin: }
-    \tl_put_right:Nn \l__chemformula_tmpa_tl
-      { \chemformula_group_end: }
+    % those cause trouble with chemmacros' \ox:
+    % \tl_put_left:Nn \l__chemformula_tmpa_tl
+    %   { \chemformula_group_begin: }
+    % \tl_put_right:Nn \l__chemformula_tmpa_tl
+    %   { \chemformula_group_end: }
     % TODO: waum ist das auskommentiert
     % \__chemformula_reset:NV \l__chemformula_tmpa_tl \l__chemformula_tmpa_tl
     \tl_put_right:NV \l__chemformula_input_tl \l__chemformula_tmpa_tl
@@ -3353,6 +3352,7 @@ VERSION HISTORY
 2015/10/21 - version 4.14  - fix issue
                              https://github.com/cgnieder/chemformula/issues/2
                            - new option `adduct-penalty'
+2016/01/07 - version 4.14a - \prop_get:Nn => \prop_item:Nn
 
 % --------------------------------------------------------------------------
 % TODO
