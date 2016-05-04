@@ -1,5 +1,5 @@
 % !arara: pdflatex
-% arara: biber
+% !arara: biber
 % arara: pdflatex
 % arara: pdflatex
 % --------------------------------------------------------------------------
@@ -225,22 +225,25 @@ bundle~\cite{bnd:l3packages}),
 bundle~\cite{bnd:koma-script}).
 
 \section{Setup}
-All of \chemformula's options belong to \chemmacros' module
-\module{chemformula}.  This means if you load it via \chemmacros\ or in
-addition to \chemmacros\ they can be setup with
+
+If you're using \chemformula\ as a standalone package options are set up with
+the following command:
+\begin{commands}
+  \command{setchemformula}[\marg{options}]
+    Set up \chemformula.
+\end{commands}
+
+\chemformula\ is tightly intertwined with the \chemmacros\ package.  If noth
+packages are loaded together, \chemformula\ is integrated into the
+\chemmacros\ package.  Then all of \chemformula's options belong to
+\chemmacros' module \module{chemformula}.  This means if you load it via
+\chemmacros\ or in addition to \chemmacros\ they can be setup with
 \begin{commands}
   \command{chemsetup}[\Oarg{chemformula}\marg{options}]
     Set up options for \chemformula\ exclusively, or
   \command{chemsetup}[\Marg{chemformula/\meta{option1},chemformula/\meta{option2}}]
     Set up options for \chemformula\ together with others of \chemmacros'
     options.
-\end{commands}
-However, if you're using \chemformula\ as a standalone package the command
-\cs{chemsetup} is not available.  This is why \chemformula\ also has its own
-setup command:
-\begin{commands}
-  \command{setchemformula}[\marg{options}]
-    Set up \chemformula\ when using it independently from \chemmacros.
 \end{commands}
 
 \section{The Basic Principle}
@@ -299,19 +302,19 @@ treated as a single part.  If you want or need to divide them you need to add
 an empty group: \cs{ch}\Marg{\cs*{command}\marg{} ABC}.  The different input
 types are described in the following sections.
 
-% TODO: Module überdenken, Beschreibung anpassen
-There are some options to customize the output of the \cs{ch} command.  They
-can either be applied locally using the optional argument or can be set
-globally using the setup command.  All options of \chemformula\ belong to the
-module \module{chemformula} and can be set in different ways:
-\begin{commands}
-  \command{chemsetup}[\Oarg{chemformula}\marg{options}]
-    when loaded via \chemmacros
-  \command{chemsetup}[\Marg{chemformula/\meta{options}}]
-    when loaded via \chemmacros
-  \command{setchemformula}[\marg{options}]
-    independent from \chemmacros
-\end{commands}
+% % TODO: Module überdenken, Beschreibung anpassen
+% There are some options to customize the output of the \cs{ch} command.  They
+% can either be applied locally using the optional argument or can be set
+% globally using the setup command.  All options of \chemformula\ belong to the
+% module \module{chemformula} and can be set in different ways:
+% \begin{commands}
+%   \command{chemsetup}[\Oarg{chemformula}\marg{options}]
+%     when loaded via \chemmacros
+%   \command{chemsetup}[\Marg{chemformula/\meta{options}}]
+%     when loaded via \chemmacros
+%   \command{setchemformula}[\marg{options}]
+%     independent from \chemmacros
+% \end{commands}
 
 \section{Stoichiometric Factors}
 A stoichiometric factor may only contain of numbers and the signs
@@ -1063,13 +1066,13 @@ There are various different types:
     equilibrium arrow
   \arrow{>=<}[ \charrow{>=<}]
     reversed equilibrium arrow
-  \arrow{<=>>}[ \charrow{<=>>}]
+  \arrow{<=>{}>}[ \charrow{<=>>}]
     unbalanced equilibrium arrow to the right
-  \arrow{>=<<}[ \charrow{>=<<}]
+  \arrow{>=<{}<}[ \charrow{>=<<}]
     reversed unbalanced equilibrium arrow to the right
-  \arrow{<<=>}[ \charrow{<<=>}]
+  \arrow{<{}<=>}[ \charrow{<<=>}]
     unbalanced equilibrium arrow to the left
-  \arrow{>>=<}[ \charrow{>>=<}]
+  \arrow{>{}>=<}[ \charrow{>>=<}]
     reversed unbalanced equilibrium arrow to the left
   \arrow{<o>}[ \charrow{<o>}]
     isolobal arrow
@@ -1655,110 +1658,102 @@ There are a number of options for customizations:
 % \end{example}
 
 \appendix
+\newenvironment{changes}[2][]{%
+  \subsection*{Version #2\ifblank{#1}{}{ (#1)}}
+  \itemize\let\change\item
+}{\enditemize}
+
 \section{History Since Version~4.0}
-\subsection{Version 4.0}
-Since version 4.0\sinceversion{4.0}, the \chemformula\ package can be used
-independently from \chemmacros.  This means that if you say
-\begin{sourcecode}
-  \usepackage{chemformula}
-\end{sourcecode}
-then \chemmacros\ will not be loaded.  The \chemmacros\ package, however,
-\emph{will} load \chemformula.
 
-\subsection{Version 4.2}
-\begin{itemize}
-  \item New option \option{arrow-style}.
-  \item New command \cs{chlewis} that allows to add Lewis electrons to an
+\begin{changes}{4.0}
+  \change Since version 4.0\sinceversion{4.0}, the \chemformula\ package is
+    distributed independently from \chemmacros.
+\end{changes}
+
+\begin{changes}{4.1}
+  \change New option \option{tikz-external-disable}.
+  \change New option \option{frac-math-cmd}.
+\end{changes}
+
+\begin{changes}{4.2}
+  \change New option \option{arrow-style}.
+  \change New command \cs{chlewis} that allows to add Lewis electrons to an
     atom, see section~\ref{sec:lewis-formulae}.
-\end{itemize}
+\end{changes}
 
-\subsection{Version 4.3}
-\begin{itemize}
-  \item New option \option{stoich-print}.
-  \item New command \cs{chstoich}.
-  \item The commands \cs*{DeclareChem\meta{...}} now don't give an error any
+\begin{changes}{4.3}
+  \change New option \option{stoich-print}.
+  \change New command \cs{chstoich}.
+  \change The commands \cs*{DeclareChem\meta{...}} now don't give an error any
     more if the command already exists.  This is more consistent with \LaTeX's
     \cs*{DeclareRobustCommand}.  For all those commands a version
     \cs*{NewChem\meta{...}} is introduced that \emph{does} give an error if
     the new command is already defined.
-\end{itemize}
+\end{changes}
+  
+\begin{changes}{4.4}
+  \change A single dash \code{-} in \cs{ch} is now treated as a minus sign.
+    This is consistent with the behaviour of a \code{+}.
+\end{changes}
 
-\subsection{Version 4.4}
-\begin{itemize}
-  \item A single dash \code{-} in \cs{ch} is now treated as a minus sign.
-  This is consistent with the behaviour of a \code{+}.
-\end{itemize}
-
-\subsection{Version 4.5}
-\begin{itemize}
-  \item New arrow types \arrowtype{>=<}, \arrowtype{>=<<}, \arrowtype{>>=<}
+\begin{changes}{4.5}
+  \change New arrow types \arrowtype{>=<}, \arrowtype{>=<{}<}, \arrowtype{>{}>=<}
     and \arrowtype{<==>}.
-  \item Internal changes to \cs{ch} allow usage of optional arguments of
+  \change Internal changes to \cs{ch} allow usage of optional arguments of
     \cs*{\textbackslash} and \cs*{label} in \chemmacros' \env*{reactions}
     environment.
-\end{itemize}
-
-\subsection{Version 4.6}
-\begin{itemize}
-  \item New options \option{circled} and \option{circletype}.  this allows to
+\end{changes}
+  
+\begin{changes}{4.6}
+  \change New options \option{circled} and \option{circletype}.  this allows to
     set the behaviour as described on \chemmacros' manual for a specific usage
     of \cs{ch}.
-\end{itemize}
+\end{changes}
 
-\subsection{Version 4.7}
-\begin{itemize}
-  \item Dependency change: \chemformula\ now requires the \TikZ\ library
+\begin{changes}{4.7}
+  \change Dependency change: \chemformula\ now requires the \TikZ\ library
     \code{arrows.meta} instead of the library \code{arrows}.  This requires
     \TikZ\ version~3.0.0.
-\end{itemize}
+\end{changes}
 
-\subsection{Version 4.8}
-\begin{itemize}
-  \item The \chemformula\ package now is no longer part of the \chemmacros\
+\begin{changes}{4.8}
+  \change The \chemformula\ package now is no longer part of the \chemmacros\
     bundle but is distributed as a package of it's own.
-\end{itemize}
+\end{changes}
 
-\subsection{Version 4.9}
-\begin{itemize}
-  \item New options \option{minus-space} and \option{minus-penalty} equivalent
+\begin{changes}{4.9}
+  \change New options \option{minus-space} and \option{minus-penalty} equivalent
     to the existing \option{plus-space} and \option{plus-penalty}
-  \item New options \option{plus-output-symbol} and
+  \change New options \option{plus-output-symbol} and
     \option{minus-output-symbol} for customizing the plus and minus signs in
     the output.
-\end{itemize}
+\end{changes}
 
-\subsection{Version 4.10}
-\begin{itemize}
-  \item New macros \cs{NewChemCompoundProperty},
-    \cs{RenewChemCompoundProperty}, \\
-    \cs{DeclareChemCompoundProperty} and \cs{RemoveChemCompoundProperty}.  See
+\begin{changes}{4.10}
+  \change New macro set \cs{NewChemCompoundProperty},  see
     section~\ref{sec:extend-comp-prop} for a description.
-\end{itemize}
+\end{changes}
 
-\subsection{Version 4.11}
-\begin{itemize}
-  \item New macro set \cs{NewChemAdditionSymbol}, see
-    section~\ref{sec:addition-symbols}  and new macro set \cs{NewChemSymbol},
-    see section~\ref{sec:symbols}.
-\end{itemize}
+\begin{changes}{4.11}
+  \change New macro set \cs{NewChemAdditionSymbol}, see
+  section~\ref{sec:addition-symbols}.
+  \change New macro set \cs{NewChemSymbol}, see section~\ref{sec:symbols}.
+\end{changes}
 
-\subsection{Version 4.12}
-\begin{itemize}
-  \item Change package requirement: \chemformula\ now not loads complete
+\begin{changes}{4.12}
+  \change Change package requirement: \chemformula\ now not loads complete
     \pkg{amsmath} but only \pkg{amstext}.
-\end{itemize}
+\end{changes}
 
-\subsection{Version 4.13}
-\begin{itemize}
-  \item Check for blank input parts and don't process them.g
-  \item Drop support for \cs*{[} and \cs*{]} as replacement for \code{[} and
-    \code{]} insode arrow captions.
-  \item New option \option{atom-format}.
-\end{itemize}
+\begin{changes}{4.13}
+  \change Check for blank input parts and don't process them.
+  \change Drop support for \cs*{[} and \cs*{]} as replacement for \code{[} and
+    \code{]} inside arrow captions.
+  \change New option \option{atom-format}.
+\end{changes}
 
-\subsection{Version 4.14}
-\begin{itemize}
-  \item New option \option{adduct-penalty}.
-\end{itemize}
+\begin{changes}{4.14}
+  \change New option \option{adduct-penalty}.
+\end{changes}
 
 \end{document}

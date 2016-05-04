@@ -30,9 +30,9 @@
 \usetikzlibrary{arrows.meta}
 
 \ExplSyntaxOn
-\tl_const:Nn \c_chemformula_date_tl {2016/01/07}
-\tl_const:Nn \c_chemformula_version_number_tl {4.14a}
-\tl_const:Nn \c_chemformula_version_suffix_tl {}
+\tl_const:Nn \c_chemformula_date_tl {2016/05/03}
+\tl_const:Nn \c_chemformula_version_number_tl {4.14}
+\tl_const:Nn \c_chemformula_version_suffix_tl {b}
 \tl_const:Nx \c_chemformula_version_tl
   { \c_chemformula_version_number_tl \c_chemformula_version_suffix_tl }
 \tl_const:Nn \c_chemformula_info_tl
@@ -217,26 +217,26 @@
 \dim_new:N  \l__chemformula_arrow_length_dim
 \dim_new:N  \l__chemformula_arrow_label_height_dim
 \dim_new:N  \l__chemformula_arrow_label_offset_dim
-\dim_set:Nn \l__chemformula_arrow_label_offset_dim { 2pt }
+\dim_set:Nn \l__chemformula_arrow_label_offset_dim {2pt}
 \dim_new:N  \l__chemformula_arrow_minimum_length_dim
 \dim_new:N  \l__chemformula_arrow_shortage_dim
 \dim_new:N  \l__chemformula_arrow_offset_dim
 \dim_new:N  \l__chemformula_arrow_yshift_dim
-\dim_set:Nn \l__chemformula_arrow_yshift_dim { 0pt }
+\dim_set:Nn \l__chemformula_arrow_yshift_dim {0pt}
 \dim_new:N  \l__chemformula_radical_radius_dim
-\dim_set:Nn \l__chemformula_radical_radius_dim { .2ex }
+\dim_set:Nn \l__chemformula_radical_radius_dim {.2ex}
 \dim_new:N  \l__chemformula_radical_hshift_dim
-\dim_set:Nn \l__chemformula_radical_hshift_dim { .15em }
+\dim_set:Nn \l__chemformula_radical_hshift_dim {.15em}
 \dim_new:N  \l__chemformula_radical_vshift_dim
-\dim_set:Nn \l__chemformula_radical_vshift_dim { .5ex }
+\dim_set:Nn \l__chemformula_radical_vshift_dim {.5ex}
 \dim_new:N  \l__chemformula_radical_space_dim
-\dim_set:Nn \l__chemformula_radical_space_dim { .3em }
+\dim_set:Nn \l__chemformula_radical_space_dim {.3em}
 \dim_new:N  \l__chemformula_arrow_head_dim
 \dim_new:N  \l__chemformula_name_dim
 \dim_new:N  \l__chemformula_adduct_space_dim
-\dim_set:Nn \l__chemformula_adduct_space_dim { .1333em }
+\dim_set:Nn \l__chemformula_adduct_space_dim {.1333em}
 \dim_new:N  \l__chemformula_charge_shift_dim
-\dim_set:Nn \l__chemformula_charge_shift_dim { .5ex }
+\dim_set:Nn \l__chemformula_charge_shift_dim {.5ex}
 \dim_new:N  \l__chemformula_subscript_shift_dim
 \dim_new:N  \l__chemformula_superscript_shift_dim
 \dim_new:N  \l__chemformula_subscript_dim
@@ -244,23 +244,23 @@
 \dim_new:N  \l__chemformula_superscript_dim
 \dim_zero:N \l__chemformula_superscript_dim
 \dim_new:N  \l__chemformula_bond_dim
-\dim_set:Nn \l__chemformula_bond_dim { .5833em }
+\dim_set:Nn \l__chemformula_bond_dim {.5833em}
 \dim_new:N  \l__chemformula_bond_space_dim
-\dim_set:Nn \l__chemformula_bond_space_dim { .07em }
+\dim_set:Nn \l__chemformula_bond_space_dim {.07em}
 \dim_new:N  \l__chemformula_elspec_pair_distance_dim
-\dim_set:Nn \l__chemformula_elspec_pair_distance_dim { 1ex }
+\dim_set:Nn \l__chemformula_elspec_pair_distance_dim {1ex}
 \dim_new:N  \l__chemformula_elspec_pair_line_length_dim
-\dim_set:Nn \l__chemformula_elspec_pair_line_length_dim { 1.5ex }
+\dim_set:Nn \l__chemformula_elspec_pair_line_length_dim {1.5ex}
 \dim_new:N  \l__chemformula_elspec_pair_width_dim
-\dim_set:Nn \l__chemformula_elspec_pair_width_dim { 1pt }
+\dim_set:Nn \l__chemformula_elspec_pair_width_dim {1pt}
 \dim_new:N  \l__chemformula_kroegervink_positive_radius_dim
-\dim_set:Nn \l__chemformula_kroegervink_positive_radius_dim { .3ex }
+\dim_set:Nn \l__chemformula_kroegervink_positive_radius_dim {.3ex}
 \dim_new:N  \l__chemformula_kroegervink_positive_hshift_dim
-\dim_set:Nn \l__chemformula_kroegervink_positive_hshift_dim { .15em }
+\dim_set:Nn \l__chemformula_kroegervink_positive_hshift_dim {.15em}
 \dim_new:N  \l__chemformula_kroegervink_positive_vshift_dim
-\dim_set:Nn \l__chemformula_kroegervink_positive_vshift_dim { .5ex }
+\dim_set:Nn \l__chemformula_kroegervink_positive_vshift_dim {.5ex}
 \dim_new:N  \l__chemformula_kroegervink_positive_space_dim
-\dim_set:Nn \l__chemformula_kroegervink_positive_space_dim { .4em }
+\dim_set:Nn \l__chemformula_kroegervink_positive_space_dim {.4em}
 
 % skips:
 \skip_new:N  \l__chemformula_stoich_space_skip
@@ -274,13 +274,13 @@
 
 % token lists:
 \tl_new:N     \l__chemformula_compound_sep_tl
-\tl_set:Nn    \l__chemformula_compound_sep_tl { .5em }
+\tl_set:Nn    \l__chemformula_compound_sep_tl {.5em}
 \tl_new:N     \l__chemformula_compound_tl
 \tl_new:N     \l__chemformula_arrow_ratio_tl
-\tl_set:Nn    \l__chemformula_arrow_ratio_tl { .6 }
+\tl_set:Nn    \l__chemformula_arrow_ratio_tl {.6}
 \tl_new:N     \l__chemformula_radical_style_tl
 \tl_new:N     \l__chemformula_arrow_head_tl
-\tl_set:Nn    \l__chemformula_arrow_head_tl { cf }
+\tl_set:Nn    \l__chemformula_arrow_head_tl {cf}
 \tl_new:N     \l__chemformula_upper_label_tl
 \tl_new:N     \l__chemformula_lower_label_tl
 \tl_new:N     \l__chemformula_arrow_style_tl
@@ -288,18 +288,18 @@
 \tl_set:Nn    \l__chemformula_arrow_label_style_tl { \footnotesize }
 \tl_new:N     \l__chemformula_arrow_type_tl
 \tl_new:N     \l__chemformula_arrow_penalty_tl
-\tl_set:Nn    \l__chemformula_arrow_penalty_tl { 0 }
+\tl_set:Nn    \l__chemformula_arrow_penalty_tl {0}
 \tl_new:N     \l__chemformula_arrow_offset_tl
-\tl_set:Nn    \l__chemformula_arrow_offset_tl { .75em }
+\tl_set:Nn    \l__chemformula_arrow_offset_tl {.75em}
 \tl_new:N     \l__chemformula_bond_penalty_tl
-\tl_set:Nn    \l__chemformula_bond_penalty_tl { 10000 }
+\tl_set:Nn    \l__chemformula_bond_penalty_tl {10000}
 \tl_new:N     \l__chemformula_chemformula_tmpa_tl
 \tl_new:N     \g__chemformula_options_tl
 \tl_new:N     \g__chemformula_output_tl
 \tl_new:N     \l__chemformula_input_tl
 \tl_new:N     \l__chemformula_stoich_tl
 \tl_new:N     \l__chemformula_decimal_output_tl
-\tl_set:Nn    \l__chemformula_decimal_output_tl { . }
+\tl_set:Nn    \l__chemformula_decimal_output_tl {.}
 \tl_new:N     \l__chemformula_font_family_tl
 \tl_set_eq:NN \l__chemformula_font_family_tl \f@family
 \tl_new:N     \l__chemformula_font_series_tl
@@ -313,22 +313,22 @@
 \tl_new:N     \l__chemformula_name_format_tl
 \tl_set:Nn    \l__chemformula_name_format_tl { \scriptsize\centering }
 \tl_new:N     \l__chemformula_subscript_shift_additional_tl
-\tl_set:Nn    \l__chemformula_subscript_shift_additional_tl { 0pt }
+\tl_set:Nn    \l__chemformula_subscript_shift_additional_tl {0pt}
 \tl_new:N     \l__chemformula_superscript_shift_additional_tl
-\tl_set:Nn    \l__chemformula_superscript_shift_additional_tl { 0pt }
+\tl_set:Nn    \l__chemformula_superscript_shift_additional_tl {0pt}
 \tl_new:N     \l__chemformula_subscript_tl
 \tl_new:N     \l__chemformula_superscript_tl
 \tl_new:N     \l__chemformula_elspec_angle_tl
 \tl_new:N     \l__chemformula_elspec_radius_tl
-\tl_set:Nn    \l__chemformula_elspec_radius_tl { .5ex }
+\tl_set:Nn    \l__chemformula_elspec_radius_tl {.5ex}
 \tl_new:N     \l__chemformula_elspec_default_type_tl
-\tl_set:Nn    \l__chemformula_elspec_default_type_tl { pair }
+\tl_set:Nn    \l__chemformula_elspec_default_type_tl {pair}
 \tl_const:Nx  \c__chemformula_colon_tl { \token_to_str:N : }
 \tl_new:N     \l__chemformula_kroegervink_positive_style_tl
 \tl_new:N     \l__chemformula_kroegervink_neutral_tl
-\tl_set:Nn    \l__chemformula_kroegervink_neutral_tl { $\times$ }
+\tl_set:Nn    \l__chemformula_kroegervink_neutral_tl {$\times$}
 \tl_new:N     \l__chemformula_adduct_penalty_tl
-\tl_set:Nn    \l__chemformula_adduct_penalty_tl { 300 }
+\tl_set:Nn    \l__chemformula_adduct_penalty_tl {300}
 
 % property lists:
 \prop_new:N \l__chemformula_arrows_code_prop
@@ -2161,7 +2161,7 @@
           {
             \tl_put_right:Nn #1
               {
-                \chemformula_group_begin:
+                \group_begin:
                   % open group
                   \keys_set:nV
                     {chemformula}
@@ -2185,7 +2185,7 @@
                 \tl_put_right:Nn #1
                   {
                     % end group
-                    \chemformula_group_end:
+                    \group_end:
                     \tl_clear:N \l__chemformula_internal_options_tl
                   }
                 \bool_set_false:N \l__chemformula_options_bool
@@ -2200,6 +2200,7 @@
   }
 \cs_generate_variant:Nn \__chemformula_input_cmpd:Nn { NV }
 
+% TODO: this is redundant at the moment
 \bool_new:N \g__chemformula_cmpd_group_open_bool
 \cs_new_protected:Npn \chemformula_group_begin:
   {
@@ -2371,7 +2372,7 @@
         % start formula
         \tl_put_left:Nn \l__chemformula_tmpa_tl
           {
-            \chemformula_group_begin:
+            \group_begin:
               \l__chemformula_atom_format_tl
           }
         \int_zero:N \l__chemformula_count_tokens_int
@@ -2410,7 +2411,7 @@
                   { \tl_put_right:Nn #1 {##1} }
               }
           }
-        \tl_put_right:Nn #1 { \chemformula_group_end: }
+        \tl_put_right:Nn #1 { \group_end: }
         % if Kroeger-Vink notation is active:
         \bool_if:NT \l__chemformula_kroegervink_bool
           {
@@ -2984,25 +2985,47 @@
   }
 \cs_generate_variant:Nn \__chemformula_lewis_set_elspec_type:n { V }
 
-\prop_put:Nnn \l__chemformula_lewis_elspec_types_prop { | }
+% available types:
+\cs_new_protected:Npn \chemformula_declare_lewis_elspec_type:nn #1#2
+  { \prop_put:Nnn \l__chemformula_lewis_elspec_types_prop {#1} {#2} }
+
+\chemformula_declare_lewis_elspec_type:nn
+  { | }
   { \__chemformula_lewis_elspec_pair_line: }
-\prop_put:Nnn \l__chemformula_lewis_elspec_types_prop { : }
+
+\chemformula_declare_lewis_elspec_type:nn
+  { : }
   { \__chemformula_lewis_elspec_pair_dots: }
-\prop_put:Nnn \l__chemformula_lewis_elspec_types_prop { . }
+
+\chemformula_declare_lewis_elspec_type:nn
+  { . }
   { \__chemformula_lewis_elspec_single: }
-\prop_put:Nnn \l__chemformula_lewis_elspec_types_prop { o }
-  { \__chemformula_lewis_elspec_empty: }
-\prop_put:Nnn \l__chemformula_lewis_elspec_types_prop { pair }
-  { \__chemformula_lewis_elspec_pair_dots: }
-\prop_put:Nnn \l__chemformula_lewis_elspec_types_prop { pair~(dotted) }
-  { \__chemformula_lewis_elspec_pair_dots: }
-\prop_put:Nnn \l__chemformula_lewis_elspec_types_prop { pair~(line) }
-  { \__chemformula_lewis_elspec_pair_line: }
-\prop_put:Nnn \l__chemformula_lewis_elspec_types_prop { single }
-  { \__chemformula_lewis_elspec_single: }
-\prop_put:Nnn \l__chemformula_lewis_elspec_types_prop { empty }
+
+\chemformula_declare_lewis_elspec_type:nn
+  { o }
   { \__chemformula_lewis_elspec_empty: }
 
+\chemformula_declare_lewis_elspec_type:nn
+  {pair}
+  { \__chemformula_lewis_elspec_pair_dots: }
+
+\chemformula_declare_lewis_elspec_type:nn
+  {pair~(dotted)}
+  { \__chemformula_lewis_elspec_pair_dots: }
+
+\chemformula_declare_lewis_elspec_type:nn
+  {pair~(line)}
+  { \__chemformula_lewis_elspec_pair_line: }
+
+\chemformula_declare_lewis_elspec_type:nn
+  {single}
+  { \__chemformula_lewis_elspec_single: }
+
+\chemformula_declare_lewis_elspec_type:nn
+  {empty}
+  { \__chemformula_lewis_elspec_empty: }
+
+% functions that do the actual drawing:
 \cs_new_protected:Npn \__chemformula_lewis_elspec_pair_dots:
   {
     \chemformula_draw:nn
@@ -3172,163 +3195,163 @@
 
 % --------------------------------------------------------------------------
 VERSION HISTORY
-2012/01/28 - version 3.0  - bundled with packages `chemmacros' and `ghs'
-2012/01/30 - version 3.0a - bugfix
-                          - renamed formula => chemformula
-                            (following a request by Karl Berry for TeXlive)
-2012/02/03 - version 3.0b - stepped number with `chemmacros'
-2012/02/05 - version 3.0c - stepped number with `chemmacros'
-2012/02/10 - version 3.0d - several bugfixes
-                          - new arrow type <>
-2012/02/19 - version 3.1  - new arrow types -/>, </- and <o>
-                          - new commands \DeclareChemArrow, \RenewChemArrow and
-                            \ShowChemArrow
-2012/02/26 - version 3.1a - stepped number with `chemmacros'
-2012/03/03 - version 3.1b - arrow types are stored in a sequence to automate the
-                            search and replace in the right order 
-                          - new arrow type ==                                   
-                          - IUPAC compliance for stoichiometric factors
-                          - new handling of super- and subscripts to correct
-                            various flaws: clear distinction between isotope and
-                            formula
-                          - new option charge-vshift
-2012/03/14 - version 3.1c - improved arrow labels
-2012/03/20 - version 3.2  - new: option input via @{<options>}
-2012/05/07 - version 3.3  - \ch now bypasses \ref{}, \label{}, and \intertext{}
-2012/05/13 - version 3.3a - stepped number with `chemmacros'
-2012/05/18 - version 3.3b - stepped number with `chemmacros'
-2012/05/18 - version 3.3c - stepped number with `chemmacros'
-2012/07/24 - version 3.3d - stepped number with `chemmacros'
-                          - default bond length set to 1.1667ex
-                          - bug fix in the bonds
-2012/08/21 - version 3.3e - stepped number with `chemmacros'
-2012/09/11 - version 3.4  - cleaned a little, minor bug fixes
-                          - switched to internal scratch variables
-                          - new command \bond, more bond types
-                          - new commands \DeclareChemBond, \DeclareChemBondAlias,
-                            \RenewChemBond and \ShowChemBond
-                          - radical point thicker, new options `radical-style'
-                            and `radical-radius'
-2012/10/03 - version 3.4a - stepped number with `chemmacros'
-2013/01/04 - version 3.4b - bug fix in the sub- and superscript handling
-2013/01/28 - version 3.5  - disallow breaks at bonds
-                          - allow breaks after arrows
-                          - made some spaces in chemformulas stretch- and
-                            shrinkable
-                          - various internal code improvements
-                          - changed defaults for horizontal spaces that have in
-                            set in ex into corresponding values in em.
-                          - improvements to the placement of sub- and superscripts
-2013/02/19 - version 3.5a - stepped number with `chemmacros'
-2013/02/26 - version 3.6  - support for use with the `breqn' package
-                          - math escaping also via \(\)
-                          - internal: clearer escaping macros
-                          - new options: `radical-vshift', `radical-hshift'
-                            and `radical-space'
-                          - bug fix: `radical-...' options are now correctly set
-                          - stoichiometric factors: add leading 0 if missing
-                          - new option: `stoich-paren-parse'
-                          - internal changes: be way more rigid about protected
-                            and expandable macros
-                          - internal changes: clearer distinction between
-                            private macros and accessable module macros
-                          - internal changes: clearer distinction between
-                            document commands and module level commands
-                          - !()() syntax now also works with babel's French
-2013/02/27 - version 3.6a - bug fix: escaped text and math stays escaped, i.e.
-                            also arrow code like `<=>'
-2013/04/19 - version 3.6b - new option `arrow-min-length'
-                          - bug fix: stoichiometric fractions correctly displayed
-2013/07/06 - version 4.0  - don't need `chemmacros' package any more,
-                            `chemformula' can be used stand-alone;
-                            this has lead to a few definitions that previously
-                            were done by chemmacros; chemmacros will get them
-                            now from chemformula when needed
-                          - bug fix: allow braces in subscripts and superscripts
-                            by disabling superfluous \chemformula_subscript:n
-                            and \chemformula_superscript:n in the scripts write
-                            commands
-                          - remove superfluous rescanning at the begin of the
-                            formula input; this is handled by the sanitize
-                            command later anyway
-                          - changed internal mathshifts from $ ... $ to \( ... \)
-                          - removed superfluous \textstyle from math-frac
-                            definition
-                          - new command \charrow{}[][] that allows direct
-                            access to chemformula's arrows
-                          - new command \chname()() that allows direct access
-                            to chemformula's naming
-                          - new command \chcpd[]{} that allows typesetting a
-                            simple single formula - also not nestable with \ch
-                          - new command \setchemformula
-                          - package option: `strict'
-                          - don't allow a line break before a plus
-                            (`chem-and')
-                          - don't allow a line break between a stoichiometric
-                            factor and a compound
-                          - changed formal charges to match ``plain'' charges
-2013/07/26 - version 4.0a - added options `arrow-penalty' (0), `plus-penalty'
-                            (700) and `bond-penalty' (10000) that determine if
-                            there may be a break after an arrow, a bond or the
-                            plus
-2013/08/24 - version 4.1  - changed `0' values in TikZ coordinates into `0pt'
-                            see http://tex.stackexchange.com/q/128792/5049 and
-                            http://tex.stackexchange.com/q/118467/5049 for
-                            reference
-                          - new option `tikz-external-disable'
-                          - new option `frac-math-cmd'
-2013/10/24 - version 4.2  - \chemformula_font_inner: is only applied /once/ to
-                            a formula, and at the beginning, fixes
-                            https://bitbucket.org/cgnieder/chemmacros/issue/23
-                          - fixed wrong setting of the TikZ bond style
-                          - new option `arrow-style'
-                          - new command \chlewis
-2013/11/04 - version 4.2a - bug fix in \chcpd,
-                          - change sanitizing/restoring of category codes
-2014/01/24 - version 4.3  - changed behaviour of \DeclareChem to match
-                            \DeclareRobustCommand, i.e., no check if command
-                            is defined; added a \NewChem variant to each that
-                            /does/ check; use \NewChem instead of \DeclareChem
-                            for definitions
-                          - new option stoich-print
-                          - new command \chstoich
-2014/01/29 - version 4.4  - treat a single `-' as a minus sign
-2014/04/07 - version 4.5  - make sure that < and > have catcode 12 when read
-                            as parts of arrows
-                          - new arrow types `>=<', `>=<<', `>>=<' and `<==>'
-                          - arrow lengths and compound offset now correctly
-                            adapts to new fontsize if relative lengths (em,ex)
-                            are used
-                          - allow optional arguments to \\ in equation
-                            environments
-                          - allow optional arguments to \label in equation
-                            environments
-                            (credits: http://tex.stackexchange.com/a/166661/5049)
-                          - support for Kröger-Vink notation
-2014/06/30 - version 4.6  - fix: a comma in a superscript is typeset according
-                            to `decimal-marker' again
-                          - fix charge type behaviour: option `circled' and
-                            `circletype' are now obeyed if the option is
-                            changed mid-document
-                          - new option `chemformula/circled' similar to
-                            `chemmacros/circled'
-                          - new option `chemformula/circletype' similar to
-                            `chemmacros/circletype'
-2014/08/04 - version 4.7  - change dependency: pgf library `arrows.meta'
-                            instead of `arrows'
-                          - new arrow tip definition allows redeclaration to
-                            other existing tips by \pgfkeys{cf/.tip=<tip>}
-2014/08/08 - version 4.8  - fix bug introduced in last update: `butt cap' now
-                            needs to be `Butt Cap' with the new `arrows.meta'
-                            library
-                          - split from `chemmacros' bundle as independent
-                            package
-2014/10/07 - version 4.9  - new options: `minus-space', `minus-penalty',
-                            `plus-output-symbol' and `minus-output-symbol'
-2015/03/16 - version 4.10 - new macros \NewChemCompoundProperty,
-                            \RenewChemCompoundProperty,
-                            \DeclareChemCompoundProperty,
-                            \RemoveChemCompoundProperty
+2012/01/28 - version 3.0   - bundled with packages `chemmacros' and `ghs'
+2012/01/30 - version 3.0a  - bugfix
+                           - renamed formula => chemformula
+                             (following a request by Karl Berry for TeXlive)
+2012/02/03 - version 3.0b  - stepped number with `chemmacros'
+2012/02/05 - version 3.0c  - stepped number with `chemmacros'
+2012/02/10 - version 3.0d  - several bugfixes
+                           - new arrow type <>
+2012/02/19 - version 3.1   - new arrow types -/>, </- and <o>
+                           - new commands \DeclareChemArrow, \RenewChemArrow and
+                             \ShowChemArrow
+2012/02/26 - version 3.1a  - stepped number with `chemmacros'
+2012/03/03 - version 3.1b  - arrow types are stored in a sequence to automate the
+                             search and replace in the right order 
+                           - new arrow type ==                                   
+                           - IUPAC compliance for stoichiometric factors
+                           - new handling of super- and subscripts to correct
+                             various flaws: clear distinction between isotope and
+                             formula
+                           - new option charge-vshift
+2012/03/14 - version 3.1c  - improved arrow labels
+2012/03/20 - version 3.2   - new: option input via @{<options>}
+2012/05/07 - version 3.3   - \ch now bypasses \ref{}, \label{}, and \intertext{}
+2012/05/13 - version 3.3a  - stepped number with `chemmacros'
+2012/05/18 - version 3.3b  - stepped number with `chemmacros'
+2012/05/18 - version 3.3c  - stepped number with `chemmacros'
+2012/07/24 - version 3.3d  - stepped number with `chemmacros'
+                           - default bond length set to 1.1667ex
+                           - bug fix in the bonds
+2012/08/21 - version 3.3e  - stepped number with `chemmacros'
+2012/09/11 - version 3.4   - cleaned a little, minor bug fixes
+                           - switched to internal scratch variables
+                           - new command \bond, more bond types
+                           - new commands \DeclareChemBond, \DeclareChemBondAlias,
+                             \RenewChemBond and \ShowChemBond
+                           - radical point thicker, new options `radical-style'
+                             and `radical-radius'
+2012/10/03 - version 3.4a  - stepped number with `chemmacros'
+2013/01/04 - version 3.4b  - bug fix in the sub- and superscript handling
+2013/01/28 - version 3.5   - disallow breaks at bonds
+                           - allow breaks after arrows
+                           - made some spaces in chemformulas stretch- and
+                             shrinkable
+                           - various internal code improvements
+                           - changed defaults for horizontal spaces that have in
+                             set in ex into corresponding values in em.
+                           - improvements to the placement of sub- and superscripts
+2013/02/19 - version 3.5a  - stepped number with `chemmacros'
+2013/02/26 - version 3.6   - support for use with the `breqn' package
+                           - math escaping also via \(\)
+                           - internal: clearer escaping macros
+                           - new options: `radical-vshift', `radical-hshift'
+                             and `radical-space'
+                           - bug fix: `radical-...' options are now correctly set
+                           - stoichiometric factors: add leading 0 if missing
+                           - new option: `stoich-paren-parse'
+                           - internal changes: be way more rigid about protected
+                             and expandable macros
+                           - internal changes: clearer distinction between
+                             private macros and accessable module macros
+                           - internal changes: clearer distinction between
+                             document commands and module level commands
+                           - !()() syntax now also works with babel's French
+2013/02/27 - version 3.6a  - bug fix: escaped text and math stays escaped, i.e.
+                             also arrow code like `<=>'
+2013/04/19 - version 3.6b  - new option `arrow-min-length'
+                           - bug fix: stoichiometric fractions correctly displayed
+2013/07/06 - version 4.0   - don't need `chemmacros' package any more,
+                             `chemformula' can be used stand-alone;
+                             this has lead to a few definitions that previously
+                             were done by chemmacros; chemmacros will get them
+                             now from chemformula when needed
+                           - bug fix: allow braces in subscripts and superscripts
+                             by disabling superfluous \chemformula_subscript:n
+                             and \chemformula_superscript:n in the scripts write
+                             commands
+                           - remove superfluous rescanning at the begin of the
+                             formula input; this is handled by the sanitize
+                             command later anyway
+                           - changed internal mathshifts from $ ... $ to \( ... \)
+                           - removed superfluous \textstyle from math-frac
+                             definition
+                           - new command \charrow{}[][] that allows direct
+                             access to chemformula's arrows
+                           - new command \chname()() that allows direct access
+                             to chemformula's naming
+                           - new command \chcpd[]{} that allows typesetting a
+                             simple single formula - also not nestable with \ch
+                           - new command \setchemformula
+                           - package option: `strict'
+                           - don't allow a line break before a plus
+                             (`chem-and')
+                           - don't allow a line break between a stoichiometric
+                             factor and a compound
+                           - changed formal charges to match ``plain'' charges
+2013/07/26 - version 4.0a  - added options `arrow-penalty' (0), `plus-penalty'
+                             (700) and `bond-penalty' (10000) that determine if
+                             there may be a break after an arrow, a bond or the
+                             plus
+2013/08/24 - version 4.1   - changed `0' values in TikZ coordinates into `0pt'
+                             see http://tex.stackexchange.com/q/128792/5049 and
+                             http://tex.stackexchange.com/q/118467/5049 for
+                             reference
+                           - new option `tikz-external-disable'
+                           - new option `frac-math-cmd'
+2013/10/24 - version 4.2   - \chemformula_font_inner: is only applied /once/ to
+                             a formula, and at the beginning, fixes
+                             https://bitbucket.org/cgnieder/chemmacros/issue/23
+                           - fixed wrong setting of the TikZ bond style
+                           - new option `arrow-style'
+                           - new command \chlewis
+2013/11/04 - version 4.2a  - bug fix in \chcpd,
+                           - change sanitizing/restoring of category codes
+2014/01/24 - version 4.3   - changed behaviour of \DeclareChem to match
+                             \DeclareRobustCommand, i.e., no check if command
+                             is defined; added a \NewChem variant to each that
+                             /does/ check; use \NewChem instead of \DeclareChem
+                             for definitions
+                           - new option stoich-print
+                           - new command \chstoich
+2014/01/29 - version 4.4   - treat a single `-' as a minus sign
+2014/04/07 - version 4.5   - make sure that < and > have catcode 12 when read
+                             as parts of arrows
+                           - new arrow types `>=<', `>=<<', `>>=<' and `<==>'
+                           - arrow lengths and compound offset now correctly
+                             adapts to new fontsize if relative lengths (em,ex)
+                             are used
+                           - allow optional arguments to \\ in equation
+                             environments
+                           - allow optional arguments to \label in equation
+                             environments
+                             (credits: http://tex.stackexchange.com/a/166661/5049)
+                           - support for Kröger-Vink notation
+2014/06/30 - version 4.6   - fix: a comma in a superscript is typeset according
+                             to `decimal-marker' again
+                           - fix charge type behaviour: option `circled' and
+                             `circletype' are now obeyed if the option is
+                             changed mid-document
+                           - new option `chemformula/circled' similar to
+                             `chemmacros/circled'
+                           - new option `chemformula/circletype' similar to
+                             `chemmacros/circletype'
+2014/08/04 - version 4.7   - change dependency: pgf library `arrows.meta'
+                             instead of `arrows'
+                           - new arrow tip definition allows redeclaration to
+                             other existing tips by \pgfkeys{cf/.tip=<tip>}
+2014/08/08 - version 4.8   - fix bug introduced in last update: `butt cap' now
+                             needs to be `Butt Cap' with the new `arrows.meta'
+                             library
+                           - split from `chemmacros' bundle as independent
+                             package
+2014/10/07 - version 4.9   - new options: `minus-space', `minus-penalty',
+                             `plus-output-symbol' and `minus-output-symbol'
+2015/03/16 - version 4.10  - new macros \NewChemCompoundProperty,
+                             \RenewChemCompoundProperty,
+                             \DeclareChemCompoundProperty,
+                             \RemoveChemCompoundProperty
 2015/04/03 - version 4.10a - bug fix in \__chemformula_input_stoich:n
 2015/06/30 - version 4.11  - small changes in \chcpd
                            - remove unnecessary \mathchoice => noticable speed
@@ -3353,6 +3376,8 @@ VERSION HISTORY
                              https://github.com/cgnieder/chemformula/issues/2
                            - new option `adduct-penalty'
 2016/01/07 - version 4.14a - \prop_get:Nn => \prop_item:Nn
+2016/05/03 - version 4.14b - local options now are correctly working again
+                           - `atom-format' is only applied to formulas
 
 % --------------------------------------------------------------------------
 % TODO
