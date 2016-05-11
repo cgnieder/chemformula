@@ -30,9 +30,9 @@
 \usetikzlibrary{arrows.meta}
 
 \ExplSyntaxOn
-\tl_const:Nn \c_chemformula_date_tl {2016/05/03}
-\tl_const:Nn \c_chemformula_version_number_tl {4.14}
-\tl_const:Nn \c_chemformula_version_suffix_tl {b}
+\tl_const:Nn \c_chemformula_date_tl {2016/05/11}
+\tl_const:Nn \c_chemformula_version_number_tl {4.15}
+\tl_const:Nn \c_chemformula_version_suffix_tl {}
 \tl_const:Nx \c_chemformula_version_tl
   { \c_chemformula_version_number_tl \c_chemformula_version_suffix_tl }
 \tl_const:Nn \c_chemformula_info_tl
@@ -66,6 +66,11 @@
   {
     You've~tried~to~renew~the~arrow~type~\tl_to_str:n {#1} ~but~it~doesn't~
     exist.
+  }
+
+\msg_new:nnn {chemformula} {unknown-arrow}
+  {
+    The~ arrow~ type~ \tl_to_str:n {#1} ~ doesn't~ exist~ \msg_line_context: . 
   }
 
 \msg_new:nnn {chemformula} {new-bond}
@@ -141,16 +146,17 @@
 
 % --------------------------------------------------------------------------
 % variants of kernel functions:
-\cs_generate_variant:Nn \keys_set:nn        { nV }
-\cs_generate_variant:Nn \tl_if_blank:nF     { V }
-\cs_generate_variant:Nn \tl_if_in:nnT       { x , nV }
-\cs_generate_variant:Nn \tl_set:Nn          { cV }
-\cs_generate_variant:Nn \tl_replace_all:Nnn { NV }
-\cs_generate_variant:Nn \tl_set_rescan:Nnn  { NnV }
-\cs_generate_variant:Nn \prop_item:Nn       { NV }
-\cs_generate_variant:Nn \dim_set:Nn         { NV }
-\cs_generate_variant:Nn \skip_set:Nn        { cV }
-\cs_generate_variant:Nn \str_if_eq:nnT      { V }
+\cs_generate_variant:Nn \keys_set:nn         { nV }
+\cs_generate_variant:Nn \tl_if_blank:nF      { V }
+\cs_generate_variant:Nn \tl_if_in:nnT        { x , nV }
+\cs_generate_variant:Nn \tl_set:Nn           { cV }
+\cs_generate_variant:Nn \tl_replace_all:Nnn  { NV }
+\cs_generate_variant:Nn \tl_replace_once:Nnn { Nxx }
+\cs_generate_variant:Nn \tl_set_rescan:Nnn   { NnV }
+\cs_generate_variant:Nn \prop_item:Nn        { NV }
+\cs_generate_variant:Nn \dim_set:Nn          { NV }
+\cs_generate_variant:Nn \skip_set:Nn         { cV }
+\cs_generate_variant:Nn \str_if_eq:nnT       { V }
 
 % --------------------------------------------------------------------------
 % VARIABLES
@@ -161,9 +167,11 @@
 
 \dim_new:N \l__chemformula_tmpa_dim
 \dim_new:N \l__chemformula_tmpb_dim
+\dim_new:N \l__chemformula_tmpc_dim
 
 \int_new:N \l__chemformula_tmpa_int
 \int_new:N \l__chemformula_tmpb_int
+\int_new:N \l__chemformula_tmpc_int
 
 \box_new:N \l__chemformula_tmpa_box
 \box_new:N \l__chemformula_tmpb_box
@@ -785,29 +793,17 @@
 % --------------------------------------------------------------------------
 % define arrow types
 
-% read arrow labels:
-\cs_new_protected:Npn \__chemformula_arrow_labels:nn #1#2
+% draw arrows:
+\cs_new_protected:Npn \__chemformula_draw_arrow:nnn #1#2#3
   {
-    \hbox_set:Nn \l__chemformula_arrow_arg_i_box
-      { \tl_use:N \l__chemformula_arrow_label_style_tl #1 }
-    \hbox_set:Nn \l__chemformula_arrow_arg_ii_box
-      { \tl_use:N \l__chemformula_arrow_label_style_tl #2 }
-    % now that we have both arguments do the actual drawing:
-    \prop_get:NVN \l__chemformula_arrows_code_prop
-      \l__chemformula_arrow_type_tl
-      \l__chemformula_tmpb_tl
-    \__chemformula_arrow_draw:V \l__chemformula_tmpb_tl
-  }
-
-% get arrows (for the use in \ch to replace the symbol)
-%  #1: symbol
-\cs_new_protected:Npn \__chemformula_arrows_get:n #1
-  {
-    % first clear the arguments
-    \box_clear:N \l__chemformula_arrow_arg_i_box
-    \box_clear:N \l__chemformula_arrow_arg_ii_box
-    % then get the arrow type
-    \tl_set:Nn \l__chemformula_arrow_type_tl {#1}
+    \chemformula_if_is_arrow:nTF {#1}
+      {
+        \prop_get:NnN \l__chemformula_arrows_code_prop
+          {#1}
+          \l__chemformula_tmpa_tl
+        \__chemformula_arrow_draw:Vnn \l__chemformula_tmpa_tl {#2} {#3}
+      }
+      { \msg_error:nnn {chemformula} {unknown-arrow} {#1} }
   }
 
 % this will be \arrow inside \ch
@@ -815,19 +811,22 @@
   {
     \group_begin:
       \chemformula_tikzexternaldisable:
-      \__chemformula_arrows_get:n {#1}
-      \__chemformula_arrow_labels:nn {#2} {#3}
+      \__chemformula_draw_arrow:nnn {#1} {#2} {#3}
     \group_end:
   }
 
 % draw the arrows
-\cs_new_protected:Npn \__chemformula_arrow_draw:n #1
+\cs_new_protected:Npn \__chemformula_arrow_draw:nnn #1#2#3
   {
     \chemformula_nobreak:
     % prepare arrow code for drawing:
     \tl_set_rescan:Nnn \l__chemformula_tmpc_tl
       { \char_set_catcode_letter:N \_ } {#1}
     % determine length of the arrow
+    \hbox_set:Nn \l__chemformula_arrow_arg_i_box
+      { \tl_use:N \l__chemformula_arrow_label_style_tl #2 }
+    \hbox_set:Nn \l__chemformula_arrow_arg_ii_box
+      { \tl_use:N \l__chemformula_arrow_label_style_tl #3 }
     \__chemformula_determine_arrow_length:NN
       \l__chemformula_arrow_arg_i_box
       \l__chemformula_arrow_arg_ii_box
@@ -867,14 +866,21 @@
       \c_zero_skip
       \l__chemformula_arrow_penalty_tl
   }
-\cs_generate_variant:Nn \__chemformula_arrow_draw:n { V }
+\cs_generate_variant:Nn \__chemformula_arrow_draw:nnn { V }
+
+\prg_new_conditional:Npnn \chemformula_if_is_arrow:n #1 {p,T,F,TF}
+  {
+    \seq_if_in:NnTF \l__chemformula_arrows_type_seq {#1}
+      { \prg_return_true: }
+      { \prg_return_false: }
+  }
 
 % commands to declare arrows (can also be used by users):
 %  #1: symbol, #2: code
-\NewDocumentCommand \NewChemArrow { mm }
+\NewDocumentCommand \NewChemArrow {mm}
   {
-    \prop_if_in:NnTF \l__chemformula_arrows_code_prop {#1}
-      { \msg_error:nnn {chemformula} { new-arrow } {#1} }
+    \chemformula_if_is_arrow:nTF {#1}
+      { \msg_error:nnn {chemformula} {new-arrow} {#1} }
       {
         % store type in the sequence and code in the property list
         \seq_put_right:Nn \l__chemformula_arrows_type_seq {#1}
@@ -882,24 +888,24 @@
       }
   }
 
-\NewDocumentCommand \DeclareChemArrow { mm }
+\NewDocumentCommand \DeclareChemArrow {mm}
   {
-    \prop_if_in:NnF \l__chemformula_arrows_code_prop {#1}
+    \chemformula_if_is_arrow:nF {#1}
       { \seq_put_right:Nn \l__chemformula_arrows_type_seq {#1} }
     % store type in the sequence and code in the property list
     \prop_put:Nnn \l__chemformula_arrows_code_prop {#1} {#2}
   }
 
-\NewDocumentCommand \RenewChemArrow { mm }
+\NewDocumentCommand \RenewChemArrow {mm}
   {
-    \prop_if_in:NnTF \l__chemformula_arrows_code_prop {#1}
+    \chemformula_if_is_arrow:nTF {#1}
       { \prop_put:Nnn \l__chemformula_arrows_code_prop {#1} {#2} }
-      { \msg_error:nnn {chemformula} { renew-arrow } {#1} }
+      { \msg_error:nnn {chemformula} {renew-arrow} {#1} }
   }
 
-\NewDocumentCommand \ProvideChemArrow { mm }
+\NewDocumentCommand \ProvideChemArrow {mm}
   {
-    \prop_if_in:NnF \l__chemformula_arrows_code_prop {#1}
+    \chemformula_if_is_arrow:nF {#1}
       {
         % store type in the sequence and code in the property list
         \seq_put_right:Nn \l__chemformula_arrows_type_seq {#1}
@@ -907,22 +913,48 @@
       }
   }
   
-\NewDocumentCommand \ShowChemArrow { m }
+\NewDocumentCommand \ShowChemArrow {m}
   {
-    \prop_get:NnN \l__chemformula_arrows_code_prop {#1} \l__chemformula_tmpa_tl
-    \tl_to_str:N \l__chemformula_tmpa_tl
+    \chemformula_if_is_arrow:nT {#1}
+      {
+        \prop_get:NnN \l__chemformula_arrows_code_prop {#1}
+          \l__chemformula_tmpa_tl
+        \tl_to_str:N \l__chemformula_tmpa_tl
+      }
   }
 
-% declare arrows in the right order
-% e.g. <-> must be declared before -> in order to search & replace it first
-% resonance arrow:
-\NewChemArrow { <-> }
-  { \draw[chemarrow,cf-cf] (cf_arrow_start) -- (cf_arrow_end) ; }
-\NewChemArrow { -> }
+% declare arrows:
+% standard arrows:
+\NewChemArrow {->}
   { \draw[chemarrow,-cf] (cf_arrow_start) -- (cf_arrow_end) ; }
-\NewChemArrow { <- }
+\NewChemArrow {<-}
   { \draw[chemarrow,cf-] (cf_arrow_start) -- (cf_arrow_end) ; }
-\NewChemArrow { <> }
+\NewChemArrow {<->}
+  { \draw[chemarrow,cf-cf] (cf_arrow_start) -- (cf_arrow_end) ; }
+% equilibria:
+\NewChemArrow {<=>}
+  {
+    \draw[chemarrow,-left~cf]
+      ([yshift=.15ex]cf_arrow_start) -- ([yshift=.15ex]cf_arrow_end) ;
+    \draw[chemarrow,left~cf-]
+      ([yshift=-.15ex]cf_arrow_start) -- ([yshift=-.15ex]cf_arrow_end) ;
+  }
+\NewChemArrow {<=>>}
+  {
+    \draw[chemarrow,-left~cf]
+      ([yshift=.15ex]cf_arrow_start) -- ([yshift=.15ex]cf_arrow_end) ;
+    \draw[chemarrow,left~cf-]
+      ([yshift=-.15ex]cf_arrow_mid_start) -- ([yshift=-.15ex]cf_arrow_mid_end) ;
+  }
+\NewChemArrow {<<=>}
+  {
+    \draw[chemarrow,-left~cf]
+      ([yshift=.15ex]cf_arrow_mid_start) -- ([yshift=.15ex]cf_arrow_mid_end) ;
+    \draw[chemarrow,left~cf-]
+      ([yshift=-.15ex]cf_arrow_start) -- ([yshift=-.15ex]cf_arrow_end) ;
+  }
+% two arrows:
+\NewChemArrow {<>}
   {
     \draw[chemarrow,-cf]
       ([yshift=.2ex]cf_arrow_start) -- ([yshift=.2ex]cf_arrow_end) ;
@@ -930,75 +962,78 @@
       ([yshift=-.2ex]cf_arrow_start) -- ([yshift=-.2ex]cf_arrow_end) ;
   }
 % isolobal arrow:
-\NewChemArrow { <o> }
+\NewChemArrow {<o>}
   {
     \draw[chemarrow,cf-cf] (cf_arrow_start) -- (cf_arrow_end) ;
     \draw[chemarrow]
       (cf_arrow_mid) .. controls ++(-.9ex,-1.5ex) and
       ++(.9ex,-1.5ex) .. (cf_arrow_mid) ;
   }
-\NewChemArrow { <=>> }
-  {
-    \draw[chemarrow,-left~cf]
-      ([yshift=.15ex]cf_arrow_start) -- ([yshift=.15ex]cf_arrow_end) ;
-    \draw[chemarrow,left~cf-]
-      ([yshift=-.15ex]cf_arrow_mid_start) -- ([yshift=-.15ex]cf_arrow_mid_end) ;
-  }
-\NewChemArrow { <<=> }
-  {
-    \draw[chemarrow,-left~cf]
-      ([yshift=.15ex]cf_arrow_mid_start) -- ([yshift=.15ex]cf_arrow_mid_end) ;
-    \draw[chemarrow,left~cf-]
-      ([yshift=-.15ex]cf_arrow_start) -- ([yshift=-.15ex]cf_arrow_end) ;
-  }
-\NewChemArrow { <=> }
-  {
-    \draw[chemarrow,-left~cf]
-      ([yshift=.15ex]cf_arrow_start) -- ([yshift=.15ex]cf_arrow_end) ;
-    \draw[chemarrow,left~cf-]
-      ([yshift=-.15ex]cf_arrow_start) -- ([yshift=-.15ex]cf_arrow_end) ;
-  }
-\NewChemArrow { >>=< }
+% equilibria upside down:
+\NewChemArrow {>>=<}
   {
     \draw[chemarrow,right~cf-]
       ([yshift=.15ex]cf_arrow_start) -- ([yshift=.15ex]cf_arrow_end) ;
     \draw[chemarrow,-right~cf]
       ([yshift=-.15ex]cf_arrow_mid_start) -- ([yshift=-.15ex]cf_arrow_mid_end) ;
   }
-\NewChemArrow { >=<< }
+\NewChemArrow {>=<<}
   {
     \draw[chemarrow,right~cf-]
       ([yshift=.15ex]cf_arrow_mid_start) -- ([yshift=.15ex]cf_arrow_mid_end) ;
     \draw[chemarrow,-right~cf]
       ([yshift=-.15ex]cf_arrow_start) -- ([yshift=-.15ex]cf_arrow_end) ;
   }
-\NewChemArrow { >=< }
+\NewChemArrow {>=<}
   {
     \draw[chemarrow,right~cf-]
       ([yshift=.15ex]cf_arrow_start) -- ([yshift=.15ex]cf_arrow_end) ;
     \draw[chemarrow,-right~cf]
       ([yshift=-.15ex]cf_arrow_start) -- ([yshift=-.15ex]cf_arrow_end) ;
   }
-\NewChemArrow { <==> }
+%
+\NewChemArrow {<==>}
   {
     \draw[chemarrow,double~ equal~ sign~ distance,double,Implies-Implies]
       (cf_arrow_start) -- (cf_arrow_end) ;
-    % \node at ([yshift=-.2ex]cf_arrow_mid) { $\Leftrightarrow$ } ;
   }
-\NewChemArrow { -/> }
+% no reaction:
+\NewChemArrow {-/>}
   {
     \draw[chemarrow,-cf] (cf_arrow_start) -- (cf_arrow_end) ;
     \draw[chemarrow] (cf_arrow_mid) ++ (.2ex,.4ex) -- ++(-.4ex,-.8ex) ;
     \draw[chemarrow] (cf_arrow_mid) ++ (-.2ex,.4ex) -- ++(-.4ex,-.8ex) ;
   }
-\NewChemArrow { </- }
+\NewChemArrow {</-}
   {
     \draw[chemarrow,cf-] (cf_arrow_start) -- (cf_arrow_end) ;
     \draw[chemarrow] (cf_arrow_mid) ++ (.2ex,.4ex) -- ++(-.4ex,-.8ex) ;
     \draw[chemarrow] (cf_arrow_mid) ++ (.6ex,.4ex) -- ++(-.4ex,-.8ex) ;
   }
 % net reaction:
-\NewChemArrow { == } { \node at ([yshift=-.2ex]cf_arrow_mid) { = } ; }
+\NewChemArrow {==} { \node at ([yshift=-.2ex]cf_arrow_mid) { = } ; }
+% quasi equilibria:
+\NewChemArrow{<=o>}{
+  \draw[chemarrow,-left~cf]
+    ([yshift=.15ex]cf_arrow_start) -- ([yshift=.15ex]cf_arrow_end) ;
+  \draw[chemarrow,left~cf-]
+    ([yshift=-.15ex]cf_arrow_start) -- ([yshift=-.15ex]cf_arrow_end) ;
+  \draw[chemarrow] (cf_arrow_mid) circle (.4ex) ;
+}
+\NewChemArrow{<=o>>}{
+  \draw[chemarrow,-left~cf]
+    ([yshift=.15ex]cf_arrow_start) -- ([yshift=.15ex]cf_arrow_end) ;
+  \draw[chemarrow,left~cf-]
+    ([yshift=-.15ex]cf_arrow_mid_start) -- ([yshift=-.15ex]cf_arrow_mid_end) ;
+  \draw[chemarrow] (cf_arrow_mid) circle (.4ex) ;
+}
+\NewChemArrow{<<=o>}{
+  \draw[chemarrow,-left~cf]
+    ([yshift=.15ex]cf_arrow_mid_start) -- ([yshift=.15ex]cf_arrow_mid_end) ;
+  \draw[chemarrow,left~cf-]
+    ([yshift=-.15ex]cf_arrow_start) -- ([yshift=-.15ex]cf_arrow_end) ;
+  \draw[chemarrow] (cf_arrow_mid) circle (.4ex) ;
+}
 
 % --------------------------------------------------------------------------
 % arrow customization
@@ -1201,10 +1236,44 @@
         \char_set_catcode_other:N \=
       }
       {#2}
+    \int_zero:N \l__chemformula_tmpa_int
+    \seq_clear:N \l__chemformula_tmpa_seq
     \seq_map_inline:Nn \l__chemformula_arrows_type_seq
       {
-        \tl_replace_all:Nnn \l__chemformula_tmpa_tl
-          {##1} { \charrow {##1} }
+        \tl_if_in:VnT \l__chemformula_tmpa_tl {##1}
+          {
+            \int_incr:N \l__chemformula_tmpa_int
+            \seq_put_right:Nn \l__chemformula_tmpa_seq {##1}
+          }
+      }
+    \int_compare:nTF { \l__chemformula_tmpa_int = 1 }
+      {
+        \tl_replace_once:Nxx \l__chemformula_tmpa_tl
+          { \seq_item:Nn \l__chemformula_tmpa_seq {1} }
+          { \exp_not:N \charrow { \seq_item:Nn \l__chemformula_tmpa_seq {1} } }
+      }
+      {
+        \int_zero:N \l__chemformula_tmpa_int
+        \int_zero:N \l__chemformula_tmpb_int
+        \int_zero:N \l__chemformula_tmpc_int
+        \seq_map_inline:Nn \l__chemformula_tmpa_seq
+          {
+            \int_incr:N \l__chemformula_tmpa_int
+            \int_compare:nT { \l__chemformula_tmpb_int < \tl_count:n {##1} }
+              {
+                \int_set:Nn \l__chemformula_tmpb_int { \tl_count:n {##1} }
+                \int_set_eq:NN \l__chemformula_tmpc_int \l__chemformula_tmpa_int
+              }
+          }
+        \tl_replace_once:Nxx \l__chemformula_tmpa_tl
+          { \seq_item:Nn \l__chemformula_tmpa_seq {\l__chemformula_tmpc_int} }
+          {
+            \exp_not:N \charrow
+              {
+                \seq_item:Nn \l__chemformula_tmpa_seq
+                  { \l__chemformula_tmpc_int }
+              }
+          }
       }
     \tl_set:NV #1 \l__chemformula_tmpa_tl
   }
@@ -1217,7 +1286,10 @@
       {
         \__chemformula_sanitize:Nn \l__chemformula_tmpa_tl {##1}
         \tl_if_in:nVT {#1} \l__chemformula_tmpa_tl
-          { \bool_set_true:N \l__chemformula_is_arrow_bool }
+          {
+            \bool_set_true:N \l__chemformula_is_arrow_bool
+            \prop_map_break:
+          }
       }
   }
 
@@ -3378,6 +3450,12 @@ VERSION HISTORY
 2016/01/07 - version 4.14a - \prop_get:Nn => \prop_item:Nn
 2016/05/03 - version 4.14b - local options now are correctly working again
                            - `atom-format' is only applied to formulas
+2016/05/11 - version 4.15  - arrow definitions don't have to be made in a
+                             certain order any more
+                           - new quasi equilibria arrows
+                           - bug fix in \RenewChemArrow
+                           - meaningful error if \charrow if used with an
+                             unknown arrow type
 
 % --------------------------------------------------------------------------
 % TODO

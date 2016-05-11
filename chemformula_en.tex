@@ -1065,21 +1065,27 @@ There are various different types:
   \arrow{<=>}[ \charrow{<=>}]
     equilibrium arrow
   \arrow{>=<}[ \charrow{>=<}]
-    reversed equilibrium arrow
+    \sinceversion{4.5}reversed equilibrium arrow
   \arrow{<=>{}>}[ \charrow{<=>>}]
     unbalanced equilibrium arrow to the right
   \arrow{>=<{}<}[ \charrow{>=<<}]
-    reversed unbalanced equilibrium arrow to the right
+    \sinceversion{4.5}reversed unbalanced equilibrium arrow to the right
   \arrow{<{}<=>}[ \charrow{<<=>}]
     unbalanced equilibrium arrow to the left
   \arrow{>{}>=<}[ \charrow{>>=<}]
-    reversed unbalanced equilibrium arrow to the left
+    \sinceversion{4.5}reversed unbalanced equilibrium arrow to the left
+  \arrow{<=o>}[ \charrow{<=o>}]
+    \sinceversion{4.15}quasi equilibrium arrow
+  \arrow{<=o>{}>}[ \charrow{<=o>>}]
+    \sinceversion{4.15}unbalanced quasi equilibrium arrow to the right
+  \arrow{<{}<=o>}[ \charrow{<<=o>}]
+    \sinceversion{4.15}unbalanced quasi equilibrium arrow to the left
   \arrow{<o>}[ \charrow{<o>}]
     isolobal arrow
   \arrow{<==>}[ \charrow{<==>}]
-    I've seen this one used. I'm not sure it actually has a meaning in
-    chemical equations.  If you have some official reference for this arrow
-    type please feel free to contact me.
+    \sinceversion{4.5}I've seen this one used. I'm not sure it actually has a
+    meaning in chemical equations.  If you have some official reference for
+    this arrow type please feel free to contact me.
 \end{arrows}
 All these arrows are drawn with \TikZ.
 \begin{example}
