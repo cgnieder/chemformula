@@ -149,7 +149,7 @@
 \cs_generate_variant:Nn \keys_set:nn         { nV }
 \cs_generate_variant:Nn \tl_if_blank:nF      { V }
 \cs_generate_variant:Nn \tl_if_in:nnT        { x , nV }
-\cs_generate_variant:Nn \tl_if_eq:nnT        { o , x }
+\cs_generate_variant:Nn \tl_if_eq:nnT        { x }
 \cs_generate_variant:Nn \tl_if_eq:nnTF       { o }
 \cs_generate_variant:Nn \tl_set:Nn           { cV }
 \cs_generate_variant:Nn \tl_replace_all:Nnn  { NV }
@@ -1066,6 +1066,7 @@
           \tl_set:Nn \l__chemmacros_tmpa_tl {#1}
           \tl_trim_spaces:N \l__chemmacros_tmpa_tl
           \seq_set_split:NnV \l__chemformula_input_seq {~} \l__chemmacros_tmpa_tl
+          % \seq_show:N \l__chemformula_input_seq
           % remove empty items in order to avoid unnecessary processing:
           \seq_remove_all:Nn \l__chemformula_input_seq {}
           % disable \xspace:
@@ -1707,10 +1708,10 @@
 \cs_new_protected:Npn \chemformula_subscript:n #1
   {
     \chemformula_nobreak:
-    \tl_if_eq:nnTF {#1}{ \chemformula_superscript:n }
+    \tl_if_eq:nnTF {#1} { \chemformula_superscript:n }
       { \__chemformula_subscript:n }
       {
-        \tl_if_eq:nnTF {#1}{ \chemformula_subscript:n }
+        \tl_if_eq:nnTF {#1} { \chemformula_subscript:n }
           { \__chemformula_subscript:n }
           {
             \tl_set:Nn \l__chemformula_tmpc_tl {#1}
@@ -1938,7 +1939,7 @@
   {
     \group_begin:
     % No shift for excited state
-    \tl_if_eq:onT { \l__chemformula_superscript_tl } { * }
+    \tl_if_eq:VnT \l__chemformula_superscript_tl {*}
       {
         \bool_set_false:N \l__chemformula_charge_full_shift_bool
         \dim_zero:N \l__chemformula_charge_shift_dim
@@ -2311,7 +2312,7 @@
     \bool_if:NT \l__chemformula_fontspec_bool
       { \chemformula_font: }
     \tl_use:N \l__chemformula_format_tl
-    \tl_if_eq:onTF { \f@series } { bx }
+    \tl_if_eq:onTF { \f@series } {bx}
       { \cs_set_eq:NN \chemformula_bm:n \bm }
       { \cs_set:Nn \chemformula_bm:n {##1} }
   }
@@ -2477,6 +2478,12 @@
     \__chemformula_if_only_parens:nTF {#2}
       { \tl_put_right:Nn #1 {#2} }
       {
+        % start with formatting:
+        \tl_put_right:Nn #1
+          {
+            \group_begin:
+              \l__chemformula_atom_format_tl
+          }
         \__chemformula_sanitize:Nn \l__chemformula_tmpa_tl {#2}
         % let's see if the compound starts with a sub- or superscript - if yes
         % this is an isotope:
@@ -2488,13 +2495,13 @@
             % do we end with a charge?
             \__chemformula_if_last_token_charge:nnnF {##1}
               {
-                    \tl_put_right:Nn #1
-                      { \chemformula_superscript:n { \chemformula_plus: } }
+                \tl_put_right:Nn #1
+                  { \chemformula_superscript:n { \chemformula_plus: } }
               }
-                  {
-                    \tl_put_right:Nn #1
-                      { \chemformula_superscript:n { \chemformula_minus: } }
-                  }
+              {
+                \tl_put_right:Nn #1
+                  { \chemformula_superscript:n { \chemformula_minus: } }
+              }
               {
                 \prop_get:NnNTF \l__chemformula_compound_prop
                   {##1}
@@ -2510,12 +2517,7 @@
               { \chemformula_prime: }
               { \chemformula_superscript:n { \chemformula_prime: } }
           }
-        % surround with formatting:
-        \tl_put_left:Nn #1
-          {
-            \group_begin:
-              \l__chemformula_atom_format_tl
-          }
+        % finish formatting:
         \tl_put_right:Nn #1 { \group_end: }
       }
      \tl_clear:N \l__chemformula_tmpa_tl
