@@ -26,13 +26,13 @@
 %
 % The Current Maintainer of this work is Clemens Niederberger.
 % --------------------------------------------------------------------------
-\RequirePackage{expl3,xparse,l3keys2e,tikz,amstext,xfrac,nicefrac,scrlfile}
+\RequirePackage{expl3,xparse,l3keys2e,tikz,amsmath,xfrac,nicefrac,scrlfile}
 \usetikzlibrary{arrows.meta}
 
 \ExplSyntaxOn
-\tl_const:Nn \c_chemformula_date_tl {2016/05/11}
+\tl_const:Nn \c_chemformula_date_tl {2016/06/08}
 \tl_const:Nn \c_chemformula_version_number_tl {4.15}
-\tl_const:Nn \c_chemformula_version_suffix_tl {}
+\tl_const:Nn \c_chemformula_version_suffix_tl {a}
 \tl_const:Nx \c_chemformula_version_tl
   { \c_chemformula_version_number_tl \c_chemformula_version_suffix_tl }
 \tl_const:Nn \c_chemformula_info_tl
@@ -149,14 +149,18 @@
 \cs_generate_variant:Nn \keys_set:nn         { nV }
 \cs_generate_variant:Nn \tl_if_blank:nF      { V }
 \cs_generate_variant:Nn \tl_if_in:nnT        { x , nV }
+\cs_generate_variant:Nn \tl_if_eq:nnT        { o , x }
+\cs_generate_variant:Nn \tl_if_eq:nnTF       { o }
 \cs_generate_variant:Nn \tl_set:Nn           { cV }
 \cs_generate_variant:Nn \tl_replace_all:Nnn  { NV }
 \cs_generate_variant:Nn \tl_replace_once:Nnn { Nxx }
 \cs_generate_variant:Nn \tl_set_rescan:Nnn   { NnV }
 \cs_generate_variant:Nn \prop_item:Nn        { NV }
+\cs_generate_variant:Nn \prop_if_in:NnT      { Nx }
 \cs_generate_variant:Nn \dim_set:Nn          { NV }
 \cs_generate_variant:Nn \skip_set:Nn         { cV }
 \cs_generate_variant:Nn \str_if_eq:nnT       { V }
+\cs_generate_variant:Nn \prop_if_in:NnT      { x }
 
 % --------------------------------------------------------------------------
 % VARIABLES
@@ -340,7 +344,7 @@
 
 % property lists:
 \prop_new:N \l__chemformula_arrows_code_prop
-\prop_new:N \l__chemformula_cmpd_prop
+\prop_new:N \l__chemformula_compound_prop
 \prop_new:N \l__chemformula_bonds_prop
 \prop_new:N \l__chemformula_stoich_prop
 \prop_new:N \l__chemformula_charge_prop
@@ -1212,7 +1216,7 @@
           \__chemformula_sanitize:Nn
             \l__chemformula_chemformula_tmpa_tl
             {#2}
-          \__chemformula_input_cmpd_no_check:NV
+          \__chemformula_input_compound_no_check:NV
             \l__chemformula_compound_tl
             \l__chemformula_chemformula_tmpa_tl
           \__chemformula_prepare_output:N \l__chemformula_compound_tl
@@ -1228,6 +1232,7 @@
 % arrow generation & detection
 \cs_new_protected:Npn \__chemformula_generate_arrows:Nn #1#2
   {
+    % TODO: is the rescan necessary? Can't we use strings?
     \tl_set_rescan:Nnn \l__chemformula_tmpa_tl
       {
         \char_set_catcode_other:N \>
@@ -1295,7 +1300,7 @@
 
 % --------------------------------------------------------------------------
 % compound names
-\cs_new_protected:Npn \__chemformula_name_cmpd:w
+\cs_new_protected:Npn \__chemformula_name_compound:w
   { \peek_meaning:NTF ( { \chname } { ! } }
 
 \NewDocumentCommand \chname { R(){}R(){} }
@@ -1343,7 +1348,7 @@
       {
         \tl_replace_all:Nnn \l__chemformula_tmpa_tl
           { ! }
-          { \__chemformula_name_cmpd:w }
+          { \__chemformula_name_compound:w }
       }
     \tl_set:NV #1 \l__chemformula_tmpa_tl
   }
@@ -1362,26 +1367,26 @@
 % compounds:
 \cs_new_protected:Npn \chemformula_new_compound_property:nn #1#2
   {
-    \prop_if_in:NnTF \l__chemformula_cmpd_prop {#1}
+    \prop_if_in:NnTF \l__chemformula_compound_prop {#1}
       { \msg_error:nnn {chemformula} {new-compound-property} {#1} }
-      { \prop_put:Nnn \l__chemformula_cmpd_prop {#1} {#2} }
+      { \prop_put:Nnn \l__chemformula_compound_prop {#1} {#2} }
   }
   
 \cs_new_protected:Npn \chemformula_renew_compound_property:nn #1#2
   {
-    \prop_if_in:NnTF \l__chemformula_cmpd_prop {#1}
-      { \prop_put:Nnn \l__chemformula_cmpd_prop {#1} {#2} }
+    \prop_if_in:NnTF \l__chemformula_compound_prop {#1}
+      { \prop_put:Nnn \l__chemformula_compound_prop {#1} {#2} }
       { \msg_error:nnn {chemformula} {renew-compound-property} {#1} }
   }
 
 \cs_new_protected:Npn \chemformula_provide_compound_property:nn #1#2
-  { \prop_put_if_new:Nnn \l__chemformula_cmpd_prop {#1} {#2} }
+  { \prop_put_if_new:Nnn \l__chemformula_compound_prop {#1} {#2} }
   
 \cs_new_protected:Npn \chemformula_declare_compound_property:nn #1#2
-  { \prop_put:Nnn \l__chemformula_cmpd_prop {#1} {#2} }
+  { \prop_put:Nnn \l__chemformula_compound_prop {#1} {#2} }
 
 \cs_new_protected:Npn \chemformula_remove_compound_property:n #1
-  { \prop_remove:Nn \l__chemformula_cmpd_prop {#1} }
+  { \prop_remove:Nn \l__chemformula_compound_prop {#1} }
 
 \NewDocumentCommand \NewChemCompoundProperty { mm }
   { \chemformula_new_compound_property:nn {#1} {#2} }
@@ -1933,7 +1938,7 @@
   {
     \group_begin:
     % No shift for excited state
-    \exp_args:No \tl_if_eq:nnT { \l__chemformula_superscript_tl } { * }
+    \tl_if_eq:onT { \l__chemformula_superscript_tl } { * }
       {
         \bool_set_false:N \l__chemformula_charge_full_shift_bool
         \dim_zero:N \l__chemformula_charge_shift_dim
@@ -2035,7 +2040,7 @@
     \__chemformula_input_escape_math:n {#1}
     \__chemformula_input_stoich:n {#1}
     \__chemformula_clean_chemmacros:V \l__chemformula_chemformula_tmpa_tl
-    \__chemformula_input_cmpd:NV
+    \__chemformula_input_compound:NV
       \l__chemformula_input_tl
       \l__chemformula_chemformula_tmpa_tl
     \__chemformula_input_arrow:n {#1}
@@ -2218,7 +2223,7 @@
 
 % --------------------------------------------------------------------------
 % input compounds
-\cs_new_protected:Npn \__chemformula_input_cmpd:Nn #1#2
+\cs_new_protected:Npn \__chemformula_input_compound:Nn #1#2
   {
     % \tl_show:n {#1}
     \tl_if_blank:VTF \l__chemformula_stoich_tl
@@ -2251,7 +2256,7 @@
             !\l__chemformula_first_last_math_bool
           }
           {
-            \__chemformula_input_cmpd_no_check:Nn #1 {#2}
+            \__chemformula_input_compound_no_check:Nn #1 {#2}
             \bool_if:NT \l__chemformula_options_bool
               {
                 \tl_put_right:Nn #1
@@ -2270,24 +2275,24 @@
         \tl_clear:N \l__chemformula_stoich_tl
       }
   }
-\cs_generate_variant:Nn \__chemformula_input_cmpd:Nn { NV }
+\cs_generate_variant:Nn \__chemformula_input_compound:Nn { NV }
 
 % TODO: this is redundant at the moment
-\bool_new:N \g__chemformula_cmpd_group_open_bool
+\bool_new:N \g__chemformula_compound_group_open_bool
 \cs_new_protected:Npn \chemformula_group_begin:
   {
-    \bool_if:NF \g__chemformula_cmpd_group_open_bool
+    \bool_if:NF \g__chemformula_compound_group_open_bool
       {
         % \group_begin:
-        \bool_gset_true:N \g__chemformula_cmpd_group_open_bool
+        \bool_gset_true:N \g__chemformula_compound_group_open_bool
       }
   }
 \cs_new_protected:Npn \chemformula_group_end:
   {
-    \bool_if:NT \g__chemformula_cmpd_group_open_bool
+    \bool_if:NT \g__chemformula_compound_group_open_bool
       {
         % \group_end:
-        \bool_gset_false:N \g__chemformula_cmpd_group_open_bool
+        \bool_gset_false:N \g__chemformula_compound_group_open_bool
       }
   }
 
@@ -2306,7 +2311,7 @@
     \bool_if:NT \l__chemformula_fontspec_bool
       { \chemformula_font: }
     \tl_use:N \l__chemformula_format_tl
-    \exp_args:No \tl_if_eq:nnTF { \f@series } { bx }
+    \tl_if_eq:onTF { \f@series } { bx }
       { \cs_set_eq:NN \chemformula_bm:n \bm }
       { \cs_set:Nn \chemformula_bm:n {##1} }
   }
@@ -2402,10 +2407,72 @@
       { \prg_return_false: }
   }
 
+% if the compound starts with a number or a sub- or superscript then it is an
+% isotope:
+\cs_new_protected:Npn \__chemformula_check_for_isotope:N #1
+  {
+    \tl_if_eq:xnT { \tl_head:V #1 } {^}
+      {
+        \tl_put_left:Nn #1
+          { \bool_set_true:N \l__chemformula_is_isotope_bool }
+      }
+    \tl_if_eq:xnT { \tl_head:V #1 } {_}
+      {
+        \tl_put_left:Nn #1
+          { \bool_set_true:N \l__chemformula_is_isotope_bool }
+      }
+    \prop_if_in:NxT \l__chemformula_numbers_prop
+      { \tl_head:V #1 }
+      {
+        \tl_put_left:Nn #1
+          { \bool_set_true:N \l__chemformula_is_isotope_bool }
+      }
+  }
+
+\cs_new_protected:Npn \__chemformula_prepare_sub_and_superscripts:N #1
+  {
+    \tl_if_in:VnT #1 {^}
+      { \tl_replace_all:Nnn #1 {^} { \chemformula_superscript:n } }
+    \tl_if_in:VnT #1 {_}
+      { \tl_replace_all:Nnn #1 {_} { \chemformula_subscript:n } }
+  }
+
+% #1: tl that holds compound
+% #2: code for each token
+\cs_new_protected:Npn \__chemformula_compound_map_inline:Nn #1#2
+  {
+    % ##1: token
+    % ##2: plus case
+    % ##3: minus case
+    % ##4: else case
+    \cs_set_protected:Npn \__chemformula_if_last_token_charge:nnnF ##1##2##3##4
+      {
+        \int_compare:nTF
+          { \l__chemformula_count_tokens_int = \tl_count:N #1 }
+          {
+            \tl_if_eq:nnTF {##1} {+}
+              {##2}
+              {
+                \tl_if_eq:nnTF {##1} {-}
+                  {##3}
+                  {##4}
+              }
+          }
+          {##4}
+      }
+    \int_zero:N \l__chemformula_count_tokens_int
+    \tl_map_inline:Nn #1
+      {
+        \int_incr:N \l__chemformula_count_tokens_int
+        % do we end with a charge?
+        #2
+      }
+  }
+
 % this is the chemical formula:
 % #1: tl var to safe processed formula in
 % #2: formula
-\cs_new_protected:Npn \__chemformula_input_cmpd_no_check:Nn #1#2
+\cs_new_protected:Npn \__chemformula_input_compound_no_check:Nn #1#2
   {
     \__chemformula_if_only_parens:nTF {#2}
       { \tl_put_right:Nn #1 {#2} }
@@ -2413,77 +2480,29 @@
         \__chemformula_sanitize:Nn \l__chemformula_tmpa_tl {#2}
         % let's see if the compound starts with a sub- or superscript - if yes
         % this is an isotope:
-        \tl_if_in:xnT { \tl_head:V \l__chemformula_tmpa_tl } { ^ }
-          {
-            \tl_put_left:Nn \l__chemformula_tmpa_tl
-              { \bool_set_true:N \l__chemformula_is_isotope_bool }
-          }
-        \tl_if_in:xnT { \tl_head:V \l__chemformula_tmpa_tl } { _ }
-          {
-            \tl_put_left:Nn \l__chemformula_tmpa_tl
-              { \bool_set_true:N \l__chemformula_is_isotope_bool }
-          }
-        % do we start with a number?
-        \exp_args:NNx \prop_if_in:NnT \l__chemformula_numbers_prop
-          { \tl_head:V \l__chemformula_tmpa_tl }
-          {
-            \tl_put_left:Nn \l__chemformula_tmpa_tl
-              { \bool_set_true:N \l__chemformula_is_isotope_bool }
-          }
+        \__chemformula_check_for_isotope:N \l__chemformula_tmpa_tl
         % preparations for sub- and superscripting:
-        \tl_if_in:VnT \l__chemformula_tmpa_tl { ^ }
+        \__chemformula_prepare_sub_and_superscripts:N \l__chemformula_tmpa_tl
+        \__chemformula_compound_map_inline:Nn \l__chemformula_tmpa_tl
           {
-            \tl_replace_all:Nnn \l__chemformula_tmpa_tl { ^ }
-              { \chemformula_superscript:n }
-          }
-        \tl_if_in:VnT \l__chemformula_tmpa_tl { _ }
-          {
-            \tl_replace_all:Nnn \l__chemformula_tmpa_tl { _ }
-              { \chemformula_subscript:n }
-          }
-        % start formula
-        \tl_put_left:Nn \l__chemformula_tmpa_tl
-          {
-            \group_begin:
-              \l__chemformula_atom_format_tl
-          }
-        \int_zero:N \l__chemformula_count_tokens_int
-        \tl_map_inline:Nn \l__chemformula_tmpa_tl
-          {
-            \int_incr:N \l__chemformula_count_tokens_int
             % do we end with a charge?
-            \int_compare:nTF
-              { \l__chemformula_count_tokens_int = \tl_count:N \l__chemformula_tmpa_tl }
+            \__chemformula_if_last_token_charge:nnnF {##1}
               {
-                \tl_if_eq:nnTF {##1} {+}
-                  {
                     \tl_put_right:Nn #1
                       { \chemformula_superscript:n { \chemformula_plus: } }
-                  }
-                  {
-                    \tl_if_eq:nnTF {##1} {-}
-                      {
-                        \tl_put_right:Nn #1
-                          { \chemformula_superscript:n { \chemformula_minus: } }
-                      }
-                      {
-                        \prop_get:NnNTF \l__chemformula_cmpd_prop
-                          {##1}
-                          \l__chemformula_tmpb_tl
-                          { \tl_put_right:NV #1 \l__chemformula_tmpb_tl }
-                          { \tl_put_right:Nn #1 {##1} }
-                      }
-                  }
               }
+                  {
+                    \tl_put_right:Nn #1
+                      { \chemformula_superscript:n { \chemformula_minus: } }
+                  }
               {
-                \prop_get:NnNTF \l__chemformula_cmpd_prop
+                \prop_get:NnNTF \l__chemformula_compound_prop
                   {##1}
                   \l__chemformula_tmpb_tl
                   { \tl_put_right:NV #1 \l__chemformula_tmpb_tl }
                   { \tl_put_right:Nn #1 {##1} }
               }
           }
-        \tl_put_right:Nn #1 { \group_end: }
         % if Kroeger-Vink notation is active:
         \bool_if:NT \l__chemformula_kroegervink_bool
           {
@@ -2491,10 +2510,17 @@
               { \chemformula_prime: }
               { \chemformula_superscript:n { \chemformula_prime: } }
           }
+        % surround with formatting:
+        \tl_put_left:Nn #1
+          {
+            \group_begin:
+              \l__chemformula_atom_format_tl
+          }
+        \tl_put_right:Nn #1 { \group_end: }
       }
      \tl_clear:N \l__chemformula_tmpa_tl
   }
-\cs_generate_variant:Nn \__chemformula_input_cmpd_no_check:Nn { NV }
+\cs_generate_variant:Nn \__chemformula_input_compound_no_check:Nn { NV }
 
 % --------------------------------------------------------------------------
 % clean up chemmacros commands:
@@ -3456,6 +3482,8 @@ VERSION HISTORY
                            - bug fix in \RenewChemArrow
                            - meaningful error if \charrow if used with an
                              unknown arrow type
+2016/06/08 - version 4.15a - change requirement amstext -> amsmath; \chname
+                             uses \underset which needs amsmath
 
 % --------------------------------------------------------------------------
 % TODO
