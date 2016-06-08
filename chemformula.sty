@@ -149,7 +149,7 @@
 \cs_generate_variant:Nn \keys_set:nn         { nV }
 \cs_generate_variant:Nn \tl_if_blank:nF      { V }
 \cs_generate_variant:Nn \tl_if_in:nnT        { x , nV }
-\cs_generate_variant:Nn \tl_if_eq:nnT        { x }
+\cs_generate_variant:Nn \tl_if_eq:nnT        { V, x }
 \cs_generate_variant:Nn \tl_if_eq:nnTF       { o }
 \cs_generate_variant:Nn \tl_set:Nn           { cV }
 \cs_generate_variant:Nn \tl_replace_all:Nnn  { NV }
@@ -3486,6 +3486,7 @@ VERSION HISTORY
                              unknown arrow type
 2016/06/08 - version 4.15a - change requirement amstext -> amsmath; \chname
                              uses \underset which needs amsmath
+2016/06/08 - version 4.15b - add missing variant of kernel function
 
 % --------------------------------------------------------------------------
 % TODO
