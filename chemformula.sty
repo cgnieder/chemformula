@@ -30,9 +30,9 @@
 \usetikzlibrary{arrows.meta}
 
 \ExplSyntaxOn
-\tl_const:Nn \c_chemformula_date_tl {2016/06/08}
+\tl_const:Nn \c_chemformula_date_tl {2016/08/21}
 \tl_const:Nn \c_chemformula_version_number_tl {4.15}
-\tl_const:Nn \c_chemformula_version_suffix_tl {a}
+\tl_const:Nn \c_chemformula_version_suffix_tl {c}
 \tl_const:Nx \c_chemformula_version_tl
   { \c_chemformula_version_number_tl \c_chemformula_version_suffix_tl }
 \tl_const:Nn \c_chemformula_info_tl
@@ -207,8 +207,6 @@
 \bool_new:N      \l__chemformula_first_last_mathbraces_bool
 \bool_new:N      \l__chemformula_number_style_math_bool
 \bool_new:N      \l__chemformula_charge_style_math_bool
-\bool_new:N      \l__chemformula_sub_bool
-\bool_new:N      \l__chemformula_sup_bool
 \bool_new:N      \l__chemformula_is_isotope_bool
 \bool_new:N      \l__chemformula_xfrac_bool
 \bool_new:N      \l__chemformula_nicefrac_bool
@@ -224,6 +222,8 @@
 \bool_new:N      \l__chemformula_tikzexternaldisable_bool
 \bool_set_true:N \l__chemformula_tikzexternaldisable_bool
 \bool_new:N      \l__chemformula_kroegervink_bool
+\bool_new:N      \l__chemformula_inside_subscript_bool
+\bool_new:N      \l__chemformula_inside_superscript_bool
 
 % dimensions:
 \dim_new:N  \l__chemformula_arrow_length_dim
@@ -366,7 +366,12 @@
 % --------------------------------------------------------------------------
 % general and helper functions:
 \cs_new_protected:Npn \chemformula_tikz:nn #1#2
-  { \tikz [ #1 ] {#2} }
+  {
+    \group_begin:
+      \chemformula_tikzexternaldisable:
+      \tikz [ #1 ] {#2}
+    \group_end:
+  }
 \cs_generate_variant:Nn \chemformula_tikz:nn { xn,nf }
 
 \cs_new_protected:Npn \chemformula_draw:nn #1#2
@@ -814,7 +819,6 @@
 \DeclareDocumentCommand \charrow { mO{}O{} }
   {
     \group_begin:
-      \chemformula_tikzexternaldisable:
       \__chemformula_draw_arrow:nnn {#1} {#2} {#3}
     \group_end:
   }
@@ -1071,10 +1075,6 @@
           \seq_remove_all:Nn \l__chemformula_input_seq {}
           % disable \xspace:
           \cs_set_eq:NN \xspace \scan_stop:
-          % the next two aren't necessary any more but shouldn't do harm, too:
-          % TODO: remove in next version step (4.13)
-          % \cs_set_nopar:Npn \[ { [ }
-          % \cs_set_nopar:Npn \] { ] }
           \bool_set_true:N \l_chemformula_inside_ch_bool
           \tl_if_blank:VF \g__chemformula_options_tl
             {
@@ -1389,21 +1389,21 @@
 \cs_new_protected:Npn \chemformula_remove_compound_property:n #1
   { \prop_remove:Nn \l__chemformula_compound_prop {#1} }
 
-\NewDocumentCommand \NewChemCompoundProperty { mm }
+\NewDocumentCommand \NewChemCompoundProperty {mm}
   { \chemformula_new_compound_property:nn {#1} {#2} }
 
-\NewDocumentCommand \RenewChemCompoundProperty { mm }
+\NewDocumentCommand \RenewChemCompoundProperty {mm}
   { \chemformula_renew_compound_property:nn {#1} {#2} }
 
-\NewDocumentCommand \ProvideChemCompoundProperty { mm }
+\NewDocumentCommand \ProvideChemCompoundProperty {mm}
   { \chemformula_provide_compound_property:nn {#1} {#2} }
   
-\NewDocumentCommand \DeclareChemCompoundProperty { mm }
+\NewDocumentCommand \DeclareChemCompoundProperty {mm}
   { \chemformula_declare_compound_property:nn {#1} {#2} }
 
-\NewDocumentCommand \RemoveChemCompoundProperty { m}
+\NewDocumentCommand \RemoveChemCompoundProperty {m}
   { \chemformula_remove_compound_property:n {#1} }
-
+  
 \chemformula_new_compound_property:nn { 0 } { \chemformula_subscript:n { 0 } }
 \chemformula_new_compound_property:nn { 1 } { \chemformula_subscript:n { 1 } }
 \chemformula_new_compound_property:nn { 2 } { \chemformula_subscript:n { 2 } }
@@ -1497,44 +1497,37 @@
 % bonds:
 \cs_new_protected:Npn \chemformula@bondlength
   { \l__chemformula_bond_dim }
-
+  
 \cs_new_protected:Npn \chemformula_single_bond:
-  {
-    \bool_if:NTF \l__chemformula_sup_bool
-      { \chemformula_minus: }
-      { \chemformula_bond:n { single } }
-  }
+  { \chemformula_bond:n {single} }
 
 \cs_new_protected:Npn \chemformula_double_bond:
-  { \chemformula_bond:n { double } }
+  { \chemformula_bond:n {double} }
 
 \cs_new_protected:Npn \chemformula_triple_bond:
-  { \chemformula_bond:n { triple } }
+  { \chemformula_bond:n {triple} }
 
 \cs_new_protected:Npn \chemformula_bond:n #1
   {
     \chemformula_skip_nobreak:N \l__chemformula_bond_space_dim
-    \group_begin:
-      \chemformula_tikzexternaldisable:
-      \chemformula_tikz:nn
-        {
-          inner~sep   = 0pt ,
-          outer~sep   = 0pt ,
-          text~height = 1em ,
-          baseline    = (chemformula-bond-ground.base)
-        }
-        {
-          \draw node[ draw=none, minimum~height=1em, minimum~width=0 ]
-            (chemformula-bond-ground) at (0pt,0pt) {};
-          \draw (chemformula-bond-ground) ++ (0pt,-.1716em)
-            coordinate (chemformula-bond-start) ;
-          \draw (chemformula-bond-start) ++(\l__chemformula_bond_dim ,0pt)
-            coordinate (chemformula-bond-end) ;
-          \tl_if_blank:nTF {#1}
-            { \__chemformula_bond_draw:n {single} }
-            { \__chemformula_bond_draw:n {#1} }
-        }
-    \group_end:
+    \chemformula_tikz:nn
+      {
+        inner~sep   = 0pt ,
+        outer~sep   = 0pt ,
+        text~height = 1em ,
+        baseline    = (chemformula-bond-ground.base)
+      }
+      {
+        \draw node[ draw=none, minimum~height=1em, minimum~width=0 ]
+          (chemformula-bond-ground) at (0pt,0pt) {};
+        \draw (chemformula-bond-ground) ++ (0pt,-.1716em)
+          coordinate (chemformula-bond-start) ;
+        \draw (chemformula-bond-start) ++(\l__chemformula_bond_dim ,0pt)
+          coordinate (chemformula-bond-end) ;
+        \tl_if_blank:nTF {#1}
+          { \__chemformula_bond_draw:n {single} }
+          { \__chemformula_bond_draw:n {#1} }
+      }
     \chemformula_skip_nobreak_penalty:NV
       \l__chemformula_bond_space_dim
       \l__chemformula_bond_penalty_tl
@@ -1606,50 +1599,50 @@
     \tl_to_str:N \l__chemformula_tmpa_tl
   }
 
-\NewDocumentCommand \NewChemBond { mm }
+\NewDocumentCommand \NewChemBond {mm}
   { \chemformula_new_bond:nn {#1} {#2} }
 
-\NewDocumentCommand \ProvideChemBond { mm }
+\NewDocumentCommand \ProvideChemBond {mm}
   { \chemformula_provide_bond:nn {#1} {#2} }
   
-\NewDocumentCommand \DeclareChemBond { mm }
+\NewDocumentCommand \DeclareChemBond {mm}
   { \chemformula_declare_bond:nn {#1} {#2} }
 
-\NewDocumentCommand \RenewChemBond { mm }
+\NewDocumentCommand \RenewChemBond {mm}
   { \chemformula_renew_bond:nn {#1} {#2} }
 
-\NewDocumentCommand \NewChemBondAlias { mm }
+\NewDocumentCommand \NewChemBondAlias {mm}
   { \chemformula_new_bond_alias:nn {#1} {#2} }
 
-\NewDocumentCommand \DeclareChemBondAlias { mm }
+\NewDocumentCommand \DeclareChemBondAlias {mm}
   { \chemformula_declare_bond_alias:nn {#1} {#2} }
 
-\NewDocumentCommand \ShowChemBond { m }
+\NewDocumentCommand \ShowChemBond {m}
   { \chemformula_show_bond:n {#1} }
 
-\NewDocumentCommand \bond { m }
+\NewDocumentCommand \bond {m}
   { \chemformula_bond:n {#1} }
 
 % now let's declare some default bonds:
-\NewChemBond{single}
+\NewChemBond {single}
   { \draw[chembond] (chemformula-bond-start) -- (chemformula-bond-end) ; }
-\NewChemBondAlias{normal}{single}
-\NewChemBondAlias{sb}{single}
+\NewChemBondAlias {normal} {single}
+\NewChemBondAlias {sb}     {single}
 
-\NewChemBond{semisingle}
+\NewChemBond {semisingle}
   { \draw[chembond,densely~dotted] (chemformula-bond-start) -- (chemformula-bond-end) ; }
-\NewChemBondAlias{dotted}{semisingle}
+\NewChemBondAlias {dotted} {semisingle}
 
-\NewChemBond{double}
+\NewChemBond {double}
   {
     \foreach \i in {-.0858em,.0858em}{
       \draw[chembond]
         ([yshift=\i]chemformula-bond-start) -- ([yshift=\i]chemformula-bond-end) ;
     }
   }
-\NewChemBondAlias{db}{double}
+\NewChemBondAlias {db} {double}
 
-\NewChemBond{semidouble}
+\NewChemBond {semidouble}
   {
     \foreach \i/\style in {-.0858em/,.0858em/densely~dotted}{
       \draw[chembond,\style]
@@ -1657,33 +1650,33 @@
     }
   }
 
-\NewChemBondAlias{deloc}{semidouble}
+\NewChemBondAlias {deloc} {semidouble}
 
-\NewChemBond{triple}
+\NewChemBond {triple}
   {
     \foreach \i in {-.1287em,0em,.1287em}{
       \draw[chembond]
         ([yshift=\i]chemformula-bond-start) -- ([yshift=\i]chemformula-bond-end) ;
     }
   }
-\NewChemBondAlias{tp}{triple}
+\NewChemBondAlias {tp} {triple}
 
-\NewChemBond{semitriple}
+\NewChemBond {semitriple}
   {
     \foreach \i/\style in {-.1287em/,0em/,.1287em/densely~dotted}{
       \draw[chembond,\style]
         ([yshift=\i]chemformula-bond-start) -- ([yshift=\i]chemformula-bond-end) ;
     }
   }
-\NewChemBondAlias{tdeloc}{semitriple}
+\NewChemBondAlias {tdeloc} {semitriple}
 
-\NewChemBond{coordright}
+\NewChemBond {coordright}
   { \draw[chembond,Butt~Cap->] (chemformula-bond-start) -- (chemformula-bond-end) ; }
-\NewChemBondAlias{co>}{coordright}
+\NewChemBondAlias {co>} {coordright}
 
-\NewChemBond{coordleft}
+\NewChemBond {coordleft}
   { \draw[chembond,<-Butt~Cap] (chemformula-bond-start) -- (chemformula-bond-end) ; }
-\NewChemBondAlias{<co}{coordleft}
+\NewChemBondAlias {<co} {coordleft}
 
 % --------------------------------------------------------------------------
 % sub- and superscripts
@@ -1744,17 +1737,51 @@
   }
 \cs_generate_variant:Nn \__chemformula_subscript:n { V }
 
+% TODO: add hook for cleanup?
+% similar to ChemCompoundProperty?
+\prop_new:N \l__chemformula_clean_subscript_prop
+\seq_new:N \l__chemformula_clean_subscript_seq
+
+\cs_new_protected:Npn \chemformula_add_subscript_cleanup:nn #1#2
+  {
+    \seq_put_right:Nn \l__chemformula_clean_subscript_seq {#1}
+    \prop_put:Nnn \l__chemformula_clean_subscript_prop {#1} {#2}
+  }
+
+% \NewDocumentCommand \ChemCleanSubscript {mm}
+%   { \chemformula_add_subscript_cleanup:nn {#1} {#2} }
+
+\chemformula_add_subscript_cleanup:nn
+  { \chemformula_single_bond: }
+  { \chemformula_minus: }
+\chemformula_add_subscript_cleanup:nn
+  { \chemformula_triple_bond: }
+  { \chemformula_plus: }
+\chemformula_add_subscript_cleanup:nn
+  { \chemformula_adduct: }
+  { . }
+\chemformula_add_subscript_cleanup:nn
+  { \chemformula_star_adduct: }
+  { * }
+
 \cs_new_protected:Npn \__chemformula_clean_subscript:
   {
-    \tl_replace_all:Nnn \l__chemformula_subscript_tl
-      { \chemformula_single_bond: } { \chemformula_minus: }
-    \tl_replace_all:Nnn \l__chemformula_subscript_tl
-      { \chemformula_triple_bond: } {\chemformula_plus: }
-    \tl_replace_all:Nnn \l__chemformula_subscript_tl
-      { \chemformula_adduct: } { . }
-    \tl_replace_all:Nnn \l__chemformula_subscript_tl
-      { \chemformula_star_adduct: } { * }
+    \seq_map_inline:Nn \l__chemformula_clean_subscript_seq
+      {
+        \tl_replace_all:Nnx \l__chemformula_subscript_tl
+          {##1}
+          { \prop_item:Nn \l__chemformula_clean_subscript_prop {##1} }
+      }
+    % \tl_replace_all:Nnn \l__chemformula_subscript_tl
+    %   { \chemformula_single_bond: } { \chemformula_minus: }
+    % \tl_replace_all:Nnn \l__chemformula_subscript_tl
+    %   { \chemformula_triple_bond: } { \chemformula_plus: }
+    % \tl_replace_all:Nnn \l__chemformula_subscript_tl
+    %   { \chemformula_adduct: } { . }
+    % \tl_replace_all:Nnn \l__chemformula_subscript_tl
+    %   { \chemformula_star_adduct: } { * }
   }
+\cs_generate_variant:Nn \tl_replace_all:Nnn {Nnx}
 
 \cs_new_protected:Npn \__chemformula_subscript_raise:N #1
   {
@@ -1775,6 +1802,7 @@
   {
     \chemformula_nobreak:
     \group_begin:
+      \bool_set_true:N \l__chemformula_inside_subscript_bool
       \tl_set_eq:NN \chemformula_subscript:n \use:n
       \tl_set_eq:NN \chemformula_superscript:n \use:n
       \__chemformula_subscript_raise:N \l__chemformula_subscript_shift_dim
@@ -1840,8 +1868,75 @@
   }
 \cs_generate_variant:Nn \__chemformula_superscript:n { V }
 
+% TODO: add hook for cleanup?
+% \prop_new:N \l__chemformula_clean_superscript_prop
+% \seq_new:N \l__chemformula_clean_superscript_seq
+
+% \cs_new_protected:Npn \chemformula_add_superscript_cleanup:nnn #1#2#3
+%   {
+%     \seq_put_right:Nn \l__chemformula_clean_superscript_seq {#1}
+%     \prop_put:Nnn \l__chemformula_clean_superscript_prop {#1}
+%       { \bool_if:NTF \l__chemformula_kroegervink_bool {#2} {#3} }
+%   }
+
+% \chemformula_add_superscript_cleanup:nnn
+%   { \chemformula_single_bond: }
+%   { \chemformula_minus: }
+%   { \chemformula_minus: }
+% \chemformula_add_superscript_cleanup:nnn
+%   { - }
+%   { \chemformula_minus: }
+%   { \chemformula_minus: }
+% \chemformula_add_superscript_cleanup:nnn
+%   { \chemformula_triple_bond: }
+%   { \chemformula_plus: }
+%   { \chemformula_plus: }
+% \chemformula_add_superscript_cleanup:nnn
+%   { + }
+%   { \chemformula_plus: }
+%   { \chemformula_plus: }
+% \chemformula_add_superscript_cleanup:nnn
+%   { . }
+%   { \chemformula_radical_or_decimal: }
+%   { \chemformula_kroegervink_positive: }
+% \chemformula_add_superscript_cleanup:nnn
+%   { \chemformula_adduct: }
+%   { \chemformula_radical_or_decimal: }
+%   { \chemformula_kroegervink_positive: }
+% \chemformula_add_superscript_cleanup:nnn
+%   { \chemformula_radical_or_decimal: }
+%   { \chemformula_radical_or_decimal: }
+%   { \chemformula_kroegervink_positive: }
+% \chemformula_add_superscript_cleanup:nnn
+%   { \chemformula_star_adduct: }
+%   { * }
+%   { \chemformula_kroegervink_positive: }
+% \chemformula_add_superscript_cleanup:nnn
+%   { * }
+%   { * }
+%   { \chemformula_kroegervink_positive: }
+% \chemformula_add_superscript_cleanup:nnn
+%   { ' }
+%   { ' }
+%   { \chemformula_kroegervink_negative: }
+% \chemformula_add_superscript_cleanup:nnn
+%   { \chemformula_prime: }
+%   { \chemformula_prime: }
+%   { \chemformula_kroegervink_negative: }
+% \chemformula_add_superscript_cleanup:nnn
+%   { , }
+%   { \chemformula_decimal: }
+%   { , }
+
+% rename this function into treatment instead of cleanup
 \cs_new_protected:Npn \__chemformula_clean_superscript:
   {
+    % \seq_map_inline:Nn \l__chemformula_clean_superscript_seq
+    %   {
+    %     \tl_replace_all:Nnx \l__chemformula_superscript_tl
+    %       {##1}
+    %       { \prop_item:Nn \l__chemformula_clean_superscript_prop {##1} }
+    %   }
     \tl_replace_all:Nnn \l__chemformula_superscript_tl
       { \chemformula_single_bond: } { \chemformula_minus: }
     \tl_replace_all:Nnn \l__chemformula_superscript_tl
@@ -1898,6 +1993,7 @@
   {
     \chemformula_nobreak:
     \group_begin:
+      \bool_set_true:N \l__chemformula_inside_superscript_bool
       \tl_set_eq:NN \chemformula_subscript:n \use:n
       \tl_set_eq:NN \chemformula_superscript:n \use:n
       \__chemformula_superscript_raise:N \l__chemformula_superscript_shift_dim
@@ -1905,14 +2001,16 @@
         {
           \c_math_toggle_token
             \scriptstyle
+            % TODO: this is at the wrong place here -- we need to map through
+            % the superscript tokens!
             \bool_if:NTF \l__chemformula_kroegervink_bool
-              {
+              { % TODO: is the o argument necessary?
                 \prop_get:NoNTF \l__chemformula_kroegervink_prop
                   {#1} \l__chemformula_tmpa_tl
                   { \tl_use:N \l__chemformula_tmpa_tl }
                   { \chemformula_charge_style:n {#1} }
               }
-              {
+              { % TODO: is the o argument necessary?
                 \prop_get:NoNTF \l__chemformula_charge_prop
                   {#1} \l__chemformula_tmpa_tl
                   { \tl_use:N \l__chemformula_tmpa_tl }
@@ -2121,7 +2219,7 @@
 \cs_new_protected:Npn \chemformula_parse_stoich:n #1
   { \__chemformula_parse_stoich:w #1 \q_nil }
 
-\NewDocumentCommand \chstoich { m }
+\NewDocumentCommand \chstoich {m}
   { \chemformula_parse_stoich:n {#1} }
 
 \cs_new_protected:Npn \__chemformula_parse_stoich:w \q_mark #1 \q_nil
@@ -3269,7 +3367,7 @@
 
 % --------------------------------------------------------------------------
 
-\NewDocumentCommand \setchemformula { m }
+\NewDocumentCommand \setchemformula {m}
   { \keys_set:nn {chemformula} {#1} }
 
 \setchemformula{
@@ -3487,6 +3585,10 @@ VERSION HISTORY
 2016/06/08 - version 4.15a - change requirement amstext -> amsmath; \chname
                              uses \underset which needs amsmath
 2016/06/08 - version 4.15b - add missing variant of kernel function
+2016/08/21 - version 4.15c - corrected redundant definition of
+                             \chemformula_single_bond:
+                           - fix problem with TikZ externalization and
+                             Kroeger-Vink notation
 
 % --------------------------------------------------------------------------
 % TODO
