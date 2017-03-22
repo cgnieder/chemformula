@@ -12,7 +12,7 @@
 % If you have any ideas, questions, suggestions or bugs to report, please
 % feel free to contact me.
 % --------------------------------------------------------------------------
-% Copyright 2011-2016 Clemens Niederberger
+% Copyright 2011-2017 Clemens Niederberger
 %
 % This work may be distributed and/or modified under the
 % conditions of the LaTeX Project Public License, either version 1.3
@@ -30,9 +30,9 @@
 \usetikzlibrary{arrows.meta}
 
 \ExplSyntaxOn
-\tl_const:Nn \c_chemformula_date_tl {2016/08/21}
+\tl_const:Nn \c_chemformula_date_tl {2017/02/02}
 \tl_const:Nn \c_chemformula_version_number_tl {4.15}
-\tl_const:Nn \c_chemformula_version_suffix_tl {c}
+\tl_const:Nn \c_chemformula_version_suffix_tl {d}
 \tl_const:Nx \c_chemformula_version_tl
   { \c_chemformula_version_number_tl \c_chemformula_version_suffix_tl }
 \tl_const:Nn \c_chemformula_info_tl
@@ -160,7 +160,6 @@
 \cs_generate_variant:Nn \dim_set:Nn          { NV }
 \cs_generate_variant:Nn \skip_set:Nn         { cV }
 \cs_generate_variant:Nn \str_if_eq:nnT       { V }
-\cs_generate_variant:Nn \prop_if_in:NnT      { x }
 
 % --------------------------------------------------------------------------
 % VARIABLES
@@ -1110,6 +1109,7 @@
       \__chemformula_ch_newline:w #2 \\ \q_no_value \q_stop
     \group_align_safe_end:
     \tl_use:N    \g__chemformula_output_tl
+%    \tl_show:N   \g__chemformula_output_tl
     \tl_gclear:N \g__chemformula_output_tl
   }
 \cs_generate_variant:Nn \chemformula_ch:nn { V , nV , VV }
@@ -1139,56 +1139,13 @@
 % bypass &:
 \cs_new_protected:Npn \__chemformula_ch_align:w #1 & #2 \q_stop
   {
-    % \__chemformula_ch_label:w #1 \label \q_no_value \q_stop
-    % \__chemformula_ch_tag:w #1 \tag{} \q_no_value \q_stop
     \__chemformula_ch_intertext:w #1 \intertext{} \q_no_value \q_stop
-    % \tl_gput_right:Nn \g__chemformula_output_tl
-    %   { \__chemformula_ch_main:n {#1} }
     \quark_if_no_value:nF {#2}
       {
         \tl_gput_right:Nn \g__chemformula_output_tl { & }
         \__chemformula_ch_align:w #2 \q_stop
       } 
   }
-      
-% bypass \label:
-% \cs_new_protected:Npn \__chemformula_ch_label:w #1 \label #2 \q_stop
-%   {
-%     \__chemformula_ch_tag:w #1 \tag{} \q_no_value \q_stop
-%     \quark_if_no_value:nF {#2}
-%       {
-%         \tl_gput_right:Nn \g__chemformula_output_tl { \label }
-%         \peek_meaning:NTF [ % ]
-%           { \__chemformula_ch_label_opt:w }
-%           { \__chemformula_ch_label_no_opt:n }
-%         #2 \q_stop
-%       }
-%   }
-
-% \cs_new_protected:Npn \__chemformula_ch_label_opt:w [ #1 ] #2
-%   {
-%     \tl_gput_right:Nn \g__chemformula_output_tl { [{#1}] {#2} }
-%     \__chemformula_ch_label:w
-%   }
-
-% \cs_new_protected:Npn \__chemformula_ch_label_no_opt:n #1
-%   {
-%     \tl_gput_right:Nn \g__chemformula_output_tl { {#1} }
-%     \__chemformula_ch_label:w
-%   }
-
-% here's something not working when used together with `hyperref'
-% which seems to be related to \nonumber
-% bypass \tag:
-% \cs_new_protected:Npn \__chemformula_ch_tag:w #1 \tag#2 #3 \q_stop
-%   {
-%     \__chemformula_ch_intertext:w #1 \intertext{} \q_no_value \q_stop
-%     \quark_if_no_value:nF {#3}
-%       {
-%         \tl_gput_right:Nn \g__chemformula_output_tl { \protect\tag {#2} }
-%         \__chemformula_ch_tag:w #3 \q_stop
-%       } 
-%   }
 
 % bypass \intertext:
 \cs_new_protected:Npn \__chemformula_ch_intertext:w #1 \intertext#2 #3 \q_stop
@@ -1319,7 +1276,7 @@
               \chemformula_dim_to_width:Nn \l__chemformula_name_dim
                 {
                   \chemformula_group_begin:
-                  \l__chemformula_name_format_tl #1
+                  \l__chemformula_name_format_tl {#1}
                   \chemformula_group_end:
                 }
             }
@@ -1327,7 +1284,7 @@
             { \dim_use:N \l__chemformula_name_dim }
             {
               \chemformula_group_begin:
-              \l__chemformula_name_format_tl #1
+              \l__chemformula_name_format_tl {#1}
               \chemformula_group_end:
             }
         }
@@ -3589,6 +3546,8 @@ VERSION HISTORY
                              \chemformula_single_bond:
                            - fix problem with TikZ externalization and
                              Kroeger-Vink notation
+2017/02/02 - version 4.15d - allow `name-format' to end with a macro that
+                             takes an argument
 
 % --------------------------------------------------------------------------
 % TODO
