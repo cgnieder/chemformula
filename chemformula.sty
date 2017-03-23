@@ -1150,12 +1150,23 @@
 % bypass \intertext:
 \cs_new_protected:Npn \__chemformula_ch_intertext:w #1 \intertext#2 #3 \q_stop
   {
-    \tl_gput_right:Nn \g__chemformula_output_tl
-      { \__chemformula_ch_main:n {#1} }
+    \__chemformula_ch_shortintertext:w #1 \shortintertext{} \q_no_value \q_stop
     \quark_if_no_value:nF {#3}
       {
         \tl_gput_right:Nn \g__chemformula_output_tl { \intertext {#2} }
         \__chemformula_ch_intertext:w #3 \q_stop
+      }
+  }
+
+% bypass \shortintertext:
+\cs_new_protected:Npn \__chemformula_ch_shortintertext:w #1 \shortintertext#2 #3 \q_stop
+  {
+    \tl_gput_right:Nn \g__chemformula_output_tl
+      { \__chemformula_ch_main:n {#1} }
+    \quark_if_no_value:nF {#3}
+      {
+        \tl_gput_right:Nn \g__chemformula_output_tl { \shortintertext {#2} }
+        \__chemformula_ch_shortintertext:w #3 \q_stop
       }
   }
 
