@@ -30,9 +30,9 @@
 \usetikzlibrary{arrows.meta}
 
 \ExplSyntaxOn
-\tl_const:Nn \c_chemformula_date_tl {2019/09/23}
+\tl_const:Nn \c_chemformula_date_tl {2019/09/27}
 \tl_const:Nn \c_chemformula_version_number_tl {4.15}
-\tl_const:Nn \c_chemformula_version_suffix_tl {f}
+\tl_const:Nn \c_chemformula_version_suffix_tl {g}
 \tl_const:Nx \c_chemformula_version_tl
   { \c_chemformula_version_number_tl \c_chemformula_version_suffix_tl }
 \tl_const:Nn \c_chemformula_info_tl
@@ -2378,14 +2378,14 @@
         \selectfont
       }
     \bool_if:NT \l__chemformula_fontspec_bool
-      { \chemformula_font: }
+      { \cs_if_exist_use:N \chemformula_font: }
     \tl_use:N \l__chemformula_format_tl
     \tl_if_eq:onTF { \f@series } {bx}
       { \cs_set_eq:NN \chemformula_bm:n \bm }
       { \cs_set:Nn \chemformula_bm:n {##1} }
   }
 
-\cs_new_protected:Npn \chemformula_font: {}
+% \cs_new_protected:Npn \chemformula_font: {}
 \cs_new_protected:Npn \__chemformula_fontspec:n #1
   {
     \tl_if_in:nnTF {#1} { [ }
@@ -3563,7 +3563,9 @@ VERSION HISTORY
                              takes an argument
 2017/03/23 - version 4.15e - small bug fix (issue #5)
                            - implement \shortintertext bypass
-
+2019/09/23 - version 4.15f - add missing definition for temporary variable
+2019/09/27 - version 4.15g - bug fix in fontspec option
+                           
 % --------------------------------------------------------------------------
 % TODO
 - Addukte: Zahlen nach * und . automatisch erkennen?
