@@ -394,7 +394,7 @@
   { \hbox_unpack:N \c_empty_box }
 
 \cs_new_protected:Npn \chemformula_nobreak:
-  { \tex_penalty:D \c_ten_thousand }
+  { \tex_penalty:D 10000 \scan_stop: }
 
 \cs_new_protected:Npn \chemformula_skip_nobreak:N #1
   {
