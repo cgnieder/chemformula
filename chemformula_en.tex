@@ -32,6 +32,7 @@
 % --------------------------------------------------------------------------
 \documentclass[load-preamble+]{cnltx-doc}
 \usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
 \usepackage{chemformula}
 \usepackage{chemmacros}
 \setcnltx{
@@ -75,9 +76,14 @@
 \usepackage{chemfig,booktabs,cancel,varioref}
 \usepackage[version=4]{mhchem}
 
-\expandafter\def\csname libertine@figurestyle\endcsname{LF}
-\usepackage[libertine]{newtxmath}
-\expandafter\def\csname libertine@figurestyle\endcsname{OsF}
+\makeatletter
+\def\libertine@figurestyle{LF}
+\RequirePackage{amsmath}
+\undef\lvert \undef\lVert
+\undef\rvert \undef\rVert
+\RequirePackage[libertine]{newtxmath}
+\def\libertine@figurestyle{OsF}
+\makeatother
 
 \chemsetup{
   greek = newtx ,
@@ -234,7 +240,7 @@ the following command:
     Set up \chemformula.
 \end{commands}
 
-\chemformula\ is tightly intertwined with the \chemmacros\ package.  If noth
+\chemformula\ is tightly intertwined with the \chemmacros\ package.  If both
 packages are loaded together, \chemformula\ is integrated into the
 \chemmacros\ package.  Then all of \chemformula's options belong to
 \chemmacros' module \module{chemformula}.  This means if you load it via
@@ -282,8 +288,8 @@ A blank in the input \emph{never} is a blank in the output.  This role of the
 blank strictly holds and disregarding it can have unexpected results and even
 lead to errors.
 
-Another notable difference: \chemformula\ tries to avoid math mode whenever
-possible:
+The most visible differences regard spacing and the shapes of the default
+arrows:
 \begin{example}[side-by-side]
   \ch{A + B ->[a] C} \par
   \ce{A + B ->[a] C}
@@ -297,11 +303,12 @@ which in this case is recognized as a compound.
 \end{example}
 This also means, that a part cannot contain a blank since this will
 automatically divide it into two parts.  If you need an extra blank in the
-output you need to use \verbcode+~+.  However, since commands in most cases
-gobble a space after them a input like \cs{ch}\Marg{\cs*{command} ABC} will be
-treated as a single part.  If you want or need to divide them you need to add
-an empty group: \cs{ch}\Marg{\cs*{command}\marg{} ABC}.  The different input
-types are described in the following sections.
+output you need to use \verbcode+~+ or \cs*{~}.  However, since commands
+in most cases gobble a space after them a input like
+\cs{ch}\Marg{\cs*{command} ABC} will be treated as a single part.  If you want
+or need to divide them you need to add an empty group:
+\cs{ch}\Marg{\cs*{command}\marg{} ABC}.  The different input types are
+described in the following sections.
 
 % % TODO: Module überdenken, Beschreibung anpassen
 % There are some options to customize the output of the \cs{ch} command.  They
