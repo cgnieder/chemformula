@@ -16,7 +16,7 @@
 % If you have any ideas, questions, suggestions or bugs to report, please
 % feel free to contact me.
 % --------------------------------------------------------------------------
-% Copyright 2011-2019 Clemens Niederberger
+% Copyright 2011--2020 Clemens Niederberger
 %
 % This work may be distributed and/or modified under the
 % conditions of the LaTeX Project Public License, either version 1.3
@@ -30,60 +30,9 @@
 %
 % The Current Maintainer of this work is Clemens Niederberger.
 % --------------------------------------------------------------------------
-\documentclass[load-preamble+]{cnltx-doc}
-\usepackage[utf8]{inputenc}
-\usepackage[T1]{fontenc}
-\usepackage{chemformula}
-\usepackage{chemmacros}
-\setcnltx{
-  package  = {chemformula},
-  info     = {typeset chemical compounds and reactions} ,
-  url      = http://www.mychemistry.eu/forums/forum/chemformula/ ,
-  authors  = Clemens Niederberger ,
-  email    = contact@mychemistry.eu ,
-  abstract = {%
-    \centering
-    \includegraphics{chemmacros-logo.pdf}
-    \par
-  } ,
-  add-cmds = {
-    bond,
-    ce, ch, charrow, chcpd, chemformula@bondlength, chemsetup, chlewis,
-      chname,
-    DeclareChemAdditionSymbol, DeclareChemArrow, DeclareChemBond,
-      DeclareChemBondAlias, DeclareChemCompoundProperty, DeclareChemSymbol,
-    mch,
-    NewChemAdditionSymbol, NewChemArrow, NewChemBond, NewChemBondAlias,
-      NewChemCompoundProperty, NewChemSymbol,
-    ox, OX,
-    pch,
-    redox, RemoveChemCompoundProperty, RenewChemAdditionSymbol,
-      RenewChemArrow, RenewChemBond, RenewChemCompoundProperty,
-      RenewChemSymbol,
-    setchemformula, ShowChemArrow, ShowChemBond
-  } ,
-  add-silent-cmds = {
-    addplot,
-    chemfig,
-    DeclareInstance, draw,
-    sample, setchemfig, sfrac,
-    usetikzlibrary
-  } ,
-  index-setup = { othercode=\footnotesize, level=\section , noclearpage } ,
-  makeindex-setup = {  columns=3, columnsep=1em }
-}
+\documentclass{chemformula-manual}
 
-\usepackage{chemfig,booktabs,cancel,varioref}
-\usepackage[version=4]{mhchem}
-
-\makeatletter
-\def\libertine@figurestyle{LF}
-\RequirePackage{amsmath}
-\undef\lvert \undef\lVert
-\undef\rvert \undef\rVert
-\RequirePackage[libertine]{newtxmath}
-\def\libertine@figurestyle{OsF}
-\makeatother
+\addbibresource{cnltx.bib}
 
 \chemsetup{
   greek = newtx ,
@@ -91,11 +40,6 @@
   formula = chemformula ,
   chemformula/format = \libertineLF
 }
-
-\usepackage[biblatex]{embrac}
-\ChangeEmph{[}[,.02em]{]}[.055em,-.08em]
-\ChangeEmph{(}[-.01em,.04em]{)}[.04em,-.05em]
-\usepackage{csquotes}
 
 \usepackage[accsupp]{acro}
 \acsetup{
@@ -108,9 +52,6 @@
   pdfstring = IUPAC ,
   accsupp   = IUPAC
 }
-
-% \chemsetup{ option/synchronize }
-% \setchemformula{ format = \libertineLF }
 
 \sisetup{
   detect-mode=false,
@@ -309,20 +250,6 @@ in most cases gobble a space after them a input like
 or need to divide them you need to add an empty group:
 \cs{ch}\Marg{\cs*{command}\marg{} ABC}.  The different input types are
 described in the following sections.
-
-% % TODO: Module überdenken, Beschreibung anpassen
-% There are some options to customize the output of the \cs{ch} command.  They
-% can either be applied locally using the optional argument or can be set
-% globally using the setup command.  All options of \chemformula\ belong to the
-% module \module{chemformula} and can be set in different ways:
-% \begin{commands}
-%   \command{chemsetup}[\Oarg{chemformula}\marg{options}]
-%     when loaded via \chemmacros
-%   \command{chemsetup}[\Marg{chemformula/\meta{options}}]
-%     when loaded via \chemmacros
-%   \command{setchemformula}[\marg{options}]
-%     independent from \chemmacros
-% \end{commands}
 
 \section{Stoichiometric Factors}
 A stoichiometric factor may only contain of numbers and the signs
@@ -1588,89 +1515,6 @@ There are a number of options for customizations:
     Symbol for neutral particles.
 \end{options}
 
-
-
-% \section{Further Examples}
-% This section presents some examples of a possible usage.
-
-% \begin{example}
-%   \begin{reaction}[Synthese von Alkanen]
-%     !(Synthesegas)( $n$ CO + $(2n+1)$ H2 )
-%     ->[\SI{200}{\celsius}][[CoNi]]
-%     C_{$n$}H_{$2n+2$} + $n$ H2O
-%   \end{reaction}
-% \end{example}
-
-% \begin{example}
-%   \begin{reactions*}
-%     "a)" && CH4    + Cl2 &-> CH3Cl  + HCl && "{\small Chlormethan/Methylchlorid}" \\
-%     "b)" && CH3Cl  + Cl2 &-> CH2Cl2 + HCl && "{\small Dichlormethan/Methylenchlorid}" \\
-%     "c)" && CH2Cl2 + Cl2 &-> CHCl3  + HCl && "{\small Trichlormethan/Chloroform}" \\
-%     "d)" && CHCl3  + Cl2 &-> CCl4   + HCl && "{\small Tetrachlormethan/Tetrachlorkohlenstoff}"
-%   \end{reactions*}
-% \end{example}
-
-% \begin{example}
-%   \chemsetup[ox]{parse=false}
-%   \ch{
-%     "\ox{\delm,C}" -{} "\ox{\delp,M}" \qquad
-%     ( <-> "\ox{\delp,C}" -{} "\ox{\delm,Br}" )
-%   } \\
-%   \ch[adduct-space=0pt]{X. + .Y <=> X-Y + Bindungsenergie} \\
-%   \ch[name-format=\normalsize]{
-%     !(\State{H}{f}\qquad)() !(\textcolor{red}{??})( CH4\gas{} ) +
-%     !(\num{0})( 2 O2\gas{} )
-%     ->
-%     !(\num{-94.3})( CO2\gas{} ) +
-%     !(\num{-57.9})( H2O\lqd{} ) +
-%     !(\num{-192.1})( "\State{H}" )
-%   }
-% \end{example}
-
-% \begin{example}
-%   \newcommand\cstack[1]{%
-%     \clap{%
-%       \begin{tabular}{c}
-%         #1
-%       \end{tabular}
-%     }%
-%   }
-%   \begin{reactions*}
-%     CH3MgBr + "\ox*{1,Cu}" X &
-%       -> "\glqq" CH3 "\ox*{1,Cu}\grqq" + MgBrX "\qquad X~$=$~Br,I,CN" \\
-%     2 MeLi + CuI &
-%       -> !(\cstack{Dimethylcuprat\\(Gilmann-Cuprat)})( Me2CuLi ) + Li
-%   \end{reactions*}
-% \end{example}
-
-% \begin{example}
-%   % needs `chemfig'
-%   \begin{reactions*}
-%     H3C-CH3 + Cl2 &
-%       ->[$\Delta$][$h\nu$] H3CCH2Cl + HCl & &
-%       "\Enthalpy{-27.1}" \\
-%     H3C-CH3 + "\Lewis{0.,Cl}" &
-%       -> H3CCH2 "\Lewis{0.,\vphantom{H}}" + HCl & &
-%       "\Enthalpy{-5.0}" \\
-%     H3C-CH2 "\Lewis{0.,\vphantom{H}}" + Cl2 &
-%       -> H3CCH2Cl + "\Lewis{0.,Cl}" & &
-%       "\Enthalpy{-23.0}"
-%   \end{reactions*}
-% \end{example}
-
-% The following example shows how the cancelling of compounds could be
-% done\footnote{Inspired by a question on TeX.SE:
-%   \url{http://tex.stackexchange.com/q/30118/5049}}.
-% \begin{example}
-%   % needs `cancel'
-%   \begin{align*}
-%     \ch{\cancel{HCOOH\aq} + H2O\lqd{}  &<=> H3O^+\aq{} + \cancel{HCOO^-\aq}} \\
-%     \ch{\cancel{HCOO^-\aq} + H2O\lqd{} &<=> \cancel{HCOOH\aq} + OH^-\aq}\\[-1ex]
-%     \cline{1-2}
-%     \ch{H2O\lqd{} + H2O\lqd{} &<=> H3O^+\aq{} + OH^-\aq}    
-%   \end{align*}
-% \end{example}
-
 \appendix
 \newenvironment{changes}[2][]{%
   \subsection*{Version #2\ifblank{#1}{}{ (#1)}}
@@ -1768,6 +1612,15 @@ There are a number of options for customizations:
 
 \begin{changes}{4.14}
   \change New option \option{adduct-penalty}.
+\end{changes}
+
+\begin{changes}{4.15}
+  \change The order of arrow definitions doesn't matter any more.
+  \change New quasi equilibria arrows.
+  \change Require \pkg{amsmath}.
+  \change Allow \option{name-format} to end with a macro that takes an
+    argument.
+  \change Various bug fixes.
 \end{changes}
 
 \end{document}

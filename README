@@ -1,5 +1,5 @@
 --------------------------------------------------------------------------
-the CHEMFORMULA package v4.15h 2019/10/13
+the CHEMFORMULA package v4.15i 2020/02/01
 
   typeset chemical compounds and reactions
 
@@ -8,7 +8,7 @@ Clemens Niederberger
 Web:    https://github.com/cgnieder/chemformula/
 E-Mail: contact@mychemistry.eu
 --------------------------------------------------------------------------
-Copyright 2011-2019 Clemens Niederberger
+Copyright 2011--2020 Clemens Niederberger
 
 This work may be distributed and/or modified under the
 conditions of the LaTeX Project Public License, either version 1.3
@@ -24,7 +24,7 @@ The Current Maintainer of this work is Clemens Niederberger.
 --------------------------------------------------------------------------
 The chemformula package consists of the following files
  - chemformula.sty,
- - chemformula_en.tex, chemformula_en.pdf,
+ - chemformula-manual.cls, chemformula-manual.tex, chemformula-manual.pdf,
  - README
 --------------------------------------------------------------------------
 If you have any ideas, questions, suggestions or bugs to report, please
