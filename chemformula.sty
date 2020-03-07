@@ -30,9 +30,9 @@
 \usetikzlibrary{arrows.meta}
 
 \ExplSyntaxOn
-\tl_const:Nn \c_chemformula_date_tl {2020/02/01}
+\tl_const:Nn \c_chemformula_date_tl {2020/03/07}
 \tl_const:Nn \c_chemformula_version_number_tl {4.15}
-\tl_const:Nn \c_chemformula_version_suffix_tl {i}
+\tl_const:Nn \c_chemformula_version_suffix_tl {j}
 \tl_const:Nx \c_chemformula_version_tl
   { \c_chemformula_version_number_tl \c_chemformula_version_suffix_tl }
 \tl_const:Nn \c_chemformula_info_tl
@@ -364,6 +364,61 @@
 \box_new:N \l__chemformula_arrow_arg_ii_box
 \box_new:N \l__chemformula_superscript_box
 \box_new:N \l__chemformula_subscript_box
+
+% --------------------------------------------------------------------------
+% catcode stuff
+\cs_new_protected:Npn \__chemformula_save_catcodes:
+  {
+    \cs_gset_protected:Npx \__chemformula_restore:
+      {
+        \char_set_catcode:nn {  95 } { \char_value_catcode:n {  95 } }% _
+        \char_set_catcode:nn {  58 } { \char_value_catcode:n {  58 } }% :
+        \char_set_catcode:nn {  94 } { \char_value_catcode:n {  94 } }% ^
+        \char_set_catcode:nn { 123 } { \char_value_catcode:n { 123 } }% {
+        \char_set_catcode:nn { 125 } { \char_value_catcode:n { 125 } }% }
+        \char_set_catcode:nn {  35 } { \char_value_catcode:n {  35 } }% #
+        \char_set_catcode:nn {  33 } { \char_value_catcode:n {  33 } }% !
+        \char_set_catcode:nn {  34 } { \char_value_catcode:n {  34 } }% "
+        \char_set_catcode:nn {  60 } { \char_value_catcode:n {  60 } }% <
+        \char_set_catcode:nn {  62 } { \char_value_catcode:n {  62 } }% >
+        \char_set_catcode:nn { 126 } { \char_value_catcode:n { 126 } }% ~
+      }
+  }
+
+\cs_gset_protected:Npn \__chemformula_basic_catcodes:
+  {
+      % expl3 catcodes:
+      \char_set_catcode_letter:N \_
+      \char_set_catcode_letter:N \:
+      % I've forgotten why I put this here:
+      \char_set_catcode_math_superscript:N \^
+      % disable some of the specials (needed for sub- and superscripts):
+      \char_set_catcode_letter:N \#
+      % make the naming work with babel languages like French that make
+      % ! active:
+      \char_set_catcode_other:N \!
+      % make the naming work with babel languages like Spanish that make
+      % < and > active:
+      \char_set_catcode_other:N \>
+      \char_set_catcode_other:N \<
+      % ensure " is other:
+      \char_set_catcode_other:N \"
+      % spaces are spaces:
+      \char_set_catcode_space:N \
+  }
+
+\cs_new_protected:Npn \__chemformula_sanitize:Nn #1#2
+  {
+    \tl_set_rescan:Nnn #1
+      {
+        \__chemformula_basic_catcodes:
+        % disable some of the specials (needed for sub- and superscripts):
+        \char_set_catcode_letter:N \{
+        \char_set_catcode_letter:N \}
+      }
+      {#2}
+  }
+\cs_generate_variant:Nn \__chemformula_sanitize:Nn {NV}
 
 % --------------------------------------------------------------------------
 % general and helper functions:
@@ -829,9 +884,10 @@
 \cs_new_protected:Npn \__chemformula_arrow_draw:nnn #1#2#3
   {
     \chemformula_nobreak:
+    % \__chemformula_sanitize:Nn \l__chemformula_tmpc_tl {#1}
     % prepare arrow code for drawing:
     \tl_set_rescan:Nnn \l__chemformula_tmpc_tl
-      { \char_set_catcode_letter:N \_ } {#1}
+      { \__chemformula_basic_catcodes: } {#1}
     % determine length of the arrow
     \hbox_set:Nn \l__chemformula_arrow_arg_i_box
       { \tl_use:N \l__chemformula_arrow_label_style_tl #2 }
@@ -880,9 +936,26 @@
 
 \prg_new_conditional:Npnn \chemformula_if_is_arrow:n #1 {p,T,F,TF}
   {
-    \seq_if_in:NnTF \l__chemformula_arrows_type_seq {#1}
+    \__chemformula_sanitize:Nn \l__chemformula_tmpa_tl {#1}
+    \seq_if_in:NVTF \l__chemformula_arrows_type_seq \l__chemformula_tmpa_tl
       { \prg_return_true: }
       { \prg_return_false: }
+  }
+\prg_generate_conditional_variant:Nnn \chemformula_if_is_arrow:n {V} {T,F,TF}
+
+\cs_new_protected:Npn \chemformula_define_arrow:nn #1#2
+  {
+    \__chemformula_sanitize:Nn \l__chemformula_tmpa_tl {#1}
+    \__chemformula_sanitize:Nn \l__chemformula_tmpb_tl {#2}
+    \seq_if_in:NVF \l__chemformula_arrows_type_seq \l__chemformula_tmpa_tl
+      {
+        \seq_put_right:NV
+          \l__chemformula_arrows_type_seq
+          \l__chemformula_tmpa_tl
+      }
+    \prop_put:NVV \l__chemformula_arrows_code_prop
+      \l__chemformula_tmpa_tl
+      \l__chemformula_tmpb_tl
   }
 
 % commands to declare arrows (can also be used by users):
@@ -891,36 +964,23 @@
   {
     \chemformula_if_is_arrow:nTF {#1}
       { \msg_error:nnn {chemformula} {new-arrow} {#1} }
-      {
-        % store type in the sequence and code in the property list
-        \seq_put_right:Nn \l__chemformula_arrows_type_seq {#1}
-        \prop_put:Nnn \l__chemformula_arrows_code_prop {#1} {#2}
-      }
+      { \chemformula_define_arrow:nn {#1} {#2} }
   }
 
 \NewDocumentCommand \DeclareChemArrow {mm}
-  {
-    \chemformula_if_is_arrow:nF {#1}
-      { \seq_put_right:Nn \l__chemformula_arrows_type_seq {#1} }
-    % store type in the sequence and code in the property list
-    \prop_put:Nnn \l__chemformula_arrows_code_prop {#1} {#2}
-  }
+  { \chemformula_define_arrow:nn {#1} {#2} }
 
 \NewDocumentCommand \RenewChemArrow {mm}
   {
     \chemformula_if_is_arrow:nTF {#1}
-      { \prop_put:Nnn \l__chemformula_arrows_code_prop {#1} {#2} }
+      { \chemformula_define_arrow:nn {#1} {#2} }
       { \msg_error:nnn {chemformula} {renew-arrow} {#1} }
   }
 
 \NewDocumentCommand \ProvideChemArrow {mm}
   {
     \chemformula_if_is_arrow:nF {#1}
-      {
-        % store type in the sequence and code in the property list
-        \seq_put_right:Nn \l__chemformula_arrows_type_seq {#1}
-        \prop_put:Nnn \l__chemformula_arrows_code_prop {#1} {#2}
-      }
+      { \chemformula_define_arrow:nn {#1} {#2} }
   }
   
 \NewDocumentCommand \ShowChemArrow {m}
@@ -1021,7 +1081,7 @@
     \draw[chemarrow] (cf_arrow_mid) ++ (.6ex,.4ex) -- ++(-.4ex,-.8ex) ;
   }
 % net reaction:
-\NewChemArrow {==} { \node at ([yshift=-.2ex]cf_arrow_mid) { = } ; }
+\NewChemArrow {==} { \node at ([yshift=-.2ex]cf_arrow_mid) {=} ; }
 % quasi equilibria:
 \NewChemArrow{<=o>}{
   \draw[chemarrow,-left~cf]
@@ -1072,7 +1132,6 @@
           \tl_set:Nn \l__chemmacros_tmpa_tl {#1}
           \tl_trim_spaces:N \l__chemmacros_tmpa_tl
           \seq_set_split:NnV \l__chemformula_input_seq {~} \l__chemmacros_tmpa_tl
-          % \seq_show:N \l__chemformula_input_seq
           % remove empty items in order to avoid unnecessary processing:
           \seq_remove_all:Nn \l__chemformula_input_seq {}
           % disable \xspace:
@@ -1087,11 +1146,9 @@
           \seq_map_function:NN
             \l__chemformula_input_seq
             \__chemformula_input:n
-          % \tl_analysis_show:N \l__chemformula_input_tl
           \__chemformula_prepare_output:NV
             \l__chemformula_input_tl
             \l__chemformula_catcodes_tl
-          % \tl_analysis_show:N \l__chemformula_input_tl
           \chemformula_write:V \l__chemformula_input_tl
         }
     \group_end:
@@ -1116,7 +1173,6 @@
       \__chemformula_ch_newline:w #2 \\ \q_no_value \q_stop
     \group_align_safe_end:
     \tl_use:N    \g__chemformula_output_tl
-%    \tl_show:N   \g__chemformula_output_tl
     \tl_gclear:N \g__chemformula_output_tl
   }
 \cs_generate_variant:Nn \chemformula_ch:nn {V,nV,VV}
@@ -1286,8 +1342,6 @@
 
 \cs_new_protected:Npn \chemformula_chwritebelow:nn #1#2
   {
-    % \tl_set:Nn \l_tmpa_tl {#1} \show \l_tmpa_tl
-    % \tl_set:Nn \l_tmpa_tl {#2} \show \l_tmpa_tl
     \c_math_toggle_token
       \underset
         {
@@ -1715,8 +1769,6 @@
   }
 \cs_generate_variant:Nn \__chemformula_subscript:n {V}
 
-% TODO: add hook for cleanup?
-% similar to ChemCompoundProperty?
 \prop_new:N \l__chemformula_clean_subscript_prop
 \seq_new:N \l__chemformula_clean_subscript_seq
 
@@ -1838,75 +1890,9 @@
   }
 \cs_generate_variant:Nn \__chemformula_superscript:n {V}
 
-% TODO: add hook for cleanup?
-% \prop_new:N \l__chemformula_clean_superscript_prop
-% \seq_new:N \l__chemformula_clean_superscript_seq
-
-% \cs_new_protected:Npn \chemformula_add_superscript_cleanup:nnn #1#2#3
-%   {
-%     \seq_put_right:Nn \l__chemformula_clean_superscript_seq {#1}
-%     \prop_put:Nnn \l__chemformula_clean_superscript_prop {#1}
-%       { \bool_if:NTF \l__chemformula_kroegervink_bool {#2} {#3} }
-%   }
-
-% \chemformula_add_superscript_cleanup:nnn
-%   { \chemformula_single_bond: }
-%   { \chemformula_minus: }
-%   { \chemformula_minus: }
-% \chemformula_add_superscript_cleanup:nnn
-%   { - }
-%   { \chemformula_minus: }
-%   { \chemformula_minus: }
-% \chemformula_add_superscript_cleanup:nnn
-%   { \chemformula_triple_bond: }
-%   { \chemformula_plus: }
-%   { \chemformula_plus: }
-% \chemformula_add_superscript_cleanup:nnn
-%   { + }
-%   { \chemformula_plus: }
-%   { \chemformula_plus: }
-% \chemformula_add_superscript_cleanup:nnn
-%   { . }
-%   { \chemformula_radical_or_decimal: }
-%   { \chemformula_kroegervink_positive: }
-% \chemformula_add_superscript_cleanup:nnn
-%   { \chemformula_adduct: }
-%   { \chemformula_radical_or_decimal: }
-%   { \chemformula_kroegervink_positive: }
-% \chemformula_add_superscript_cleanup:nnn
-%   { \chemformula_radical_or_decimal: }
-%   { \chemformula_radical_or_decimal: }
-%   { \chemformula_kroegervink_positive: }
-% \chemformula_add_superscript_cleanup:nnn
-%   { \chemformula_star_adduct: }
-%   { * }
-%   { \chemformula_kroegervink_positive: }
-% \chemformula_add_superscript_cleanup:nnn
-%   { * }
-%   { * }
-%   { \chemformula_kroegervink_positive: }
-% \chemformula_add_superscript_cleanup:nnn
-%   { ' }
-%   { ' }
-%   { \chemformula_kroegervink_negative: }
-% \chemformula_add_superscript_cleanup:nnn
-%   { \chemformula_prime: }
-%   { \chemformula_prime: }
-%   { \chemformula_kroegervink_negative: }
-% \chemformula_add_superscript_cleanup:nnn
-%   { , }
-%   { \chemformula_decimal: }
-%   { , }
-
 % rename this function into treatment instead of cleanup
 \cs_new_protected:Npn \__chemformula_clean_superscript:
   {
-    % \seq_map_inline:Nn \l__chemformula_clean_superscript_seq
-    %   {
-    %     \tl_replace_all:Nnx \l__chemformula_superscript_tl
-    %       {##1}
-    %       { \prop_item:Nn \l__chemformula_clean_superscript_prop {##1} }
-    %   }
     \tl_replace_all:Nnn \l__chemformula_superscript_tl
       { \chemformula_single_bond: } { \chemformula_minus: }
     \tl_replace_all:Nnn \l__chemformula_superscript_tl
@@ -2294,7 +2280,6 @@
 % input compounds
 \cs_new_protected:Npn \__chemformula_input_compound:Nn #1#2
   {
-    % \tl_show:n {#1}
     \tl_if_blank:VTF \l__chemformula_stoich_tl
       {
         % TODO
@@ -2396,53 +2381,6 @@
 
 \cs_new_protected:Npn \__chemformula_fontspec_aux:w [#1]#2 \q_stop
   { \newfontfamily \chemformula_font: [#1] {#2} }
-
-\cs_new_protected:Npn \__chemformula_save_catcodes:
-  {
-    \cs_gset_protected:Npx \__chemformula_restore:
-      {
-        \char_set_catcode:nn {  95 } { \char_value_catcode:n {  95 } }% _
-        \char_set_catcode:nn {  58 } { \char_value_catcode:n {  58 } }% :
-        \char_set_catcode:nn {  94 } { \char_value_catcode:n {  94 } }% ^
-        \char_set_catcode:nn { 123 } { \char_value_catcode:n { 123 } }% {
-        \char_set_catcode:nn { 125 } { \char_value_catcode:n { 125 } }% }
-        \char_set_catcode:nn {  35 } { \char_value_catcode:n {  35 } }% #
-        \char_set_catcode:nn {  33 } { \char_value_catcode:n {  33 } }% !
-        \char_set_catcode:nn {  34 } { \char_value_catcode:n {  34 } }% "
-        \char_set_catcode:nn {  60 } { \char_value_catcode:n {  60 } }% <
-        \char_set_catcode:nn {  62 } { \char_value_catcode:n {  62 } }% >
-        \char_set_catcode:nn { 126 } { \char_value_catcode:n { 126 } }% ~
-      }
-  }
-
-\cs_new_protected:Npn \__chemformula_sanitize:Nn #1#2
-  {
-    \tl_set_rescan:Nnn #1
-      {
-        % expl3 catcodes:
-        \char_set_catcode_letter:N \_
-        \char_set_catcode_letter:N \:
-        % I've forgotten why I put this here:
-        \char_set_catcode_math_superscript:N \^
-        % disable some of the specials (needed for sub- and superscripts):
-        \char_set_catcode_letter:N \{
-        \char_set_catcode_letter:N \}
-        % this one seems not necessary any more:
-        % \char_set_catcode_letter:N \\
-        \char_set_catcode_letter:N \#
-        % make the naming work with babel languages like French that make
-        % ! active:
-        \char_set_catcode_other:N  \!
-        % make the naming work with babel languages like Spanish that make
-        % < and > active:
-        \char_set_catcode_other:N \>
-        \char_set_catcode_other:N \<
-        % ensure " is other:
-        \char_set_catcode_other:N \"
-      }
-      {#2}
-  }
-\cs_generate_variant:Nn \__chemformula_sanitize:Nn {NV}
 
 \cs_new_protected:Npn \__chemformula_prepare_output:Nn #1#2
   {
@@ -2869,8 +2807,9 @@
   {
     \tl_set_rescan:Nnn \l__chemformula_tmpa_tl
       {
-        \char_set_catcode_letter:N \_
-        \char_set_catcode_other:N \:
+        % \char_set_catcode_letter:N \_
+        % \char_set_catcode_other:N \:
+        \char_set_catcode_space:N \~
       }
       {#1}
     \tl_replace_all:Nnn \l__chemformula_tmpa_tl
@@ -2879,15 +2818,6 @@
       {_} { \sb }
     \tl_replace_all:Nnn \l__chemformula_tmpa_tl
       { chemformulaplaceholder } { \_ }
-    % those cause trouble with chemmacros' \ox:
-    % \tl_put_left:Nn \l__chemformula_tmpa_tl
-    %   { \chemformula_group_begin: }
-    % \tl_put_right:Nn \l__chemformula_tmpa_tl
-    % { \chemformula_group_end: }
-    % \tl_set_rescan:NnV \l__chemformula_tmpa_tl
-    %   { \__chemformula_restore: \char_set_catcode_other:N \~ }
-    %   \l__chemformula_tmpa_tl
-    % \__chemformula_reset:NV \l__chemformula_tmpa_tl \l__chemformula_tmpa_tl
     \tl_put_right:NV \l__chemformula_input_tl \l__chemformula_tmpa_tl
   }
 
@@ -2946,7 +2876,6 @@
       {_} { \sb }
     \tl_replace_all:Nnn \l__chemformula_tmpa_tl
       { chemformulaplaceholder } { \_ }
-    % \__chemformula_reset:NV \l__chemformula_tmpa_tl \l__chemformula_tmpa_tl
     \tl_put_left:Nn \l__chemformula_tmpa_tl
       { \chemformula_group_begin: }
     \tl_put_right:Nn \l__chemformula_tmpa_tl
@@ -3083,7 +3012,7 @@
       \bool_set_false:N \l__chemformula_fontspec_bool
       \tl_set:Nn \l__chemformula_format_tl {#1} ,
     atom-format           .tl_set:N  = \l__chemformula_atom_format_tl ,
-    set-catcodes          .tl_set:N  = \l__chemformula_catcodes_tl  
+    set-catcodes          .tl_set:N  = \l__chemformula_catcodes_tl
   }
 
 % --------------------------------------------------------------------------
@@ -3574,12 +3503,14 @@ VERSION HISTORY
                            - implement \shortintertext bypass
 2019/09/23 - version 4.15f - add missing definition for temporary variable
 2019/09/27 - version 4.15g - bug fix in fontspec option
-2019/10/13 - version 4.15h - new (undocumented) option set-catcodes
+2019/10/13 - version 4.15h - new (undocumented) option `set-catcodes'
                            - fix behaviour with category codes
                              (https://tex.stackexchange.com/q/511592/)
                            - fix bug: local format changes are now applied
                              again
 2020/02/01 - version 4.15i - fix issue #12
+2020/03/07 - version 4.15j - make sure that < and > have catcode 12 when read
+                             as arrows -- again...
 
 % --------------------------------------------------------------------------
 % IDEAS:

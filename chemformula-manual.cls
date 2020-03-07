@@ -153,17 +153,16 @@
 \begingroup
 \catcode`\^^M=13
 \gdef\chemformula@read@options#1#2^^M{%
-  \endgroup
   \ifblank{#2}{}{\chemformula@read@options@#2}%
   #1%
   \XSIMfilewritestart*{\jobname.tmp}%
 }%
 \endgroup
+
 \def\chemformula@read@options@[#1]{\pgfqkeys{/cnltx}{#1}}
 
 \RenewDocumentEnvironment{sourcecode}{}
   {%
-    \begingroup
     \chemformula@readoptions{%
       \setlength\cnltx@sidebysidewidth
         {\dimexpr .45\columnwidth -\lst@xleftmargin -\lst@xrightmargin\relax}%
@@ -187,7 +186,6 @@
 
 \RenewDocumentEnvironment{example}{}
   {%
-    \begingroup
     \chemformula@readoptions{%
       \setlength\cnltx@sidebysidewidth
         {\dimexpr .45\columnwidth -\lst@xleftmargin -\lst@xrightmargin\relax}%
@@ -204,6 +202,7 @@
   }
   {%
     \XSIMfilewritestop
+    \catcode`\^^M=5
     \ifbool{cnltx@sidebyside}
       {%
         \cnltxcode
