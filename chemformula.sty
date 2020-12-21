@@ -30,9 +30,9 @@
 \usetikzlibrary{arrows.meta}
 
 \ExplSyntaxOn
-\tl_const:Nn \c_chemformula_date_tl {2020/03/07}
+\tl_const:Nn \c_chemformula_date_tl {2020/03/15}
 \tl_const:Nn \c_chemformula_version_number_tl {4.15}
-\tl_const:Nn \c_chemformula_version_suffix_tl {j}
+\tl_const:Nn \c_chemformula_version_suffix_tl {k}
 \tl_const:Nx \c_chemformula_version_tl
   { \c_chemformula_version_number_tl \c_chemformula_version_suffix_tl }
 \tl_const:Nn \c_chemformula_info_tl
@@ -623,7 +623,7 @@
             overlay
           }
           {
-            \fill (0,0)
+            \fill (0pt,0pt)
               ++(
                 \l__chemformula_radical_hshift_dim ,
                 \l__chemformula_radical_vshift_dim
@@ -1712,6 +1712,9 @@
 
 % --------------------------------------------------------------------------
 % sub- and superscripts
+\bool_new:N \l__chemformula_subsuper_use_math_bool
+\bool_new:N \l__chemformula_subandsuper_bool
+
 \cs_new_protected:Npn \__chemformula_number_style:n #1
   {
     \bool_if:NTF \l__chemformula_number_style_math_bool
@@ -1827,20 +1830,36 @@
       \bool_set_true:N \l__chemformula_inside_subscript_bool
       \tl_set_eq:NN \chemformula_subscript:n \use:n
       \tl_set_eq:NN \chemformula_superscript:n \use:n
-      \__chemformula_subscript_raise:N \l__chemformula_subscript_shift_dim
-      \hbox:n
+      \bool_if:NTF \l__chemformula_subsuper_use_math_bool
         {
           \c_math_toggle_token
-            \scriptstyle
-            \prop_get:NoNTF \l__chemformula_numbers_prop
-              {#1} \l__chemformula_tmpa_tl
-              { \__chemformula_number_style:V \l__chemformula_tmpa_tl }
-              { \__chemformula_number_style:n {#1} }
+          \bool_if:NT \l__chemformula_subandsuper_bool
+            { \c_math_superscript_token {} }
+          \c_math_subscript_token
+          { \__chemformula_write_subscript:n {#1} }
           \c_math_toggle_token
+        }
+        {
+          \__chemformula_subscript_raise:N \l__chemformula_subscript_shift_dim
+          \hbox:n
+            {
+              \c_math_toggle_token
+              \__chemformula_write_subscript:n {#1}
+              \c_math_toggle_token
+            }
         }
     \group_end:
   }
 \cs_generate_variant:Nn \__chemformula_subscript_write:n {V}
+
+\cs_new_protected:Npn \__chemformula_write_subscript:n #1
+  {
+    \scriptstyle
+    \prop_get:NoNTF \l__chemformula_numbers_prop
+      {#1} \l__chemformula_tmpa_tl
+      { \__chemformula_number_style:V \l__chemformula_tmpa_tl }
+      { \__chemformula_number_style:n {#1} }
+  }
 
 \cs_new_protected:Npn \__chemformula_measure_subscript:n #1
   {
@@ -1952,31 +1971,47 @@
       \bool_set_true:N \l__chemformula_inside_superscript_bool
       \tl_set_eq:NN \chemformula_subscript:n \use:n
       \tl_set_eq:NN \chemformula_superscript:n \use:n
-      \__chemformula_superscript_raise:N \l__chemformula_superscript_shift_dim
-      \hbox:n
+      \bool_if:NTF \l__chemformula_subsuper_use_math_bool
         {
           \c_math_toggle_token
-            \scriptstyle
-            % TODO: this is at the wrong place here -- we need to map through
-            % the superscript tokens!
-            \bool_if:NTF \l__chemformula_kroegervink_bool
-              { % TODO: is the o argument necessary?
-                \prop_get:NoNTF \l__chemformula_kroegervink_prop
-                  {#1} \l__chemformula_tmpa_tl
-                  { \tl_use:N \l__chemformula_tmpa_tl }
-                  { \chemformula_charge_style:n {#1} }
-              }
-              { % TODO: is the o argument necessary?
-                \prop_get:NoNTF \l__chemformula_charge_prop
-                  {#1} \l__chemformula_tmpa_tl
-                  { \tl_use:N \l__chemformula_tmpa_tl }
-                  { \chemformula_charge_style:n {#1} }
-              }
+          \bool_if:NT \l__chemformula_subandsuper_bool
+            { \c_math_subscript_token {} }
+          \c_math_superscript_token
+          {  \__chemformula_write_superscript:n {#1} }
           \c_math_toggle_token
+        }
+        {
+          \__chemformula_superscript_raise:N \l__chemformula_superscript_shift_dim
+          \hbox:n
+            {
+              \c_math_toggle_token
+              \__chemformula_write_superscript:n {#1}
+              \c_math_toggle_token
+            }
         }
     \group_end:
   }
 \cs_generate_variant:Nn \__chemformula_superscript_write:n {V}
+
+\cs_new_protected:Npn \__chemformula_write_superscript:n #1
+  {
+    \scriptstyle
+    % TODO: this is at the wrong place here -- we need to map through
+    % the superscript tokens!
+    \bool_if:NTF \l__chemformula_kroegervink_bool
+      { % TODO: is the o argument necessary?
+        \prop_get:NoNTF \l__chemformula_kroegervink_prop
+          {#1} \l__chemformula_tmpa_tl
+          { \tl_use:N \l__chemformula_tmpa_tl }
+          { \chemformula_charge_style:n {#1} }
+      }
+      { % TODO: is the o argument necessary?
+        \prop_get:NoNTF \l__chemformula_charge_prop
+          {#1} \l__chemformula_tmpa_tl
+          { \tl_use:N \l__chemformula_tmpa_tl }
+          { \chemformula_charge_style:n {#1} }
+      }
+  }
 
 \cs_new_protected:Npn \__chemformula_measure_superscript:n #1
   {
@@ -2023,6 +2058,7 @@
           {
             \tl_if_blank:VF \l__chemformula_subscript_tl
               {
+                \bool_set_true:N \l__chemformula_subandsuper_bool
                 \bool_if:NTF \l__chemformula_charge_full_shift_bool
                   { \chemformula_skip_nobreak:n { -\l__chemformula_subscript_dim } }
                   { \chemformula_skip_nobreak:N \l__chemformula_charge_shift_dim }
@@ -2934,6 +2970,9 @@
           \bool_set_false:N \l__chemformula_charge_full_shift_bool
           \dim_set:Nn \l__chemformula_charge_shift_dim {#1}
         } ,
+    math-scripts          .bool_set:N =
+      \l__chemformula_subsuper_use_math_bool ,
+    math-scripts          .initial:n = false ,
     charge-hshift         .default:n = .25em ,
     charge-vshift         .tl_set:N =
       \l__chemformula_superscript_shift_additional_tl ,
@@ -3511,6 +3550,8 @@ VERSION HISTORY
 2020/02/01 - version 4.15i - fix issue #12
 2020/03/07 - version 4.15j - make sure that < and > have catcode 12 when read
                              as arrows -- again...
+2020/03/15 - version 4.15k - fix https://tex.stackexchange.com/questions/532674/
+2020/12/?? - version 4.26  - new option `math-scripts'
 
 % --------------------------------------------------------------------------
 % IDEAS:
