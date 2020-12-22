@@ -239,9 +239,67 @@
 \RequirePackage{csquotes,varioref}
 \defbibheading{bibliography}{\section{References}}
 
+\newpackagename\chemmacros{chemmacros}
+
+\newidxcmd\manual{\textsf{#1}}[\ (manual)]
+\newidxcmd\arrowtype{\code{#1}}[\ (arrow type)]
+
+\newcommand*\cf@arrow{%
+  \@ifstar
+    {\cf@arrow@star}
+    {\cf@arrow@nostar}%
+}
+\newrobustcmd*\cf@arrow@star[1]{%
+  \@ifnextchar[
+    {\cf@arrow@star@opt{#1}}
+    {\cf@arrow@star@opt{#1}[]}%
+}
+\newrobustcmd*\cf@arrow@nostar[1]{%
+  \@ifnextchar[
+    {\cf@arrow@nostar@opt{#1}}
+    {\cf@arrow@nostar@opt{#1}[]}%
+}
+\def\cf@arrow@star@opt#1[#2]{%
+  \ifblank{#2}
+    {\item\arrowtype*{#1}}
+    {\item\arrowtype*{#1}#2}%
+  \cnltx@checkdefault{\hfill\newline}%
+}
+\def\cf@arrow@nostar@opt#1[#2]{%
+  \ifblank{#2}
+    {\item\arrowtype{#1}}
+    {\item\arrowtype{#1}#2}%
+  \cnltx@checkdefault{\hfill\newline}%
+}
+
+\newenvironment{codedesc}
+  {%
+    \def\Code##1{\item\code{##1}\hfill\newline}%
+    \cnltxlist
+  }
+  {\endcnltxlist}
+
+\newenvironment{arrows}
+  {%
+    \let\arrow\cf@arrow
+    \cnltxlist
+  }
+  {\endcnltxlist}
+
+\renewcommand*\AmS{\hologo{AmS}}
+
+\newcommand*\TikZ{Ti\textit{k}Z}
+
+\newname\hensel{Martin Hensel}
+
 \RequirePackage[biblatex]{embrac}[2012/06/29]
 \ChangeEmph{[}[,.02em]{]}[.055em,-.08em]
 \ChangeEmph{(}[-.01em,.04em]{)}[.04em,-.05em]
+
+\newenvironment{changes}[1]{%
+  \subsection*{Version #1 (\csuse{chemformula@ver@#1})}
+  \itemize\let\change\item
+}{\enditemize}
 
 \chemformula@add@version{2012-01-28}{3.0}
 \chemformula@add@version{2012-01-30}{3.0a}
@@ -299,5 +357,8 @@
 \chemformula@add@version{2019-09-27}{4.15g}
 \chemformula@add@version{2019-10-13}{4.15h}
 \chemformula@add@version{2020-02-01}{4.15i}
+\chemformula@add@version{2020-03-07}{4.15j}
+\chemformula@add@version{2020-03-15}{4.15k}
+\chemformula@add@version{2020-12-22}{4.16}
 
 \endinput

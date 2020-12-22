@@ -19,12 +19,12 @@
 % Copyright 2011--2020 Clemens Niederberger
 %
 % This work may be distributed and/or modified under the
-% conditions of the LaTeX Project Public License, either version 1.3
+% conditions of the LaTeX Project Public License, either version 1.3c
 % of this license or (at your option) any later version.
 % The latest version of this license is in
 %   http://www.latex-project.org/lppl.txt
-% and version 1.3 or later is part of all distributions of LaTeX
-% version 2005/12/01 or later.
+% and version 1.3c or later is part of all distributions of LaTeX
+% version 2008/05/04 or later.
 %
 % This work has the LPPL maintenance status `maintained'.
 %
@@ -36,21 +36,20 @@
 
 \chemsetup{
   greek = newtx ,
-  modules = {redox,reactions,units} ,
   formula = chemformula ,
   chemformula/format = \libertineLF
 }
 
-\usepackage[accsupp]{acro}
+\usepackage{acro}
 \acsetup{
-  long-format  = \scshape ,
-  short-format = \scshape
+  format/long  = \scshape ,
+  format/short = \scshape
 }
 \DeclareAcronym{iupac}{
   short     = iupac ,
   long      = International Union of Pure and Applied Chemistry ,
   pdfstring = IUPAC ,
-  accsupp   = IUPAC
+  short-acc = IUPAC
 }
 
 \sisetup{
@@ -59,9 +58,6 @@
   text-rm=\libertineLF
 }
 
-\usepackage{filecontents}
-
-\defbibheading{bibliography}{\section{References}}
 \addbibresource{\jobname.bib}
 \begin{filecontents*}{\jobname.bib}
 @book{iupac:greenbook,
@@ -89,61 +85,6 @@
     slash-right-kern    = .05em ,
     slash-left-kern     = .05em
   }
-
-\newpackagename\chemmacros{chemmacros}
-
-\newidxcmd\manual{\textsf{#1}}[\ (manual)]
-\newidxcmd\arrowtype{\code{#1}}[\ (arrow type)]
-
-\makeatletter
-\newcommand*\cf@arrow{%
-  \@ifstar
-    {\cf@arrow@star}
-    {\cf@arrow@nostar}%
-}
-\newrobustcmd*\cf@arrow@star[1]{%
-  \@ifnextchar[
-    {\cf@arrow@star@opt{#1}}
-    {\cf@arrow@star@opt{#1}[]}%
-}
-\newrobustcmd*\cf@arrow@nostar[1]{%
-  \@ifnextchar[
-    {\cf@arrow@nostar@opt{#1}}
-    {\cf@arrow@nostar@opt{#1}[]}%
-}
-\def\cf@arrow@star@opt#1[#2]{%
-  \ifblank{#2}
-    {\item\arrowtype*{#1}}
-    {\item\arrowtype*{#1}#2}%
-  \cnltx@checkdefault{\hfill\newline}%
-}
-\def\cf@arrow@nostar@opt#1[#2]{%
-  \ifblank{#2}
-    {\item\arrowtype{#1}}
-    {\item\arrowtype{#1}#2}%
-  \cnltx@checkdefault{\hfill\newline}%
-}
-
-\newenvironment{codedesc}
-  {%
-    \def\Code##1{\item\code{##1}\hfill\newline}%
-    \cnltxlist
-  }
-  {\endcnltxlist}
-
-\newenvironment{arrows}
-  {%
-    \let\arrow\cf@arrow
-    \cnltxlist
-  }
-  {\endcnltxlist}
-\makeatother
-
-\renewcommand*\AmS{\hologo{AmS}}
-
-\newcommand*\TikZ{Ti\textit{k}Z}
-
-\newname\hensel{Martin Hensel}
 
 \begin{document}
 
@@ -612,9 +553,13 @@ The usage is best described with an example.  So let's see how the
     }
   \NewChemBondAlias{co>}{coordright}
 \end{sourcecode}
-Two points are important: the names of the starting and the ending
-coordinates, \code{chemformula-bond-start} and \code{chemformula-bond-end},
-and the \TikZ\ style of the bonds \code{chembond}.
+
+Two points are important:
+\begin{itemize}
+  \item the names of the starting and the ending coordinates, \\
+    \code{chemformula-bond-start} and \code{chemformula-bond-end},
+  \item and the \TikZ\ style of the bonds \code{chembond}.
+\end{itemize}
 
 So, let's say you want to define a special kind of dashed bond.  You could do
 this:
@@ -645,15 +590,23 @@ It only exists so you can use it to access the bond length as set with
 These options allow you to customize the ouptut of the compounds:
 \begin{options}
   \keyval{subscript-vshift}{dim}\Default{0pt}
-    Extra vertical shift of the subscripts.
+    Extra vertical shift of the subscripts.  This only works when
+    \keyis{math-scripts}{false} is in effect.
   \keychoice{subscript-style}{text,math}\Default{text}
     Style that is used to typeset the subscripts.
   \keyval{charge-hshift}{dim}\Default{.25em}
     Shift of superscripts when following a subscript.\label{desc:charge-hshift}
   \keyval{charge-vshift}{dim}\Default{0pt}
-    Extra vertical shift of the superscripts.
+    Extra vertical shift of the superscripts.  This only works when
+    \keyis{math-scripts}{false} is in effect.
   \keychoice{charge-style}{text,math}\Default{text}
     Style that is used to typeset the superscripts.
+  \keybool{math-scripts}\Default{false}
+    \sinceversion{4.16}Switches to \TeX's native subscript and superscript
+    mechanism which might be your option of choice for the sake of
+    typographical consistency.  \emph{This option is experimental. Please
+      report any problems you experience with this option to \chemformula's
+      bug tracker.}
   \keychoice{circled}{formal,\default{all},none}\Default{formal}
     \sinceversion{4.6}Like \chemmacros' package option but local to
     \chemformula's \cs{ch}.  That is: since \chemmacros' macros use
@@ -1516,10 +1469,6 @@ There are a number of options for customizations:
 \end{options}
 
 \appendix
-\newenvironment{changes}[2][]{%
-  \subsection*{Version #2\ifblank{#1}{}{ (#1)}}
-  \itemize\let\change\item
-}{\enditemize}
 
 \section{History Since Version~4.0}
 
@@ -1622,5 +1571,13 @@ There are a number of options for customizations:
     argument.
   \change Various bug fixes.
 \end{changes}
+
+\begin{changes}{4.16}
+  \change New option \option{math-scripts}
+  \change Use \LaTeX's new hooks and get rid of redundant package dependencies
+    and code.
+\end{changes}
+
+\printbibliography
 
 \end{document}
