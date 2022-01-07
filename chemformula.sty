@@ -2962,24 +2962,22 @@
       \bool_set_true:N \l__chemformula_nicefrac_bool
       \bool_set_false:N \l__chemformula_mathfrac_bool ,
     frac-math-cmd         .code:n     =
-      { \cs_set_eq:NN \chemformula_math_frac:nn #1 } ,
+      \cs_set_protected:Npn \chemformula_math_frac:nn ##1##2 { #1 {##1} {##2} } ,
     stoich-paren-parse    .bool_set:N = \l__chemformula_stoich_parse_iupac_bool ,
     stoich-space          .skip_set:N = \l__chemformula_stoich_space_skip ,
     stoich-print          .code:n     =
-      \cs_set_eq:NN \chemformula_print_stoich:n #1 ,
+      \cs_set_protected:Npn \chemformula_print_stoich:n ##1 { #1 {##1} } ,
     adduct-space          .dim_set:N  = \l__chemformula_adduct_space_dim ,
     adduct-penalty        .tl_set:N   = \l__chemformula_adduct_penalty_tl ,
     math-space            .skip_set:N = \l__chemformula_math_space_skip ,
     name-format           .tl_set:N   = \l__chemformula_name_format_tl ,
     name-width            .code:n     =
-      {
-        \tl_if_eq:nnTF {#1} { auto }
-          { \bool_set_false:N \l__chemformula_name_width_bool }
-          {
-            \bool_set_true:N \l__chemformula_name_width_bool
-            \dim_set:Nn \l__chemformula_name_dim {#1}
-          }
-      } ,
+      \tl_if_eq:nnTF {#1} { auto }
+        { \bool_set_false:N \l__chemformula_name_width_bool }
+        {
+          \bool_set_true:N \l__chemformula_name_width_bool
+          \dim_set:Nn \l__chemformula_name_dim {#1}
+        } ,
     bond-length           .dim_set:N = \l__chemformula_bond_dim ,
     bond-offset           .dim_set:N = \l__chemformula_bond_space_dim ,
     bond-style            .code:n    =
@@ -3512,6 +3510,9 @@ VERSION HISTORY
 2020/12/22 - version 4.16  - new option `math-scripts'
                            - use LaTeX's new hooks
                            - get rid of unnecessary package dependencies
+20??/??/?? - version 4.??  - adjust options `stoich-print' and `frac-math-cmd'
+                             to accept arbitrary code as long as they end with
+                             a macro that accepts the correct number of arguments
 
 % --------------------------------------------------------------------------
 % IDEAS:
