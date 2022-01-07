@@ -2186,7 +2186,7 @@
             \__chemformula_sanitize:NV
               \l__chemformula_stoich_tl
               \l__chemformula_stoich_tl
-            \__chemformula_print_stoich:V
+            \chemformula_print_stoich:V
               \l__chemformula_stoich_tl
           }
       }
@@ -2195,15 +2195,17 @@
 
 \cs_new_protected:Npn \chemformula_bm:n #1 {#1}
 
-\cs_new_protected:Npn \__chemformula_print_stoich:n #1
+\cs_new_protected:Npn \chemformula_print_stoich:n #1
   { \chemformula_parse_stoich:n {#1} }
-\cs_generate_variant:Nn \__chemformula_print_stoich:n {V}
+\cs_generate_variant:Nn \chemformula_print_stoich:n {V}
+
+\cs_new_protected:Npn \__chemformula_print_stoich:n #1 {#1}
 
 \cs_new_protected:Npn \chemformula_parse_stoich:n #1
   { \__chemformula_parse_stoich:w #1 \q_nil }
 
 \NewDocumentCommand \chstoich {m}
-  { \chemformula_parse_stoich:n {#1} }
+  { \chemformula_print_stoich:n {#1} }
 
 \cs_new_protected:Npn \__chemformula_parse_stoich:w \q_mark #1 \q_nil
   {
@@ -2235,8 +2237,14 @@
     \tl_set:Nn \l__chemformula_tmpb_tl { \chemformula_decimal: }
     % check if stoich starts with decimal-marker and add leading 0 if so:
     \tl_if_eq:NNTF \l__chemformula_tmpa_tl \l__chemformula_tmpb_tl
-      { \tl_put_right:Nn \l__chemformula_input_tl { 0#1 } }
-      { \tl_put_right:Nn \l__chemformula_input_tl {#1} }
+      {
+        \tl_put_right:Nn \l__chemformula_input_tl
+          { \__chemformula_print_stoich:n {0#1} }
+      }
+      {
+        \tl_put_right:Nn \l__chemformula_input_tl
+          { \__chemformula_print_stoich:n {#1} }
+      }
   }
 
 \cs_new_protected:Npn \__chemformula_parse_stoich_frac:n #1
@@ -2249,20 +2257,20 @@
 \cs_new_protected:Npn \__chemformula_parse_stoich_frac:w #1/#2 \q_nil
   {
     \tl_put_right:Nn \l__chemformula_input_tl
-      { \__chemformula_frac:nn {#1} {#2} }
+      { \__chemformula_print_stoich:n { \__chemformula_frac:nn {#1} {#2} } }
   }
 
 \cs_new_protected:Npn \__chemformula_parse_stoich_misc_frac:w #1_#2/#3 \q_nil
   {
     \tl_put_right:Nn \l__chemformula_input_tl
-      { \__chemformula_misc_frac:nnn {#1} {#2} {#3} }
+      { \__chemformula_print_stoich:n { \__chemformula_misc_frac:nnn {#1} {#2} {#3} } }
   }
 
 \cs_new_protected:Npn \__chemformula_parse_stoich_iupac:n #1
   {
     \bool_if:NTF \l__chemformula_stoich_parse_iupac_bool
       { \__chemformula_parse_stoich_iupac:w #1 \q_nil }
-      { \tl_put_right:Nn \l__chemformula_input_tl {#1} }
+      { \tl_put_right:Nn \l__chemformula_input_tl {\__chemformula_print_stoich:n {#1} } }
   }
 
 \cs_new_protected:Npn \__chemformula_parse_stoich_iupac:w (#1) \q_nil
@@ -2961,12 +2969,10 @@
       \bool_set_false:N \l__chemformula_xfrac_bool
       \bool_set_true:N \l__chemformula_nicefrac_bool
       \bool_set_false:N \l__chemformula_mathfrac_bool ,
-    frac-math-cmd         .code:n     =
-      \cs_set_protected:Npn \chemformula_math_frac:nn ##1##2 { #1 {##1} {##2} } ,
+    frac-math-cmd         .cs_set_protected:Np = \chemformula_math_frac:nn #1#2 ,
     stoich-paren-parse    .bool_set:N = \l__chemformula_stoich_parse_iupac_bool ,
     stoich-space          .skip_set:N = \l__chemformula_stoich_space_skip ,
-    stoich-print          .code:n     =
-      \cs_set_protected:Npn \chemformula_print_stoich:n ##1 { #1 {##1} } ,
+    stoich-print          .cs_set_protected:Np = \__chemformula_print_stoich:n #1 ,
     adduct-space          .dim_set:N  = \l__chemformula_adduct_space_dim ,
     adduct-penalty        .tl_set:N   = \l__chemformula_adduct_penalty_tl ,
     math-space            .skip_set:N = \l__chemformula_math_space_skip ,
@@ -3511,8 +3517,7 @@ VERSION HISTORY
                            - use LaTeX's new hooks
                            - get rid of unnecessary package dependencies
 20??/??/?? - version 4.??  - adjust options `stoich-print' and `frac-math-cmd'
-                             to accept arbitrary code as long as they end with
-                             a macro that accepts the correct number of arguments
+                             and correct bug in `stoich-print'
 
 % --------------------------------------------------------------------------
 % IDEAS:
