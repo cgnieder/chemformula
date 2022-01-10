@@ -12,7 +12,7 @@
 % If you have any ideas, questions, suggestions or bugs to report, please
 % feel free to contact me.
 % --------------------------------------------------------------------------
-% Copyright 2011--2020 Clemens Niederberger
+% Copyright 2011--2022 Clemens Niederberger
 %
 % This work may be distributed and/or modified under the
 % conditions of the LaTeX Project Public License, either version 1.3
@@ -30,8 +30,8 @@
 \usetikzlibrary{arrows.meta}
 
 \ExplSyntaxOn
-\tl_const:Nn \c_chemformula_date_tl {2020/12/22}
-\tl_const:Nn \c_chemformula_version_number_tl {4.16}
+\tl_const:Nn \c_chemformula_date_tl {2022/01/08}
+\tl_const:Nn \c_chemformula_version_number_tl {4.17}
 \tl_const:Nn \c_chemformula_version_suffix_tl {}
 \tl_const:Nx \c_chemformula_version_tl
   { \c_chemformula_version_number_tl \c_chemformula_version_suffix_tl }
@@ -178,6 +178,7 @@
 \bool_new:N \l__chemformula_is_addition_symbol_bool
 \bool_new:N \l__chemformula_is_symbol_bool
 \bool_new:N \l__chemformula_is_arrow_bool
+\bool_new:N \l__chemformula_arrow_has_options_bool
 \bool_new:N \l__chemformula_is_name_bool
 \bool_new:N \l__chemformula_stoich_is_iupac_bool
 \bool_new:N \l__chemformula_stoich_parse_iupac_bool
@@ -862,7 +863,7 @@
 
 % draw arrows:
 \cs_new_protected:Npn \__chemformula_draw_arrow:nnn #1#2#3
-  {
+  {\tl_show:n {#2}
     \chemformula_if_is_arrow:nTF {#1}
       {
         \prop_get:NnN \l__chemformula_arrows_code_prop
@@ -891,9 +892,15 @@
       { \__chemformula_basic_catcodes: } {#1}
     % determine length of the arrow
     \hbox_set:Nn \l__chemformula_arrow_arg_i_box
-      { \tl_use:N \l__chemformula_arrow_label_style_tl #2 }
+      {
+        \tl_use:N \l__chemformula_arrow_label_style_tl #2
+        %\begin {tabular} {c} #2 \end {tabular}
+      }
     \hbox_set:Nn \l__chemformula_arrow_arg_ii_box
-      { \tl_use:N \l__chemformula_arrow_label_style_tl #3 }
+      {
+        \tl_use:N \l__chemformula_arrow_label_style_tl #3
+        % \begin {tabular} {c} #3 \end {tabular}
+      }
     \__chemformula_determine_arrow_length:NN
       \l__chemformula_arrow_arg_i_box
       \l__chemformula_arrow_arg_ii_box
@@ -1329,6 +1336,11 @@
             \bool_set_true:N \l__chemformula_is_arrow_bool
             \prop_map_break:
           }
+      }
+    \bool_if:NT \l__chemformula_is_arrow_bool
+      {
+        \tl_if_in:nnT {#1} {[}
+          { \bool_set_true:N \l__chemformula_arrow_has_options_bool }
       }
   }
 
@@ -2333,16 +2345,17 @@
                     {chemformula}
                     { \exp_not:V \l__chemformula_internal_options_tl }
               }
+            \tl_clear:N \l__chemformula_internal_options_tl
           }
-        \bool_if:nT
+        \bool_lazy_any:nF
           {
-            !\l__chemformula_is_option_bool &&
-            !\l__chemformula_is_addition_symbol_bool &&
-            !\l__chemformula_is_symbol_bool &&
-            !\l__chemformula_is_arrow_bool &&
-            !\l__chemformula_is_name_bool &&
-            !\l__chemformula_first_last_text_bool &&
-            !\l__chemformula_first_last_math_bool
+            { \l__chemformula_is_option_bool }
+            { \l__chemformula_is_addition_symbol_bool }
+            { \l__chemformula_is_symbol_bool }
+            { \l__chemformula_is_arrow_bool }
+            { \l__chemformula_is_name_bool }
+            { \l__chemformula_first_last_text_bool }
+            { \l__chemformula_first_last_math_bool }
           }
           {
             \__chemformula_input_compound_no_check:Nn #1 {#2}
@@ -2352,7 +2365,6 @@
                   {
                     % end group
                     \group_end:
-                    \tl_clear:N \l__chemformula_internal_options_tl
                   }
                 \bool_set_false:N \l__chemformula_options_bool
               }
@@ -2508,7 +2520,6 @@
         % start with formatting:
         \tl_put_right:Nn #1
           {
-            \tl_use:N \l__chemformula_format_tl
             \group_begin:
               \l__chemformula_atom_format_tl
           }
@@ -2741,11 +2752,11 @@
 % input arrow
 \cs_new_protected:Npn \__chemformula_input_arrow:n #1
   {
-    \bool_if:nT
+    \bool_lazy_all:nT
       {
-        \l__chemformula_is_arrow_bool &&
-        !\l__chemformula_first_last_text_bool &&
-        !\l__chemformula_first_last_math_bool
+        { \l__chemformula_is_arrow_bool }
+        { !\l__chemformula_first_last_text_bool }
+        { !\l__chemformula_first_last_math_bool }
       }
       {
         \__chemformula_generate_arrows:Nn \l__chemformula_tmpa_tl {#1}
@@ -2759,11 +2770,11 @@
 % input compound name
 \cs_new_protected:Npn \__chemformula_input_name:n #1
   {
-    \bool_if:nT
+    \bool_lazy_all:nT
       {
-        \l__chemformula_is_name_bool &&
-        !\l__chemformula_first_last_text_bool &&
-        !\l__chemformula_first_last_math_bool
+        { \l__chemformula_is_name_bool }
+        { !\l__chemformula_first_last_text_bool }
+        { !\l__chemformula_first_last_math_bool }
       }
       {
         \__chemformula_generate_name:Nn \l__chemformula_tmpa_tl {#1}
@@ -2970,9 +2981,11 @@
       \bool_set_true:N \l__chemformula_nicefrac_bool
       \bool_set_false:N \l__chemformula_mathfrac_bool ,
     frac-math-cmd         .cs_set_protected:Np = \chemformula_math_frac:nn #1#2 ,
+    frac-math-cmd         .initial:n  = \frac {#1} {#2} ,
     stoich-paren-parse    .bool_set:N = \l__chemformula_stoich_parse_iupac_bool ,
     stoich-space          .skip_set:N = \l__chemformula_stoich_space_skip ,
     stoich-print          .cs_set_protected:Np = \__chemformula_print_stoich:n #1 ,
+    stoich-print          .initial:n  = #1 ,
     adduct-space          .dim_set:N  = \l__chemformula_adduct_space_dim ,
     adduct-penalty        .tl_set:N   = \l__chemformula_adduct_penalty_tl ,
     math-space            .skip_set:N = \l__chemformula_math_space_skip ,
@@ -3286,7 +3299,7 @@
 
 % --------------------------------------------------------------------------
 % hyperref support
-\hook_gput_code:nnn {package/after/hyperref} {chemformula}
+\hook_gput_code:nnn {package/hyperref/after} {chemformula}
   {
     \pdfstringdefDisableCommands
       {
@@ -3516,8 +3529,10 @@ VERSION HISTORY
 2020/12/22 - version 4.16  - new option `math-scripts'
                            - use LaTeX's new hooks
                            - get rid of unnecessary package dependencies
-20??/??/?? - version 4.??  - adjust options `stoich-print' and `frac-math-cmd'
+2022/??/?? - version 4.17  - adjust options `stoich-print' and `frac-math-cmd'
                              and correct bug in `stoich-print'
+                           - lazy boolean evaluation
+                           - fix deprecated file hook 
 
 % --------------------------------------------------------------------------
 % IDEAS:

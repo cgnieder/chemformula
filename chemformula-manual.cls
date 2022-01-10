@@ -12,7 +12,7 @@
 % If you have any ideas, questions, suggestions or bugs to report, please
 % feel free to contact me.
 % --------------------------------------------------------------------------
-% Copyright 2011--2020 Clemens Niederberger
+% Copyright 2011--2022 Clemens Niederberger
 %
 % This work may be distributed and/or modified under the
 % conditions of the LaTeX Project Public License, either version 1.3
@@ -26,7 +26,7 @@
 %
 % The Current Maintainer of this work is Clemens Niederberger.
 % --------------------------------------------------------------------------
-\ProvidesClass{chemformula-manual}[2020/02/01]
+\ProvidesClass{chemformula-manual}[2022/01/07]
 
 \LoadClass[load-preamble,add-index]{cnltx-doc}
 \RequirePackage{imakeidx}
@@ -360,5 +360,6 @@
 \chemformula@add@version{2020-03-07}{4.15j}
 \chemformula@add@version{2020-03-15}{4.15k}
 \chemformula@add@version{2020-12-22}{4.16}
+\chemformula@add@version{2022-01-07}{4.17}
 
 \endinput

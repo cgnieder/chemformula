@@ -16,7 +16,7 @@
 % If you have any ideas, questions, suggestions or bugs to report, please
 % feel free to contact me.
 % --------------------------------------------------------------------------
-% Copyright 2011--2020 Clemens Niederberger
+% Copyright 2011--2022 Clemens Niederberger
 %
 % This work may be distributed and/or modified under the
 % conditions of the LaTeX Project Public License, either version 1.3c
@@ -237,22 +237,18 @@ There are a few possibilities to customize the output.
     The symbol to indicate the decimal.
   \keychoice{frac-style}{math,xfrac,nicefrac}\Default{math}
     Determines how fractions are displayed.
-  \keyval{frac-math-cmd}{command sequence}\Default{\cs*{frac}}
-    \sinceversion{4.1}Allows you to choose which command is used with
-    \keyis{frac-style}{math}.  This needs to be a command sequence that takes
-    two arguments that are set in math mode.
+  \keyval{frac-math-cmd}{command sequence}\Default{\cs*{frac}\Marg{\#1}\Marg{\#2}}
+    \changedversion{4.17}Allows you to choose which command is used with
+    \keyis{frac-style}{math}.
   \keyval{stoich-space}{skip}\Default{.1667em plus .0333em minus .0117em}
     The space that is placed after the stoichiometric factor.  A rubber
     length.
   \keybool{stoich-paren-parse}\Default{false}
     If set to true stoichiometric factors enclosed by parentheses also are
     parsed.
-  \keyval{stoich-print}{cs}\Default{\cs{chstoich}}
-    This option allows to redefine the macro that prints the stoichiometric
-    factors.  \meta{cs} should be a macro that takes one mandatory argument.
-    \emph{Please note that using this option will disable \chemformula's
-      stoichiometric parsing as that is done by the default command
-      \cs{chstoich}.}
+  \keyval{stoich-print}{code containing \#1}\Default{\#1}
+    \changedversion{4.17}This option allows to adjust how stoichiometric
+    factors are printed.
 \end{options}
 
 \begin{example}
@@ -870,7 +866,7 @@ the spacing. That's why there is an alternative:
 \end{commands}
 \begin{example}
   \ch{H2O +}\textcolor{red}{\ch{H2SO4}}\ch{-> H3O+ + HSO4-} \par
-  \ch{H2O + @{format=\color{red}} H2SO4 -> H3O+ + HSO4-} \par
+  \ch{H2O + @{atom-format=\color{red}} H2SO4 -> H3O+ + HSO4-} \par
   or of course:\par
   \ch{H2O + \textcolor{red}{H2SO4} -> H3O+ + HSO4-}\par\bigskip
   \ch{H2O +}\ch[subscript-vshift=2pt]{H2SO4}\ch{-> H3O+ + HSO4-} \par
