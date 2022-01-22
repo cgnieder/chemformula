@@ -1,0 +1,248 @@
+--------------------------------------------------------------------------
+the CHEMFORMULA package
+
+  typeset chemical compounds and reactions
+
+--------------------------------------------------------------------------
+Clemens Niederberger
+--------------------------------------------------------------------------
+https://github.com/cgnieder/chemformula/
+contact@mychemistry.eu
+--------------------------------------------------------------------------
+If you have any ideas, questions, suggestions or bugs to report, please
+feel free to contact me.
+--------------------------------------------------------------------------
+Copyright 2011--2022 Clemens Niederberger
+
+This work may be distributed and/or modified under the
+conditions of the LaTeX Project Public License, either version 1.3
+of this license or (at your option) any later version.
+The latest version of this license is in
+  http://www.latex-project.org/lppl.txt
+and version 1.3 or later is part of all distributions of LaTeX
+version 2005/12/01 or later.
+
+This work has the LPPL maintenance status `maintained'.
+
+The Current Maintainer of this work is Clemens Niederberger.
+--------------------------------------------------------------------------
+VERSION HISTORY
+2012/01/28 - version 3.0   - bundled with packages `chemmacros' and `ghs'
+2012/01/30 - version 3.0a  - bugfix
+                           - renamed formula => chemformula
+                             (following a request by Karl Berry for TeXlive)
+2012/02/03 - version 3.0b  - stepped number with `chemmacros'
+2012/02/05 - version 3.0c  - stepped number with `chemmacros'
+2012/02/10 - version 3.0d  - several bugfixes
+                           - new arrow type <>
+2012/02/19 - version 3.1   - new arrow types -/>, </- and <o>
+                           - new commands \DeclareChemArrow, \RenewChemArrow and
+                             \ShowChemArrow
+2012/02/26 - version 3.1a  - stepped number with `chemmacros'
+2012/03/03 - version 3.1b  - arrow types are stored in a sequence to automate the
+                             search and replace in the right order 
+                           - new arrow type ==                                   
+                           - IUPAC compliance for stoichiometric factors
+                           - new handling of super- and subscripts to correct
+                             various flaws: clear distinction between isotope and
+                             formula
+                           - new option charge-vshift
+2012/03/14 - version 3.1c  - improved arrow labels
+2012/03/20 - version 3.2   - new: option input via @{<options>}
+2012/05/07 - version 3.3   - \ch now bypasses \ref{}, \label{}, and \intertext{}
+2012/05/13 - version 3.3a  - stepped number with `chemmacros'
+2012/05/18 - version 3.3b  - stepped number with `chemmacros'
+2012/05/18 - version 3.3c  - stepped number with `chemmacros'
+2012/07/24 - version 3.3d  - stepped number with `chemmacros'
+                           - default bond length set to 1.1667ex
+                           - bug fix in the bonds
+2012/08/21 - version 3.3e  - stepped number with `chemmacros'
+2012/09/11 - version 3.4   - cleaned a little, minor bug fixes
+                           - switched to internal scratch variables
+                           - new command \bond, more bond types
+                           - new commands \DeclareChemBond, \DeclareChemBondAlias,
+                             \RenewChemBond and \ShowChemBond
+                           - radical point thicker, new options `radical-style'
+                             and `radical-radius'
+2012/10/03 - version 3.4a  - stepped number with `chemmacros'
+2013/01/04 - version 3.4b  - bug fix in the sub- and superscript handling
+2013/01/28 - version 3.5   - disallow breaks at bonds
+                           - allow breaks after arrows
+                           - made some spaces in chemformulas stretch- and
+                             shrinkable
+                           - various internal code improvements
+                           - changed defaults for horizontal spaces that have in
+                             set in ex into corresponding values in em.
+                           - improvements to the placement of sub- and superscripts
+2013/02/19 - version 3.5a  - stepped number with `chemmacros'
+2013/02/26 - version 3.6   - support for use with the `breqn' package
+                           - math escaping also via \(\)
+                           - internal: clearer escaping macros
+                           - new options: `radical-vshift', `radical-hshift'
+                             and `radical-space'
+                           - bug fix: `radical-...' options are now correctly set
+                           - stoichiometric factors: add leading 0 if missing
+                           - new option: `stoich-paren-parse'
+                           - internal changes: be way more rigid about protected
+                             and expandable macros
+                           - internal changes: clearer distinction between
+                             private macros and accessable module macros
+                           - internal changes: clearer distinction between
+                             document commands and module level commands
+                           - !()() syntax now also works with babel's French
+2013/02/27 - version 3.6a  - bug fix: escaped text and math stays escaped, i.e.
+                             also arrow code like `<=>'
+2013/04/19 - version 3.6b  - new option `arrow-min-length'
+                           - bug fix: stoichiometric fractions correctly displayed
+2013/07/06 - version 4.0   - don't need `chemmacros' package any more,
+                             `chemformula' can be used stand-alone;
+                             this has lead to a few definitions that previously
+                             were done by chemmacros; chemmacros will get them
+                             now from chemformula when needed
+                           - bug fix: allow braces in subscripts and superscripts
+                             by disabling superfluous \chemformula_subscript:n
+                             and \chemformula_superscript:n in the scripts write
+                             commands
+                           - remove superfluous rescanning at the begin of the
+                             formula input; this is handled by the sanitize
+                             command later anyway
+                           - changed internal mathshifts from $ ... $ to \( ... \)
+                           - removed superfluous \textstyle from math-frac
+                             definition
+                           - new command \charrow{}[][] that allows direct
+                             access to chemformula's arrows
+                           - new command \chname()() that allows direct access
+                             to chemformula's naming
+                           - new command \chcpd[]{} that allows typesetting a
+                             simple single formula - also not nestable with \ch
+                           - new command \setchemformula
+                           - package option: `strict'
+                           - don't allow a line break before a plus
+                             (`chem-and')
+                           - don't allow a line break between a stoichiometric
+                             factor and a compound
+                           - changed formal charges to match ``plain'' charges
+2013/07/26 - version 4.0a  - added options `arrow-penalty' (0), `plus-penalty'
+                             (700) and `bond-penalty' (10000) that determine if
+                             there may be a break after an arrow, a bond or the
+                             plus
+2013/08/24 - version 4.1   - changed `0' values in TikZ coordinates into `0pt'
+                             see http://tex.stackexchange.com/q/128792/5049 and
+                             http://tex.stackexchange.com/q/118467/5049 for
+                             reference
+                           - new option `tikz-external-disable'
+                           - new option `frac-math-cmd'
+2013/10/24 - version 4.2   - \chemformula_font_inner: is only applied /once/ to
+                             a formula, and at the beginning, fixes
+                             https://bitbucket.org/cgnieder/chemmacros/issue/23
+                           - fixed wrong setting of the TikZ bond style
+                           - new option `arrow-style'
+                           - new command \chlewis
+2013/11/04 - version 4.2a  - bug fix in \chcpd,
+                           - change sanitizing/restoring of category codes
+2014/01/24 - version 4.3   - changed behaviour of \DeclareChem to match
+                             \DeclareRobustCommand, i.e., no check if command
+                             is defined; added a \NewChem variant to each that
+                             /does/ check; use \NewChem instead of \DeclareChem
+                             for definitions
+                           - new option stoich-print
+                           - new command \chstoich
+2014/01/29 - version 4.4   - treat a single `-' as a minus sign
+2014/04/07 - version 4.5   - make sure that < and > have catcode 12 when read
+                             as parts of arrows
+                           - new arrow types `>=<', `>=<<', `>>=<' and `<==>'
+                           - arrow lengths and compound offset now correctly
+                             adapts to new fontsize if relative lengths (em,ex)
+                             are used
+                           - allow optional arguments to \\ in equation
+                             environments
+                           - allow optional arguments to \label in equation
+                             environments
+                             (credits: http://tex.stackexchange.com/a/166661/5049)
+                           - support for Kröger-Vink notation
+2014/06/30 - version 4.6   - fix: a comma in a superscript is typeset according
+                             to `decimal-marker' again
+                           - fix charge type behaviour: option `circled' and
+                             `circletype' are now obeyed if the option is
+                             changed mid-document
+                           - new option `chemformula/circled' similar to
+                             `chemmacros/circled'
+                           - new option `chemformula/circletype' similar to
+                             `chemmacros/circletype'
+2014/08/04 - version 4.7   - change dependency: pgf library `arrows.meta'
+                             instead of `arrows'
+                           - new arrow tip definition allows redeclaration to
+                             other existing tips by \pgfkeys{cf/.tip=<tip>}
+2014/08/08 - version 4.8   - fix bug introduced in last update: `butt cap' now
+                             needs to be `Butt Cap' with the new `arrows.meta'
+                             library
+                           - split from `chemmacros' bundle as independent
+                             package
+2014/10/07 - version 4.9   - new options: `minus-space', `minus-penalty',
+                             `plus-output-symbol' and `minus-output-symbol'
+2015/03/16 - version 4.10  - new macros \NewChemCompoundProperty,
+                             \RenewChemCompoundProperty,
+                             \DeclareChemCompoundProperty,
+                             \RemoveChemCompoundProperty
+2015/04/03 - version 4.10a - bug fix in \__chemformula_input_stoich:n
+2015/06/30 - version 4.11  - small changes in \chcpd
+                           - remove unnecessary \mathchoice => noticable speed
+                             improvement
+                           - \NewChemAdditionSymbol
+                           - \NewChemSymbol
+2015/08/12 - version 4.12  - remove chemmacros' `circletype' and `circled'
+                             options. They really belong to chemmacros
+                           - change requirement amsmath -> amstext
+                           - shorten definition of double and triple bonds
+2015/08/29 - version 4.12a - \chemformula_formal_plus: ,
+                             \chemformula_formal_minus:
+                             \ProvideChem... equivalents to all \NewChem...
+                             macros 
+2015/09/08 - version 4.12b - trim spaces of \ch input -- due to a change in
+                             l3kernel
+2015/01/01 - version 4.13  - clean up code
+                           - check for blank input
+                           - drop support for \[ and \]
+                           - new option `atom-format'
+2015/10/21 - version 4.14  - fix issue
+                             https://github.com/cgnieder/chemformula/issues/2
+                           - new option `adduct-penalty'
+2016/01/07 - version 4.14a - \prop_get:Nn => \prop_item:Nn
+2016/05/03 - version 4.14b - local options now are correctly working again
+                           - `atom-format' is only applied to formulas
+2016/05/11 - version 4.15  - arrow definitions don't have to be made in a
+                             certain order any more
+                           - new quasi equilibria arrows
+                           - bug fix in \RenewChemArrow
+                           - meaningful error if \charrow if used with an
+                             unknown arrow type
+2016/06/08 - version 4.15a - change requirement amstext -> amsmath; \chname
+                             uses \underset which needs amsmath
+2016/06/08 - version 4.15b - add missing variant of kernel function
+2016/08/21 - version 4.15c - corrected redundant definition of
+                             \chemformula_single_bond:
+                           - fix problem with TikZ externalization and
+                             Kroeger-Vink notation
+2017/02/02 - version 4.15d - allow `name-format' to end with a macro that
+                             takes an argument
+2017/03/23 - version 4.15e - small bug fix (issue #5)
+                           - implement \shortintertext bypass
+2019/09/23 - version 4.15f - add missing definition for temporary variable
+2019/09/27 - version 4.15g - bug fix in fontspec option
+2019/10/13 - version 4.15h - new (undocumented) option `set-catcodes'
+                           - fix behaviour with category codes
+                             (https://tex.stackexchange.com/q/511592/)
+                           - fix bug: local format changes are now applied
+                             again
+2020/02/01 - version 4.15i - fix issue #12
+2020/03/07 - version 4.15j - make sure that < and > have catcode 12 when read
+                             as arrows -- again...
+2020/03/15 - version 4.15k - fix https://tex.stackexchange.com/questions/532674/
+2020/12/22 - version 4.16  - new option `math-scripts'
+                           - use LaTeX's new hooks
+                           - get rid of unnecessary package dependencies
+2022/??/?? - version 4.17  - adjust options `stoich-print' and `frac-math-cmd'
+                             and correct bug in `stoich-print'
+                           - lazy boolean evaluation
+                           - fix deprecated file hook
+                           - fix issue #19
