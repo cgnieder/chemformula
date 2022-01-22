@@ -245,4 +245,6 @@ VERSION HISTORY
                              and correct bug in `stoich-print'
                            - lazy boolean evaluation
                            - fix deprecated file hook
+                           - implement issue #17
+                           - fix issue #18
                            - fix issue #19

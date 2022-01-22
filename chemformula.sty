@@ -2332,27 +2332,6 @@
   }
 
 % --------------------------------------------------------------------------
-
-\prg_new_conditional:Npnn \chemformula_if_paren:n #1 {T,F,TF}
-  {
-    \str_case:nnF {#1}
-      {
-        {(} { \prg_return_true: }
-        {)} { \prg_return_true: }
-        {[} { \prg_return_true: }
-        {]} { \prg_return_true: }
-      }
-      {
-        \bool_lazy_any:nTF
-          {
-            { \token_if_group_begin_p:N #1 }
-            { \token_if_group_end_p:N #1 }
-          }
-          { \prg_return_true: }
-          { \prg_return_false: }
-      }
-  }
-
 \cs_new_protected:Npn \chemformula_atom:
   { \mode_if_math:F { \l__chemformula_atom_format_tl } }
 
@@ -2376,6 +2355,7 @@
                   \keys_set:nn
                     {chemformula}
                     { \exp_not:V \l__chemformula_internal_options_tl }
+                  \chemformula_atom:
               }
             \tl_clear:N \l__chemformula_internal_options_tl
           }
@@ -2390,6 +2370,7 @@
             { \l__chemformula_first_last_math_bool }
           }
           {
+            \chemformula_atom:
             \__chemformula_input_compound_no_check:Nn #1 {#2}
             \bool_if:NT \l__chemformula_options_bool
               {
