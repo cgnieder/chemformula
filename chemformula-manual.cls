@@ -26,7 +26,7 @@
 %
 % The Current Maintainer of this work is Clemens Niederberger.
 % --------------------------------------------------------------------------
-\ProvidesClass{chemformula-manual}[2022/01/07]
+\ProvidesClass{chemformula-manual}[2022/01/23]
 
 \LoadClass[load-preamble,add-index]{cnltx-doc}
 \RequirePackage{imakeidx}
@@ -301,6 +301,30 @@
   \itemize\let\change\item
 }{\enditemize}
 
+\chemsetup{
+  greek = newtx ,
+  formula = chemformula ,
+  chemformula/format = \libertineLF
+}
+
+\usepackage{acro}
+\acsetup{
+  format/long  = \scshape ,
+  format/short = \scshape
+}
+\DeclareAcronym{iupac}{
+  short     = iupac ,
+  long      = International Union of Pure and Applied Chemistry ,
+  pdfstring = IUPAC ,
+  short-acc = IUPAC
+}
+
+\sisetup{
+  detect-mode=false,
+  mode=text,
+  text-font-command=\libertineLF
+}
+
 \chemformula@add@version{2012-01-28}{3.0}
 \chemformula@add@version{2012-01-30}{3.0a}
 \chemformula@add@version{2012-02-03}{3.0b}
@@ -360,6 +384,6 @@
 \chemformula@add@version{2020-03-07}{4.15j}
 \chemformula@add@version{2020-03-15}{4.15k}
 \chemformula@add@version{2020-12-22}{4.16}
-\chemformula@add@version{2022-01-07}{4.17}
+\chemformula@add@version{2022-01-23}{4.17}
 
 \endinput

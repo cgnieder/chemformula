@@ -1,5 +1,5 @@
 --------------------------------------------------------------------------
-the CHEMFORMULA package v4.17 2022/??/??
+the CHEMFORMULA package v4.17 2022/01/23
 
   typeset chemical compounds and reactions
 
@@ -23,9 +23,14 @@ This work has the LPPL maintenance status `maintained'.
 The Current Maintainer of this work is Clemens Niederberger.
 --------------------------------------------------------------------------
 The chemformula package consists of the following files
- - chemformula.sty,
- - chemformula-manual.cls, chemformula-manual.tex, chemformula-manual.pdf,
- - README
+ == STYLE FILES ==
+    chemformula.sty
+ == DOCUMENTATION FILES ==
+    chemformula-manual.tex
+    chemformula-manual.pdf
+    chemformula-manual.cls
+    README
+    HISTORY
 --------------------------------------------------------------------------
 If you have any ideas, questions, suggestions or bugs to report, please
 feel free to contact me.

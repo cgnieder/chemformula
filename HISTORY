@@ -241,10 +241,12 @@ VERSION HISTORY
 2020/12/22 - version 4.16  - new option `math-scripts'
                            - use LaTeX's new hooks
                            - get rid of unnecessary package dependencies
-2022/??/?? - version 4.17  - adjust options `stoich-print' and `frac-math-cmd'
+2022/01/23 - version 4.17  - adjust options `stoich-print' and `frac-math-cmd'
                              and correct bug in `stoich-print'
-                           - lazy boolean evaluation
+                           - deprecate `stoich-print' and introduce `stoich-format'
+                           - lazy boolean evaluation where possible
                            - fix deprecated file hook
                            - implement issue #17
                            - fix issue #18
                            - fix issue #19
+                           - fix typos in code

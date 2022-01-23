@@ -1,5 +1,5 @@
-% !arara: pdflatex
-% !arara: biber
+% arara: pdflatex
+% arara: biber
 % arara: pdflatex
 % arara: pdflatex
 % --------------------------------------------------------------------------
@@ -33,31 +33,6 @@
 \documentclass{chemformula-manual}
 
 \addbibresource{cnltx.bib}
-
-\chemsetup{
-  greek = newtx ,
-  formula = chemformula ,
-  chemformula/format = \libertineLF
-}
-
-\usepackage{acro}
-\acsetup{
-  format/long  = \scshape ,
-  format/short = \scshape
-}
-\DeclareAcronym{iupac}{
-  short     = iupac ,
-  long      = International Union of Pure and Applied Chemistry ,
-  pdfstring = IUPAC ,
-  short-acc = IUPAC
-}
-
-\sisetup{
-  detect-mode=false,
-  mode=text,
-  text-font-command=\libertineLF
-}
-
 \addbibresource{\jobname.bib}
 \begin{filecontents*}{\jobname.bib}
 @book{iupac:greenbook,
@@ -231,7 +206,7 @@ parentheses in the \acs{iupac} Green Book~\cite{iupac:greenbook}:
  (1/5) K "\ox{7,Mn}" O4 + (8/5) HCl == (1/5) "\ox{2,Mn}" Cl2 + (1/2) Cl2 + (1/5) KCl + (4/5) H2O
 \end{reaction*}
 
-There are a few possibilities to customize the output.
+There are a few possibilities to customize the output:
 \begin{options}
   \keyval{decimal-marker}{marker}\Default{.}
     The symbol to indicate the decimal.
@@ -246,9 +221,14 @@ There are a few possibilities to customize the output.
   \keybool{stoich-paren-parse}\Default{false}
     If set to true stoichiometric factors enclosed by parentheses also are
     parsed.
+  \keyval{stoich-format}{code}\Default
+    \sinceversion{4.17}Allows formatting of the stoichiometric factors. The
+    last macro given may take an argument.
   \keyval{stoich-print}{code containing \#1}\Default{\#1}
-    \changedversion{4.17}This option allows to adjust how stoichiometric
-    factors are printed.
+    \changedversion{4.17}This option allows to use specify a macro for
+    printing the stoichiometric factors where \code{\#1} represents the
+    factor.  \emph{This option is depecated and will be removed some time in
+      the future.  Use \option{stoich-format} instead.}
 \end{options}
 
 \begin{example}
@@ -355,11 +335,6 @@ expands.
   this: \hspace{$_2$mm}. Actually not at all like this but equally bad\ldots
 \end{sourcecode}
 See section~\ref{ssec:text} for a way around this.
-
-Please also note that formulas are placed inside a group!
-\begin{example}[side-by-side]
-  \ch{A2\color{red}B3 C4}
-\end{example}
 
 \subsection{Charges and Other Superscripts}
 \paragraph{Basics}
@@ -1016,6 +991,16 @@ of the labels.  What stays constant is the part that protrudes the labels.
   \ch{A ->[ "\chemfig{-[:30]-[:-30]OH}" ] B} \par
 \end{example}
 
+The\sinceversion{4.17} labels are typeset inside of a \env*{tabular}\Marg{c}
+environment.  This means you can get several lines:
+\begin{example}[side-by-side]
+  \ch{A ->[{a\\b}] B} \par
+  \ch{A ->[a \newline b] B}
+\end{example}
+The command \cs*{\textbackslash} must be hidden in order to
+work. \cs*{tabularnewline} does work, of course. For convenience \chemformula\
+also allows \cs*{newline} here.
+
 \subsection{Customization}
 These are the options which enable you to customize the arrows:
 \begin{options}
@@ -1188,7 +1173,8 @@ creating a name you only have to make sure it isn't followed by parentheses.
 \chemformula\ provides two options to customize the output of the names:
 \begin{options}
  \keyval{name-format}{commands}\Default{\cs*{scriptsize}\cs*{centering}}
-   The format of the name.  This can be arbitrary input.
+   \changedversion{4.15d}The format of the name.  This can be arbitrary input
+   and the last macro may receive the name as an argument.
  \keychoice{name-width}{\meta{dim},auto}\Default{auto}
    The width of the box where the label is put into.  \code{auto} will detect
    the width of the name and set the box to this width.
@@ -1572,6 +1558,13 @@ There are a number of options for customizations:
   \change New option \option{math-scripts}
   \change Use \LaTeX's new hooks and get rid of redundant package dependencies
     and code.
+\end{changes}
+
+\begin{changes}{4.17}
+  \change Various bug fixes.
+  \change Lazy boolean evaluation where possible.
+  \change Place arrow's arguments in a tabular.  This allows for multiple
+    lines.
 \end{changes}
 
 \printbibliography
